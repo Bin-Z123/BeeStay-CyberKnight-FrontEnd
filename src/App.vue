@@ -14,6 +14,7 @@ const toggleDarkMode = () => {
   <button class="px-3 py-2 bg-amber-900" @click="toggleDarkMode()">
     Click
   </button>
+  <h2>Kiet ne</h2>
 </template>
 
 <style scoped></style>
