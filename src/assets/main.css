@@ -1,5 +1,18 @@
 /* @import './base.css'; */
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
-
+@theme{
+  /* Dodger Blue */
+  --color-dodger-50: #edfbff;
+  --color-dodger-100: #d7f5ff;
+  --color-dodger-200: #b8f0ff;
+  --color-dodger-300: #87e8ff;
+  --color-dodger-400: #4ed9ff;
+  --color-dodger-500: #26bfff;
+  --color-dodger-600: #0ea4ff;
+  --color-dodger-700: #088ff7;
+  --color-dodger-800: #0d6dc0;
+  --color-dodger-900: #10385b;
+  --color-dodger-950: #10385b;
+}
 
