@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.7",
+    "@types/node": "^22.15.29",
     "axios": "^1.9.0",
     "pinia": "^3.0.1",
     "tailwindcss": "^4.1.7",
@@ -17,8 +18,11 @@
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.2.3",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "@vue/compiler-sfc": "^3.5.16",
+    "typescript": "^5.8.3",
     "vite": "^6.2.4",
-    "vite-plugin-vue-devtools": "^7.7.2"
+    "vite-plugin-vue-devtools": "^7.7.2",
+    "vue-tsc": "^2.2.10"
   }
 }
