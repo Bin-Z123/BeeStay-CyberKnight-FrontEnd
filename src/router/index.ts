@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router";
 import authRouter from "@/router/routers/AuthRouter";
-const routes: RouteRecordRaw[] = [authRouter];
+import administrationRouter from "../router/routers/AdministrationRouter";
+const routes: RouteRecordRaw[] = [authRouter, administrationRouter];
  
 const router = createRouter({
     history: createWebHistory(),
