@@ -1,4 +1,6 @@
 <script setup>
+import { RouterView } from 'vue-router';
+
 const toggleDarkMode = () => {
   const htmlElement = document.documentElement;
   htmlElement.classList.toggle("dark");
@@ -10,10 +12,8 @@ const toggleDarkMode = () => {
 </script>
 
 <template>
-  <h1 class="dark:text-white">Hello</h1>
-  <button class="px-3 py-2 bg-amber-900" @click="toggleDarkMode()">
-    Click
-  </button>
+  <RouterView />
+  <!-- <RouterView></RouterView> -->
 </template>
 
 <style scoped></style>
