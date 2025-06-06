@@ -2,7 +2,7 @@
     <section>
         <div class="flex flex-col md:flex-row">
             <div class="w-1/2"></div>
-            <div class="w-1/2 flex items-center h-screen">
+            <div class="md:w-1/2 flex items-center h-screen mx-3 justify-center md:justify-start">
                 <div class="bg-white w-120 rounded-2xl p-10">
                     <h1 class="text-muesli-400 font-bold text-2xl flex justify-center">Đăng Ký</h1>
                     <form action="">
