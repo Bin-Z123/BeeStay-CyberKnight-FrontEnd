@@ -1,7 +1,4 @@
 <template>
-  <table>
-    <thead></thead>
-  </table>
   <table
     class="min-w-full text-sm text-left text-gray-500 border border-gray-200 shadow rounded-lg"
   >

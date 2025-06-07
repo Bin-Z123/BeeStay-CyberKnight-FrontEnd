@@ -15,3 +15,10 @@
   --color-muesli-900: #513932;
   --color-muesli-950: #2d1e1b;
 }
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
