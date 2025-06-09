@@ -5,7 +5,7 @@
       <div>
         <Header></Header>
       </div>
-      <div>
+      <div class="bg-gray-100 h-screen">
         <RouterView />
       </div>
     </div>
