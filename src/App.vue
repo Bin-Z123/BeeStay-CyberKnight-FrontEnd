@@ -15,10 +15,10 @@ const toggleDarkMode = () => {
 </script>
 
 <template>
-  <Toaster> </Toaster>
+  <!-- <Toaster> </Toaster> -->
   <RouterView />
   <!-- <RouterView></RouterView> -->
-  <div>
+  <!-- <div>
     <Button
       variant="outline"
       @click="
@@ -36,7 +36,7 @@ const toggleDarkMode = () => {
       "
       >Click me</Button
     >
-  </div>
+  </div> -->
 </template>
 
 <style scoped></style>
