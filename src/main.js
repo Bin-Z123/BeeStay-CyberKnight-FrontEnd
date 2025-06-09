@@ -9,12 +9,4 @@ const app = createApp(App);
 
 app.use(createPinia());
 app.use(router);
-
 app.mount("#app");
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
