@@ -24,13 +24,53 @@ const administrationRouter: RouteRecordRaw = {
             name: "roomtypes",
             component: () => import("../../pages/administrantion/manager/ManageRoomTypesPage.vue")
         },
+        {
+            path: "rooms",
+            name: "rooms",
+            component: () => import("../../pages/administrantion/manager/ManagerRoomsPage.vue")
+        },
+        {
+            path: "bookingmanager",
+            name: "bookingmanager",
+            component: () => import("../../pages/administrantion/manager/ManagerBookingPage.vue")
+        },
+        {
+            path: "statistics",
+            name: "statistics",
+            component: () => import("../../pages/administrantion/manager/ManagerStatisticsPage.vue")
+        },
+        {
+            path: "users",
+            name: "users",
+            component: () => import("../../pages/administrantion/manager/ManagerUsersPage.vue")
+        },
+        {
+            path: "receptionist",
+            name: "receptionist",
+            component: () => import("../../pages/administrantion/manager/ManagerReceptionistPage.vue")
+        },
+        {
+            path: "promotions",
+            name: "promotions",
+            component: () => import("../../pages/administrantion/manager/ManagerPromotionPage.vue")
+        },
+        {
+            path: "notification",
+            name: "notification",
+            component: () => import("../../pages/administrantion/manager/ManagerNotificationPage.vue")
+        },
 
         // Receptionist
         {
             path: "bookings",
             name: "bookings",
             component: () => import("../../pages/administrantion/receptionist/BookingsPage.vue")
-        }
+        },
+        {
+            path: "listbooking",
+            name: "listbooking",
+            component: () => import("../../pages/administrantion/receptionist/ListBookingPage.vue")
+        },
     ]
 }
 
