@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="emit('update:open', $event)">
-    <DialogContent class="sm:max-w-[425px]">
+    <DialogContent class="sm:max-w-[425px]" @escape-key.prevent>
       <form action="" class="flex flex-col gap-3">
         <DialogHeader>
           <DialogTitle class="font-bold text-muesli-400"

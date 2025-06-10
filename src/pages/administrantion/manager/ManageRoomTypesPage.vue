@@ -30,12 +30,12 @@
         <div class="w-1/2 flex justify-end px-4">
           <!-- Btn bật dialog -->
           <Button
-            @click="open = true"
+            @click="isOpen = true"
             class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white px-4 my-3"
           >
             Thêm
           </Button>
-          <DialogCreateRoomType v-model="open"></DialogCreateRoomType>
+          <DialogCreateRoomType v-model:open="isOpen"></DialogCreateRoomType>
         </div>
       </div>
       <div class="shadow-lg px-4 pb-4">
@@ -180,6 +180,6 @@ import { Button } from "@/components/ui/button";
 import DialogCreateRoomType from "@/components/administration/roomTypeDialog/CreateRoomTypeDialog.vue";
 // import { Input } from '@/components/ui/input'
 // import { Label } from '@/components/ui/label'
-const open = ref(false);
+const isOpen = ref(false);
 const isAddRoomTypes = ref(false);
 </script>
