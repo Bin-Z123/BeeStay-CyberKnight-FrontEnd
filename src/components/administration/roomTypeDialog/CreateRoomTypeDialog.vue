@@ -1,6 +1,10 @@
 <template>
   <Dialog :open="open" @update:open="emit('update:open', $event)">
-    <DialogContent class="sm:max-w-[425px]" @escape-key.prevent>
+    <DialogContent
+      class="sm:max-w-[425px]"
+      @pointer-down-outside.prevent
+      @escape-key-down.prevent
+    >
       <form action="" class="flex flex-col gap-3">
         <DialogHeader>
           <DialogTitle class="font-bold text-muesli-400"
@@ -51,7 +55,7 @@
         <DialogFooter>
           <Button
             type="submit"
-            class="bg-muesli-400 hover:bg-muesli-600 text-white"
+            class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm"
           >
             Lưu
           </Button>
