@@ -73,8 +73,8 @@
           </Dialog>
         </div>
       </div>
-      <div class="shadow-lg px-4 pb-4">
-        <table class="w-full border border-gray-300 text-sm text-center bg-white h-132">
+      <div class="shadow-lg px-4 pb-4 h-[622px]">
+        <table class="w-full border border-gray-300 text-sm text-center bg-white">
           <thead class="bg-gradient-to-r from-muesli-200 to-muesli-400 text-white">
             <tr>
               <th class="px-4 py-2 border">ID</th>
