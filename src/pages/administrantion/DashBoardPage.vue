@@ -75,7 +75,9 @@
         </div>
       </div>
       <div class="w-full lg:w-1/2 bg-white my-2 rounded-2xl me-4 py-19">
-        <BarChart :data="data" class="p-5" />
+        <RouterLink to="/administration/statistics">
+          <BarChart :data="data" class="p-5" />
+        </RouterLink>
       </div>
     </div>
   </section>
