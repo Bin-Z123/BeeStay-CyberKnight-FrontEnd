@@ -35,6 +35,7 @@
           >
             Thêm
           </Button>
+          <!-- Dialog Create Room Type -->
           <DialogCreateRoomType v-model:open="isOpen"></DialogCreateRoomType>
         </div>
       </div>
