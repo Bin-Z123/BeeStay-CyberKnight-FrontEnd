@@ -26,6 +26,7 @@
             class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white px-4 my-3">
             Thêm
           </Button>
+          <!-- Dialog Create Room Type -->
           <DialogCreateRoomType v-model:open="isOpen"></DialogCreateRoomType>
         </div>
       </div>
