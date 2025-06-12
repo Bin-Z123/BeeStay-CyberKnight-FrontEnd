@@ -15,7 +15,7 @@ const toggleDarkMode = () => {
 </script>
 
 <template>
-  <!-- <Toaster> </Toaster> -->
+  <Toaster richColors position="top-right"> </Toaster>
   <RouterView />
   <!-- <RouterView></RouterView> -->
   <!-- <div>
