@@ -26,7 +26,7 @@
             class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white px-4 my-3">
             Thêm
           </Button>
-          <DialogCreateRoomType v-model:open="isOpen"></DialogCreateRoomType>
+          <DialogCreateRoom v-model:open="isOpen"></DialogCreateRoom>
         </div>
       </div>
       <div class="shadow-lg px-4 pb-4 h-[622px]">
@@ -53,7 +53,7 @@
                   class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
                   <LockKeyhole class="w-4 h-4" />
                 </button>
-                <Button class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white">
+                <Button class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white" @click="isUpdateRoom = true">
                   <SquarePen />
                 </Button>
               </td>
@@ -72,6 +72,7 @@
         </div>
       </div>
     </div>
+    <DialogUpdateRoom v-model:open="isUpdateRoom"></DialogUpdateRoom>
   </section>
 </template>
 <script setup lang="ts">
@@ -84,9 +85,10 @@ import {
 } from "lucide-vue-next";
 import { ref } from "vue";
 import { Button } from "@/components/ui/button";
-import DialogCreateRoomType from "@/components/administration/roomTypeDialog/CreateRoomTypeDialog.vue";
+import DialogCreateRoom from "@/components/administration/RoomDialog/CreateRoomDialog.vue";
+import DialogUpdateRoom from "@/components/administration/RoomDialog/UpdateRoomDialog.vue";
 // import { Input } from '@/components/ui/input'
 // import { Label } from '@/components/ui/label'
 const isOpen = ref(false);
-const isAddRoomTypes = ref(false);
+const isUpdateRoom = ref(false);
 </script>
