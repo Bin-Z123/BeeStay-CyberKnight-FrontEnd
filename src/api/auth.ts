@@ -36,6 +36,7 @@ const login = async (username: string, password: string): Promise<LoginResponse>
                     onClick: () => {}
                 },
             })
+            return response.data
         }
     }catch(error){
         toast.error('Thông báo',{
