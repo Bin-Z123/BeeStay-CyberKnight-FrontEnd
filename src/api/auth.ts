@@ -26,7 +26,9 @@ const login = async (username: string, password: string): Promise<LoginResponse>
 
                 },
             })
-            window.location.href = '/administration';
+            setTimeout(() => {
+                window.location.href = '/administration';
+            },1000);
             return response.data
         }else {
             toast('Thông báo',{
@@ -45,7 +47,9 @@ const login = async (username: string, password: string): Promise<LoginResponse>
         // Return a default value or rethrow, here we throw to ensure type safety
         throw error
     }finally{
-        isLoading.value =false
+        setTimeout(() => {
+            isLoading.value = false
+        },1000);
     }
 }
 return {
