@@ -13,6 +13,7 @@
             <div>
               <label class="text-muesli-400">Tài khoản</label>
               <input
+                v-model="form.username"
                 type="text"
                 placeholder="Nhập email/sđt"
                 class="w-full h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300"
@@ -21,6 +22,7 @@
             <div>
               <label class="text-muesli-400">Mật khẩu</label>
               <input
+                v-model="form.password"
                 type="password"
                 placeholder="Nhập mật khẩu"
                 class="w-full h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300"
@@ -48,9 +50,14 @@
             </div>
             <div>
               <button
-                class="bg-muesli-400 hover:bg-white hover:text-muesli-400 border border-muesli-400 text-white font-bold py-2 px-4 w-full rounded duration-300"
+                :disabled="isLoading"
+                @click.prevent="handleLogin()"
+                class="bg-muesli-400 flex items-center justify-center hover:bg-white hover:text-muesli-400 border border-muesli-400 text-white font-bold py-2 px-4 w-full rounded duration-300 disabled:opacity-50 disabled:cursor-pointer disabled:hover:bg-muesli-400 disabled:hover:text-white"
               >
-                Đăng Nhập
+                <span v-if="isLoading"
+                  ><LoaderCircle class="animate-spin"
+                /></span>
+                <span v-else>Đăng Nhập</span>
               </button>
             </div>
             <div>
@@ -69,3 +76,18 @@
     </div>
   </section>
 </template>
+<script setup lang="ts">
+import { LoaderCircle } from "lucide-vue-next";
+import { Auth } from "@/api/auth";
+import { ref } from "vue";
+const { login, isLoading } = Auth();
+
+const form = ref({
+  username: "",
+  password: "",
+});
+const handleLogin = () => {
+  login(form.value.username, form.value.password);
+  console.log(form.value);
+};
+</script>
