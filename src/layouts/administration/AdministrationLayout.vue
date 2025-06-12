@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-screen">
-    <div class="bg-muesli-400 text-white py-5"><Sidebar /></div>
+    <div class="bg-muesli-400 text-white py-5 overflow-scroll scrollbar-hidden"><Sidebar /></div>
     <div class="bg-white w-full flex flex-col">
       <div>
         <Header></Header>

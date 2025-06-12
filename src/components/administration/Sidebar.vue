@@ -98,7 +98,7 @@
             exact-active-class="text-muesli-800 font-semibold bg-muesli-100">
             <LayoutGrid class="inline-block h-4 w-4" /> Đặt Phòng
           </RouterLink>
-          <RouterLink to="/administration/bookings"
+          <RouterLink to="/administration/dashboard"
             class="block text-sm px-3 py-1 rounded hover:bg-muesli-50 hover:text-muesli-800"
             exact-active-class="text-muesli-800 font-semibold bg-muesli-100">
             <BedDouble class="inline-block h-4 w-4" /> Danh Sách Phòng

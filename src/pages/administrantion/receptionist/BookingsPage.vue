@@ -43,7 +43,7 @@
 
       <div class="grid grid-cols-7 gap-2 max-w-[1050px] justify-center relative">
         <div v-for="(i, index) in 14" :key="i" class="w-[140px]" :class="{ '-ml-[74px] -mt-10': index >= 7 }">
-          <div @click="isOpenBooking = true"
+          <div @contextmenu.prevent="openContextMenu($event, i)" :data-id="i"
             class="h-40 bg-white hover:bg-gray-200 flex justify-center items-center [clip-path:polygon(0%_25%,50%_0%,100%_25%,100%_75%,50%_100%,0%_75%)]">
             <div class="flex flex-col items-center p-4">
               <h1 class="text-muesli-400 font-bold text-lg">T10{{ i }}</h1>
@@ -51,6 +51,13 @@
               <h1>2 người</h1>
             </div>
           </div>
+        </div>
+        <div v-if="menu.isOpen" class="absolute bg-white border rounded shadow-md z-50 w-32"
+          :style="{ top: menu.y + 'px', left: menu.x + 'px' }">
+          {{ menu.data }}
+          <button class="w-full text-left px-4 py-2 hover:bg-gray-100" @click="isOpenBooking = true">
+            Đặt phòng
+          </button>
         </div>
       </div>
 
@@ -67,9 +74,29 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-vue-next";
-import { ref } from "vue";
-import BookingDialog from "@/components/administration/roomTypeDialog/BookingDialog.vue";
+import { reactive, ref } from "vue";
+import BookingDialog from "@/components/administration/BookingDialog/BookingDialog.vue";
 import { Button } from "@/components/ui/button";
 
+const isOpen = ref(false);
 const isOpenBooking = ref(false);
+const menu = reactive({
+  x: 0,
+  y: 0,
+  isOpen: false,
+  data: {},
+});
+
+const openContextMenu = (e: MouseEvent, i: number) => {
+  const currentTarget = e.currentTarget as HTMLElement | null;
+  const container = currentTarget?.offsetParent as HTMLElement | null;
+  const rect = container?.getBoundingClientRect();
+  menu.x = e.clientX - (rect?.left ?? 0);
+  menu.y = e.clientY - (rect?.top ?? 0);
+  menu.isOpen = true;
+  menu.data = i;
+};
+window.addEventListener("click", () => {
+  menu.isOpen = false;
+});
 </script>

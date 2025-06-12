@@ -35,6 +35,7 @@
                                 <th class="px-4 py-2 border">Giới Tính</th>
                                 <th class="px-4 py-2 border">Ngày Sinh</th>
                                 <th class="px-4 py-2 border">Email</th>
+                                <th class="px-4 py-2 border">Trạng Thái</th>
                                 <th class="px-4 py-2 border">Xếp Hạng</th>
                                 <th class="px-4 py-2 border">Tích Điểm</th>
                                 <th class="px-4 py-2 border">Tùy Chọn</th>
@@ -47,6 +48,7 @@
                                 <td class="py-2">Nam</td>
                                 <td class="py-2">01-01-2001</td>
                                 <td class="py-2">Bin@gmail.com</td>
+                                <td class="py-2">...</td>
                                 <td class="py-2">Đồng</td>
                                 <td class="py-2">{{ i }}</td>
                                 <td class="py-2 flex justify-center items-center gap-5 h-full">
@@ -83,6 +85,7 @@
                                 <th class="px-4 py-2 border">Giới Tính</th>
                                 <th class="px-4 py-2 border">Ngày Sinh</th>
                                 <th class="px-4 py-2 border">Email</th>
+                                <th class="px-4 py-2 border">Trạng Thái</th>
                                 <th class="px-4 py-2 border">Xếp Hạng</th>
                                 <th class="px-4 py-2 border">Tích Điểm</th>
                                 <th class="px-4 py-2 border">Tùy Chọn</th>
@@ -95,6 +98,7 @@
                                 <td class="py-2">Nam</td>
                                 <td class="py-2">01-01-2001</td>
                                 <td class="py-2">Thinh@gmail.com</td>
+                                <td class="py-2">...</td>
                                 <td class="py-2">Bạc</td>
                                 <td class="py-2">{{ i }}</td>
                                 <td class="py-2 flex justify-center items-center gap-5 h-full">
@@ -131,6 +135,7 @@
                                 <th class="px-4 py-2 border">Giới Tính</th>
                                 <th class="px-4 py-2 border">Ngày Sinh</th>
                                 <th class="px-4 py-2 border">Email</th>
+                                <th class="px-4 py-2 border">Trạng Thái</th>
                                 <th class="px-4 py-2 border">Xếp Hạng</th>
                                 <th class="px-4 py-2 border">Tích Điểm</th>
                                 <th class="px-4 py-2 border">Tùy Chọn</th>
@@ -143,6 +148,7 @@
                                 <td class="py-2">Nữ</td>
                                 <td class="py-2">01-01-2001</td>
                                 <td class="py-2">Kiet@gmail.com</td>
+                                <td class="py-2">...</td>
                                 <td class="py-2">Gỗ</td>
                                 <td class="py-2">{{ i }}</td>
                                 <td class="py-2 flex justify-center items-center gap-5 h-full">

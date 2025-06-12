@@ -7,12 +7,10 @@
                     <table class="w-full border border-gray-300 text-sm text-center bg-white">
                         <thead class="bg-gradient-to-r from-muesli-200 to-muesli-400 text-white">
                             <tr>
-                                <th class="px-4 py-2 border">Khách Hàng</th>
+                                <th class="px-4 py-2 border">Nhân Viên</th>
                                 <th class="px-4 py-2 border">Giới Tính</th>
                                 <th class="px-4 py-2 border">Ngày Sinh</th>
                                 <th class="px-4 py-2 border">Email</th>
-                                <th class="px-4 py-2 border">Xếp Hạng</th>
-                                <th class="px-4 py-2 border">Tích Điểm</th>
                                 <th class="px-4 py-2 border">Tùy Chọn</th>
                             </tr>
                         </thead>
@@ -23,8 +21,6 @@
                                 <td class="py-2">Nam</td>
                                 <td class="py-2">01-01-2001</td>
                                 <td class="py-2">Bin@gmail.com</td>
-                                <td class="py-2">Đồng</td>
-                                <td class="py-2">{{ i }}</td>
                                 <td class="py-2 flex justify-center items-center gap-5 h-full">
                                     <button
                                         class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">

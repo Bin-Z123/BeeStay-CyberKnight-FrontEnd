@@ -55,7 +55,7 @@
                   class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
                   <LockKeyhole class="w-4 h-4" />
                 </button>
-                <Button class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white">
+                <Button @click="isOpenUpdate = true" class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white">
                   <SquarePen />
                 </Button>
               </td>
@@ -75,6 +75,7 @@
       </div>
     </div>
   </section>
+  <DialogUpdateRoomType v-model:open="isOpenUpdate"></DialogUpdateRoomType>
 </template>
 <script setup lang="ts">
 import {
@@ -87,8 +88,10 @@ import {
 import { ref } from "vue";
 import { Button } from "@/components/ui/button";
 import DialogCreateRoomType from "@/components/administration/roomTypeDialog/CreateRoomTypeDialog.vue";
+import DialogUpdateRoomType from "@/components/administration/roomTypeDialog/UpdateRoomTypeDialog.vue";
 // import { Input } from '@/components/ui/input'
 // import { Label } from '@/components/ui/label'
 const isOpen = ref(false);
 const isAddRoomTypes = ref(false);
+const isOpenUpdate = ref(false);
 </script>
