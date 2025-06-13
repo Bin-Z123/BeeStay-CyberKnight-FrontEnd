@@ -34,23 +34,19 @@
         <table class="w-full border border-gray-300 text-sm text-center bg-white">
           <thead class="bg-gradient-to-r from-muesli-200 to-muesli-400 text-white">
             <tr>
-              <th class="px-4 py-2 border">ID</th>
               <th class="px-4 py-2 border">Loại Phòng</th>
               <th class="px-4 py-2 border">Diện Tích</th>
               <th class="px-4 py-2 border">Giá</th>
               <th class="px-4 py-2 border">Lượng Người Ở</th>
-              <th class="px-4 py-2 border">Khuyến Mãi</th>
               <th class="px-4 py-2 border">Tùy Chọn</th>
             </tr>
           </thead>
           <tbody class="text-gray-700">
-            <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="i in 10" :key="i">
-              <td class="py-2">P0{{ i }}</td>
-              <td class="py-2">Thường</td>
-              <td class="py-2">50m²</td>
-              <td class="py-2">3000000</td>
-              <td class="py-2">3</td>
-              <td class="py-2">30%</td>
+            <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="roomtype in roomtypes" :key="roomtype.id">
+              <td class="py-2">{{ roomtype.name }}</td>
+              <td class="py-2">{{ roomtype.size }}m²</td>
+              <td class="py-2">{{ roomtype.price }}</td>
+              <td class="py-2">{{ roomtype.peopleAbout }}</td>
               <td class="py-2 flex justify-center items-center gap-5 h-full">
                 <button
                   class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
@@ -86,13 +82,20 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-vue-next";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { Button } from "@/components/ui/button";
 import DialogCreateRoomType from "@/components/administration/roomTypeDialog/CreateRoomTypeDialog.vue";
 import DialogUpdateRoomType from "@/components/administration/roomTypeDialog/UpdateRoomTypeDialog.vue";
 // import { Input } from '@/components/ui/input'
 // import { Label } from '@/components/ui/label'
+import { RoomType } from "@/api/roomtype";
+
 const isOpen = ref(false);
 const isAddRoomTypes = ref(false);
 const isOpenUpdate = ref(false);
+const { roomtype, roomtypes, getAllRoomType, isLoading } = RoomType();
+
+onMounted( async () => {
+  await getAllRoomType();
+});
 </script>
