@@ -30,7 +30,7 @@
           <DialogCreateRoomType v-model:open="isOpen"></DialogCreateRoomType>
         </div>
       </div>
-      <div class="shadow-lg px-4 pb-4 h-[622px]">
+      <div class="px-4 pb-4 h-[622px]">
         <table class="w-full border border-gray-300 text-sm text-center bg-white">
           <thead class="bg-gradient-to-r from-muesli-200 to-muesli-400 text-white">
             <tr>

@@ -19,8 +19,8 @@
             </div>
 
             <TabsContent value="voucher">
-                <div class="px-4 flex justify-center">
-                    <div class="w-1/3 me-4  mb-4 rounded-lg p-4">
+                <div class="px-4 flex justify-center flex-col md:flex-row">
+                    <div class="md:w-1/3 me-4  mb-4 rounded-lg p-4">
                         <form action="" class="flex flex-col gap-3">
                             <div>
                                 <label class="text-muesli-400">Mã Giảm Giá</label><br />
@@ -64,7 +64,7 @@
                             </div>
                         </form>
                     </div>
-                    <div class="w-2/3">
+                    <div class="md:w-2/3">
                         <table class="w-full border border-gray-300 text-sm text-center bg-white">
                             <thead class="bg-gradient-to-r from-muesli-200 to-muesli-400 text-white">
                                 <tr>
@@ -109,8 +109,8 @@
                 </div>
             </TabsContent>
             <TabsContent value="rank">
-                <div class="px-4 flex justify-center">
-                    <div class="w-1/3 me-4  mb-4 rounded-lg p-4">
+                <div class="px-4 flex justify-center flex-col md:flex-row">
+                    <div class="md:w-1/3 me-4  mb-4 rounded-lg p-4">
                         <form action="" class="flex flex-col gap-3">
                             <div>
                                 <label class="text-muesli-400">Hạng</label><br />
@@ -153,7 +153,7 @@
                             </div>
                         </form>
                     </div>
-                    <div class="w-2/3">
+                    <div class="md:w-2/3">
                         <table class="w-full border border-gray-300 text-sm text-center">
                             <thead class="bg-gradient-to-r from-muesli-200 to-muesli-400 text-white">
                                 <tr>
@@ -196,8 +196,8 @@
                 </div>
             </TabsContent>
             <TabsContent value="discount">
-                <div class="px-4 flex justify-center">
-                    <div class="w-1/3 me-4  mb-4 rounded-lg p-4">
+                <div class="px-4 flex justify-center flex-col md:flex-row">
+                    <div class="md:w-1/3 me-4  mb-4 rounded-lg p-4">
                         <form action="" class="flex flex-col gap-3 overflow-scroll h-[580px] scrollbar-hidden px-1">
                             <div>
                                 <label class="text-muesli-400">Tiêu Đề</label><br />
@@ -286,7 +286,7 @@
                             </div>
                         </form>
                     </div>
-                    <div class="w-2/3">
+                    <div class="md:w-2/3">
                         <table class="w-full border border-gray-300 text-sm text-center bg-white">
                             <thead class="bg-gradient-to-r from-muesli-200 to-muesli-400 text-white">
                                 <tr>
