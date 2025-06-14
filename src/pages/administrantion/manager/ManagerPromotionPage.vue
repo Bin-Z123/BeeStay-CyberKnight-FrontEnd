@@ -135,7 +135,7 @@
                             </div>
                             <div class="flex justify-center gap-2">
                                 <button type="button"
-                                    class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm" @click.prevent="handleCreateRank">
+                                    class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm w-[85px]" @click.prevent="handleCreateRank">
                                     Tạo
                                 </button>
                                 <button type="button"
@@ -143,7 +143,7 @@
                                     Cập Nhật
                                 </button>
                                 <button type="button"
-                                    class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm" @click.prevent="handleDeleteRank">
+                                    class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm w-[85px]" @click.prevent="handleDeleteRank">
                                     Xoá
                                 </button>
                                 <button type="reset"
@@ -266,7 +266,7 @@
                             <div class="flex justify-center gap-2">
                                 <button type="button"
                                     @click.prevent="handleCreateDiscount"
-                                    class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm">
+                                    class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm w-[80px]">
                                     Tạo
                                 </button>
                                 <button type="button"
@@ -276,7 +276,7 @@
                                 </button>
                                 <button type="button"
                                     @click.prevent="handleDeleteDiscount"
-                                    class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm">
+                                    class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm w-[80px]">
                                     Xóa
                                 </button>
                                 <button type="reset"
@@ -407,7 +407,6 @@ const getDiscountById = (id: number) => {
   if (selected) {
     discount.value = {
       ...selected,
-      // fallback nếu API không có value nào
       status: selected.status || 'ACTIVE',
       discountType: selected.discountType || 'Normal'
     };
