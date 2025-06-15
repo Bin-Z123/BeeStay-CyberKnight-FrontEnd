@@ -57,14 +57,14 @@
           <tbody class="text-gray-700">
             <tr
               class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
-              v-for="i in 10"
-              :key="i"
+              v-for="room in rooms"
+              :key="room.id"
             >
-              <td class="py-2">P0{{ i }}</td>
-              <td class="py-2">1{{ i }}</td>
-              <td class="py-2">Thường</td>
-              <td class="py-2">{{ i }}</td>
-              <td class="py-2">Đang có người</td>
+              <td class="py-2">P0{{ room.id }}</td>
+              <td class="py-2">{{ room.roomNumber }}</td>
+              <td class="py-2">{{ room.roomType }}</td>
+              <td class="py-2">{{ room.floor }}</td>
+              <td class="py-2">{{ room.roomStatus }}</td>
               <td class="py-2 flex justify-center items-center gap-5 h-full">
                 <button
                   class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg"
@@ -73,7 +73,7 @@
                 </button>
                 <Button
                   class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white"
-                  @click="isUpdateRoom = true"
+                  @click="openDialog(room)"
                 >
                   <SquarePen />
                 </Button>
@@ -103,7 +103,10 @@
         </div>
       </div>
     </div>
-    <DialogUpdateRoom v-model:open="isUpdateRoom"></DialogUpdateRoom>
+    <DialogUpdateRoom
+      v-model:open="isUpdateRoom"
+      :room="selectForm"
+    ></DialogUpdateRoom>
   </section>
 </template>
 <script setup lang="ts">
@@ -118,8 +121,22 @@ import { ref } from "vue";
 import { Button } from "@/components/ui/button";
 import DialogCreateRoom from "@/components/administration/RoomDialog/CreateRoomDialog.vue";
 import DialogUpdateRoom from "@/components/administration/RoomDialog/UpdateRoomDialog.vue";
+import { Rooms } from "@/components/administration/RoomDialog/Room";
+const { rooms } = Rooms();
 // import { Input } from '@/components/ui/input'
 // import { Label } from '@/components/ui/label'
 const isOpen = ref(false);
 const isUpdateRoom = ref(false);
+const selectForm = ref({
+  id: 0,
+  roomNumber: "",
+  roomStatus: "",
+  floor: 0,
+  roomType: "",
+  roomImage: [],
+});
+const openDialog = (room: any) => {
+  isUpdateRoom.value = true;
+  selectForm.value = room;
+};
 </script>

@@ -101,7 +101,7 @@
           <div
             v-for="(fileImg, index) in imagePreview"
             :key="index"
-            class="rounded-sm w-60 h-60 flex flex-col items-center justify-center focus:ring-offset-2 focus:ring-3 focus:ring-muesli-950 group shadow-sm"
+            class="rounded-sm w-60 h-60 flex flex-col items-center justify-center focus:bg-muesli-200 group shadow-sm"
             tabindex="0"
           >
             <div class="relative overflow-hidden w-56 h-56 rounded-sm group">
