@@ -1,11 +1,12 @@
 import axios from "axios";
 import { ref } from "vue";
 import { toast } from 'vue-sonner'
+import { defineStore } from "pinia";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const isLoading = ref(false);
 
-interface RoomTypeResponse {
+interface RoomType {
     id: number,
     name: string,
     size: number,
@@ -13,18 +14,24 @@ interface RoomTypeResponse {
     peopleAbout: number
 }
 
-export const RoomType = () => {
-    const roomtypes = ref<RoomTypeResponse[]>([]);
-    const roomtype = ref<RoomTypeResponse>({
+interface RoomTypeResponse {
+    code: number,
+    message: string,
+    data: RoomType[]
+}
+
+export const RoomType = defineStore('roomtype', () => {
+    const roomtypes = ref<RoomType[]>([]);
+    const roomtype = ref<RoomType>({
         id: 0,
         name: '',
         size: 0,
         price: 0,
         peopleAbout: 0
     });
-    const getAllRoomType = async (): Promise<RoomTypeResponse[]> => {
+    const getAllRoomType = async (): Promise<RoomType[]> => {
         try {
-            const response = await axios.get<RoomTypeResponse[]>(`${baseUrl}/roomTypes`);
+            const response = await axios.get<RoomType[]>(`${baseUrl}/roomTypes`);
             roomtypes.value = response.data;
             return response.data;
         } catch (error) {
@@ -32,5 +39,43 @@ export const RoomType = () => {
         }
     }
 
-    return { roomtype, roomtypes, getAllRoomType,isLoading };
-}
+    const createRoomType = async (roomtype: RoomType): Promise<RoomType> => {
+        isLoading.value = true;
+        try {
+            const response = await axios.post<RoomType>(`${baseUrl}/roomTypes`, roomtype);
+            toast.success("Thông báo", {
+                description: "Tạo loại phòng thành công!",
+                action: { label: "Thoát" }
+            });
+            return response.data;
+        } catch (error: any) {
+            toast.error("Thông báo", {
+                description: "Lỗi tạo loại phòng: " + (error.response?.data?.message || error.message)
+            });
+            throw error;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
+    const updateRoomType = async (roomtype: RoomType): Promise<RoomType> => {
+        isLoading.value = true;
+        try {
+            const response = await axios.put<RoomType>(`${baseUrl}/roomTypes/${roomtype.id}`, roomtype);
+            toast.success("Thông báo", {
+                description: "Cập nhật loại phòng thành công!",
+                action: { label: "Thoát" }
+            });
+            return response.data;
+        } catch (error: any) {
+            toast.error("Thông báo", {
+                description: "Lỗi cập nhật loại phòng: " + (error.response?.data?.message || error.message)
+            });
+            throw error;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
+    return { roomtype, roomtypes, getAllRoomType, createRoomType, updateRoomType, isLoading };
+});

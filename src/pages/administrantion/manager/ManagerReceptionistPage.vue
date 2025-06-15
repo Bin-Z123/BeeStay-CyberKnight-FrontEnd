@@ -56,4 +56,9 @@ import {
     ChevronRight,
 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
+import { ref, onMounted } from "vue";
+import { User } from "@/api/user";
+const Users = User();
+
+
 </script>
