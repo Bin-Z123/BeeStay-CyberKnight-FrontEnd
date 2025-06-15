@@ -1,6 +1,7 @@
 import axios from "axios";
 import { ref } from "vue";
 import { toast } from 'vue-sonner'
+import { defineStore } from "pinia";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -23,12 +24,12 @@ interface User {
   cccd: string;
   point: number;
   role: Role;
-  eblacklist: 'FIRST' | 'SECOND' | 'THIRD' | 'NONE';
+  eBlacklist: 'FIRST' | 'SECOND' | 'BLOCKED' | 'NONE';
 }
 
 const isLoading = ref(false);
 
-export const User = () => {
+export const User = defineStore('user', () => {
     const users = ref<User[]>([]);
     const user = ref<User>({
         id: 0,
@@ -43,23 +44,53 @@ export const User = () => {
         cccd: '',
         point: 0,
         role: {
-            id: 0,
-            roleName: '',
+            id: 1,
+            roleName: 'ADMIN',
             users: []
         },
-        eblacklist: 'NONE'
+        eBlacklist: 'NONE'
     });
 
-    const getUsersById = async (id: number) => {
+    const getAllUser = async (): Promise<User[]> => {
         try {
-            isLoading.value = true;
-            const response = await axios.get(`${baseUrl}/users/${id}`);
-            user.value = response.data;
-            isLoading.value = false;
-        } catch (error: any) {
-            toast.error(error.response.data.message);
-        }
-    }
+            const response = await axios.get(`${baseUrl}/users`);
+            if (Array.isArray(response.data)) {
+            users.value = response.data;
+            } else if (Array.isArray(response.data.data)) {
+            users.value = response.data.data;
+            } else {
+            users.value = [];
+            console.warn("Unexpected API format", response.data);
+            }
 
-    return { users, user, getUsersById, isLoading };
-}
+            return users.value;
+        } catch (error) {
+            toast.error("Lỗi khi tải danh sách người dùng");
+            throw error;
+        }
+    };
+
+    const createReceptionist = async (user: User): Promise<User> => {
+        try {
+            const response = await axios.post(`${baseUrl}/users`, user);
+            toast.success("Tạo người dùng thành công!");
+            return response.data;
+        } catch (error) {
+            toast.error("Lỗi khi tạo người dùng");
+            throw error;
+        }
+    };
+
+    const updateUser = async (user: User): Promise<User> => {
+        try {
+            const response = await axios.put(`${baseUrl}/users/${user.id}`, user);
+            toast.success("Cập nhật người dùng thành công!");
+            return response.data;
+        } catch (error) {
+            toast.error("Lỗi khi cập nhật người dùng");
+            throw error;
+        }
+    };
+
+    return { users, user, getAllUser, createReceptionist, isLoading };
+});

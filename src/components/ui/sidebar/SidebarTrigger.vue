@@ -20,7 +20,7 @@ const { toggleSidebar } = useSidebar();
     size="icon"
     :class="cn('h-7 w-7', props.class)"
     @click="toggleSidebar"
-    class="text-muesli-400 hover:text-muesli-800">
+    class="text-muesli-400 hover:text-muesli-600">
     <PanelLeft />
     <span class="sr-only">Toggle Sidebar</span>
   </Button>
