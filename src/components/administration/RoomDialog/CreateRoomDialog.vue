@@ -15,6 +15,7 @@
           <div>
             <label class="text-muesli-400">Số Phòng</label><br />
             <input
+              v-model="roomRequest.roomNumber"
               type="text"
               class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
               placeholder="Nhập số phòng"
@@ -23,6 +24,7 @@
           <div>
             <label class="text-muesli-400">Tầng</label><br />
             <input
+              v-model="roomRequest.floor"
               type="number"
               class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
               placeholder="Nhập tầng"
@@ -32,12 +34,18 @@
             <label class="text-muesli-400">Loại Phòng</label><br />
             <div class="relative">
               <select
+                v-model="roomRequest.roomTypeId"
                 name=""
                 id=""
                 class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 text-center"
               >
-                <option value="">Thường</option>
-                <option value="">VIP</option>
+                <option
+                  v-for="roomType in roomTypesData"
+                  :key="roomType.id"
+                  :value="roomType.id"
+                >
+                  {{ roomType.name }}
+                </option>
               </select>
               <div
                 class="absolute inset-y-0 right-3 flex items-center pointer-events-none"
@@ -50,12 +58,13 @@
             <label class="text-muesli-400">Trạng Thái</label><br />
             <div class="relative">
               <select
+                v-model="roomRequest.roomStatus"
                 name=""
                 id=""
                 class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 text-center"
               >
-                <option value="">Đang dọn dẹp</option>
-                <option value="">Đang sử dụng</option>
+                <option value="CLEANUP">Đang dọn dẹp</option>
+                <option value="ACTIVE">Đang sử dụng</option>
               </select>
               <div
                 class="absolute inset-y-0 right-3 flex items-center pointer-events-none"
@@ -66,10 +75,17 @@
           </div>
           <DialogFooter>
             <Button
+              :disabled="isLoading"
+              @click.prevent="onSubmitCreateRoom"
               type="submit"
-              class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm"
+              class="bg-muesli-400 flex items-center justify-center hover:bg-muesli-600 text-white px-3 py-2 rounded-sm disabled:opacity-100 disabled:cursor-not-allowed disabled:hover:bg-muesli-400"
             >
-              Lưu
+              <span v-if="isLoading" class="items-center justify-center flex"
+                ><LoaderCircle class="animate-spin" /><span
+                  >Đang tạo phòng</span
+                >
+              </span>
+              <span v-else>Tạo phòng</span>
             </Button>
           </DialogFooter>
         </form>
@@ -137,6 +153,7 @@ import {
   ChevronRight,
   ImageUp,
   Trash2,
+  LoaderCircle,
 } from "lucide-vue-next";
 import {
   Dialog,
@@ -149,11 +166,22 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "vue-sonner";
 import { ref } from "vue";
+import { Room } from "@/api/room";
+
+const { createRoom, isLoading } = Room();
+
 const emit = defineEmits<{
   (e: "update:open", value: boolean): void;
 }>();
-defineProps<{
+const props = defineProps<{
   open: boolean;
+  roomTypes: {
+    id: number;
+    name: string;
+    size: number;
+    price: number;
+    peopleAbout: number;
+  }[];
 }>();
 const isDraging = ref(false);
 
@@ -168,15 +196,20 @@ const onDrop = (e: DragEvent) => {
   }
 };
 //Xử lý nhiều file
+
 interface ImagePreview {
+  file: File;
   src: string;
   name: string;
+  altText: string;
+  isThum: boolean;
 }
 const imagePreview = ref<ImagePreview[]>([]);
 const onFileChange = (e: Event) => {
   const files = (e.target as HTMLInputElement).files;
   if (files && files.length > 0) {
     const fileList = [];
+    selectFiles.value = Array.from(files);
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const reader = new FileReader();
@@ -184,8 +217,11 @@ const onFileChange = (e: Event) => {
       reader.onload = (event) => {
         const imageUrl = event.target?.result as string;
         imagePreview.value.push({
+          file,
           src: imageUrl,
           name: file.name,
+          altText: file.name,
+          isThum: imagePreview.value.length === 0,
         });
       };
       reader.readAsDataURL(file);
@@ -194,5 +230,28 @@ const onFileChange = (e: Event) => {
       description: fileList.map((file) => file.name).join(", "),
     });
   }
+};
+// Xử lý roomType
+const roomTypesData = ref(props.roomTypes);
+// Xử lý phòng
+const selectFiles = ref<File[]>([]);
+const roomRequest = ref({
+  roomNumber: "",
+  roomStatus: "",
+  floor: 0,
+  roomTypeId: 2,
+  roomImages: imagePreview.value.map((img) => ({
+    url: "",
+    altext: img.altText || "bin",
+    isThum: img.isThum,
+  })),
+});
+const onSubmitCreateRoom = async () => {
+  roomRequest.value.roomImages = imagePreview.value.map((img) => ({
+    url: "",
+    altext: img.altText || "bin",
+    isThum: img.isThum,
+  }));
+  await createRoom(roomRequest.value, selectFiles.value);
 };
 </script>

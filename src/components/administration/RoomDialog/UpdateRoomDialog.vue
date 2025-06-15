@@ -36,12 +36,18 @@
             <label class="text-muesli-400">Loại Phòng</label><br />
             <div class="relative">
               <select
+                v-model="roomData.roomType.id"
                 name=""
                 id=""
                 class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 text-center"
               >
-                <option value="">Thường</option>
-                <option value="">VIP</option>
+                <option
+                  v-for="roomType in roomTypesData"
+                  :key="roomType.id"
+                  :value="roomType.id"
+                >
+                  {{ roomType.name }}
+                </option>
               </select>
               <div
                 class="absolute inset-y-0 right-3 flex items-center pointer-events-none"
@@ -54,12 +60,13 @@
             <label class="text-muesli-400">Trạng Thái</label><br />
             <div class="relative">
               <select
+                v-model="roomData.roomStatus"
                 name=""
                 id=""
                 class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 text-center"
               >
-                <option value="">Đang dọn dẹp</option>
-                <option value="">Đang sử dụng</option>
+                <option value="CLEANUP">Đang dọn dẹp</option>
+                <option value="ACTIVE">Đang sử dụng</option>
               </select>
               <div
                 class="absolute inset-y-0 right-3 flex items-center pointer-events-none"
@@ -130,15 +137,15 @@
             <p class="truncate w-58 text-center">{{ fileImg.name }}</p>
           </div>
           <div
-            v-for="(image, index) in roomData.roomImage"
+            v-for="(image, index) in roomData.roomImages"
             :key="index"
             class="rounded-sm w-60 h-60 flex flex-col items-center justify-center focus:bg-muesli-200 group shadow-sm"
             tabindex="0"
           >
             <div class="relative overflow-hidden w-56 h-56 rounded-sm group">
               <img
-                :src="imageUrl + image.imagePublicID"
-                alt=""
+                :src="imageUrl + image.url"
+                :alt="image.altext"
                 class="object-center object-cover h-full w-full rounded-sm hover:scale-110 transition-all duration-300"
               />
               <button
@@ -148,7 +155,7 @@
               </button>
             </div>
 
-            <p class="truncate w-58 text-center">{{ image.imagePublicID }}</p>
+            <!-- <p class="truncate w-58 text-center">{{ image.url }}</p> -->
           </div>
         </div>
       </div>
@@ -174,7 +181,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 const emit = defineEmits<{
   (e: "update:open", value: boolean): void;
@@ -186,13 +193,27 @@ const props = defineProps<{
     roomNumber: string;
     roomStatus: string;
     floor: number;
-    roomType: string;
-    roomImage: {
+    roomType: {
       id: number;
-      imagePublicID: string;
-      altText: string;
+      name: string;
+      size: number;
+      price: number;
+      peopleAbout: number;
+    };
+    roomImages: {
+      id: number;
+      url: string;
+      altext: string;
+      isThum: boolean;
     }[];
   };
+  roomTypes: {
+    id: number;
+    name: string;
+    size: number;
+    price: number;
+    peopleAbout: number;
+  }[];
 }>();
 const imageUrl = import.meta.env.VITE_CLOUDINARY_IMG_URL;
 
@@ -243,4 +264,6 @@ const onFileChange = (e: Event) => {
     });
   }
 };
+// Xử lý nhiều phòng
+const roomTypesData = ref(props.roomTypes);
 </script>

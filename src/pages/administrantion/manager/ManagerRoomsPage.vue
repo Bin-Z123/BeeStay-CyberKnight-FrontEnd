@@ -35,7 +35,10 @@
           >
             Thêm
           </Button>
-          <DialogCreateRoom v-model:open="isOpen"></DialogCreateRoom>
+          <DialogCreateRoom
+            v-model:open="isOpen"
+            :roomTypes="roomtypes"
+          ></DialogCreateRoom>
         </div>
       </div>
       <div class="shadow-lg px-4 pb-4 h-[622px]">
@@ -57,12 +60,12 @@
           <tbody class="text-gray-700">
             <tr
               class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
-              v-for="room in rooms"
+              v-for="room in listRooms"
               :key="room.id"
             >
               <td class="py-2">P0{{ room.id }}</td>
               <td class="py-2">{{ room.roomNumber }}</td>
-              <td class="py-2">{{ room.roomType }}</td>
+              <td class="py-2">{{ room.roomType.name }}</td>
               <td class="py-2">{{ room.floor }}</td>
               <td class="py-2">{{ room.roomStatus }}</td>
               <td class="py-2 flex justify-center items-center gap-5 h-full">
@@ -106,6 +109,7 @@
     <DialogUpdateRoom
       v-model:open="isUpdateRoom"
       :room="selectForm"
+      :roomTypes="roomtypes"
     ></DialogUpdateRoom>
   </section>
 </template>
@@ -117,12 +121,16 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-vue-next";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { Button } from "@/components/ui/button";
 import DialogCreateRoom from "@/components/administration/RoomDialog/CreateRoomDialog.vue";
 import DialogUpdateRoom from "@/components/administration/RoomDialog/UpdateRoomDialog.vue";
 import { Rooms } from "@/components/administration/RoomDialog/Room";
+import { Room } from "@/api/room";
+import { RoomType } from "@/api/roomtype";
 const { rooms } = Rooms();
+const { getAllRooms, isLoading, listRooms } = Room();
+const { getAllRoomType, roomtypes } = RoomType();
 // import { Input } from '@/components/ui/input'
 // import { Label } from '@/components/ui/label'
 const isOpen = ref(false);
@@ -138,5 +146,12 @@ const selectForm = ref({
 const openDialog = (room: any) => {
   isUpdateRoom.value = true;
   selectForm.value = room;
+  getAllRoomType();
+  console.log("Danh sách loai phòng:", roomtypes);
 };
+// Lấy danh sách phòng
+onMounted(async () => {
+  await getAllRooms();
+  await getAllRoomType();
+});
 </script>
