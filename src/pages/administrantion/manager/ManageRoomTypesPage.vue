@@ -90,8 +90,6 @@ import { ref, onMounted, computed } from "vue";
 import { Button } from "@/components/ui/button";
 import DialogCreateRoomType from "@/components/administration/roomTypeDialog/CreateRoomTypeDialog.vue";
 import DialogUpdateRoomType from "@/components/administration/roomTypeDialog/UpdateRoomTypeDialog.vue";
-// import { Input } from '@/components/ui/input'
-// import { Label } from '@/components/ui/label'
 import { RoomType } from "@/api/roomtype";
 
 const isOpen = ref(false);

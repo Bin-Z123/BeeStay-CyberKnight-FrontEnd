@@ -45,9 +45,9 @@ export const Room = () => {
         try {
             const response = await axios.get<RoomResponse[]>(`${baseUrl}/rooms`);
             listRooms.value = response.data;
-            toast.success("Lấy danh sách phòng thành công", {
-                description: "Số lượng phòng: " + response.data.length,
-            });
+            // toast.success("Lấy danh sách phòng thành công", {
+            //     description: "Số lượng phòng: " + response.data.length,
+            // });
             return response.data;
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {

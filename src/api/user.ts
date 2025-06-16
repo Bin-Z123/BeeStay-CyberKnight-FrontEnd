@@ -81,7 +81,7 @@ export const User = defineStore('user', () => {
         }
     };
 
-    const updateUser = async (user: User): Promise<User> => {
+    const updataReceptionist = async (user: User): Promise<User> => {
         try {
             const response = await axios.put(`${baseUrl}/users/${user.id}`, user);
             toast.success("Cập nhật người dùng thành công!");
@@ -92,5 +92,5 @@ export const User = defineStore('user', () => {
         }
     };
 
-    return { users, user, getAllUser, createReceptionist, isLoading };
+    return { users, user, getAllUser, createReceptionist, updataReceptionist, isLoading };
 });
