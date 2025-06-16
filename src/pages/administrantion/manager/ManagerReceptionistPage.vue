@@ -8,10 +8,9 @@
             </div>
             <div class="w-1/3 flex justify-end">
                 <Button @click="openCreateUserDialog = true"
-                        class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white mx-4 my-3">
-                        Thêm
-                    </Button>
-                <CreateReceptionistDialog v-model:open="openCreateUserDialog"></CreateReceptionistDialog>
+                    class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white mx-4 my-3">
+                    Thêm
+                </Button>
             </div>
         </div>
         <div class="px-4">
@@ -22,6 +21,7 @@
                         <th class="px-4 py-2 border">Giới Tính</th>
                         <th class="px-4 py-2 border">Ngày Sinh</th>
                         <th class="px-4 py-2 border">Email</th>
+                        <th class="px-4 py-2 border">Ngày Tạo</th>
                         <th class="px-4 py-2 border">Tùy Chọn</th>
                     </tr>
                 </thead>
@@ -32,15 +32,17 @@
                         <td class="py-2">{{ user.gender == true ? 'Nam' : 'Nữ' }}</td>
                         <td class="py-2">{{ user.birthday }}</td>
                         <td class="py-2">{{ user.email }}</td>
+                        <td class="py-2">{{ user.joinDate.split('T')[0] }}</td>
                         <td class="py-2 flex justify-center items-center gap-5 h-full">
                             <button
                                 class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
                                 <LockKeyhole class="w-4 h-4" />
                             </button>
-                            <Button
+                            <Button @click="openUpdateReceptionist(user)"
                                 class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white">
                                 <SquarePen />
                             </Button>
+
                         </td>
                     </tr>
                 </tbody>
@@ -57,6 +59,8 @@
             </div>
         </div>
     </section>
+    <CreateReceptionistDialog v-model:open="openCreateUserDialog"></CreateReceptionistDialog>
+    <UpdateReceptionistDialog v-model:open="openUpdateUserDialog" :user="selectedReceptionist"></UpdateReceptionistDialog>
 </template>
 <script setup lang="ts">
 import {
@@ -69,14 +73,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { ref, onMounted, computed } from "vue";
 import CreateReceptionistDialog from '@/components/administration/UserDialog/CreateReceptionistDialog.vue';
+import UpdateReceptionistDialog from "@/components/administration/UserDialog/UpdateReceptionistDialog.vue";
 import { User } from "@/api/user";
 
 const Users = User();
 const openCreateUserDialog = ref(false);
+const openUpdateUserDialog = ref(false);
 
 const filteredUsers = computed(() =>
     Users.users.filter(user => user.role?.id === 1)
 );
+
+const selectedReceptionist = ref(null);
+const openUpdateReceptionist = async ( user: any ) => {
+    selectedReceptionist.value = {...user};
+    openUpdateUserDialog.value = true;
+}
 
 onMounted(async () => {
     await Users.getAllUser();

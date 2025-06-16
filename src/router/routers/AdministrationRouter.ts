@@ -59,6 +59,11 @@ const administrationRouter: RouteRecordRaw = {
             name: "notification",
             component: () => import("../../pages/administrantion/manager/ManagerNotificationPage.vue")
         },
+        {
+            path: "facilities",
+            name: "facilities",
+            component: () => import("../../pages/administrantion/manager/ManagerFacilitiesPage.vue")
+        },
 
         // Receptionist
         {
