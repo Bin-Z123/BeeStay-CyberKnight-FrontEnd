@@ -33,7 +33,6 @@ export const RoomType = defineStore('roomtype', () => {
         try {
             const response = await axios.get<RoomType[]>(`${baseUrl}/roomTypes`);
             roomtypes.value = response.data;
-
             return response.data;
         } catch (error) {
             throw error;

@@ -77,10 +77,15 @@
           </div>
           <DialogFooter>
             <Button
+              :disabled="isLoading"
+              @click.prevent="onSubmitUpdateRoom"
               type="submit"
-              class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm"
+              class="bg-muesli-400 flex items-center justify-center hover:bg-muesli-600 text-white px-3 py-2 rounded-sm disabled:opacity-100 disabled:cursor-not-allowed disabled:hover:bg-muesli-400"
             >
-              Lưu
+              <span v-if="isLoading" class="items-center justify-center flex"
+                ><LoaderCircle class="animate-spin" /><span>Đang lưu</span>
+              </span>
+              <span v-else>Lưu</span>
             </Button>
             <!-- <img :src="imageUrl + '/home-1.1_x5mdyb.jpg'" alt="ảnh 1" /> -->
           </DialogFooter>
@@ -124,10 +129,7 @@
                 class="object-center object-cover h-full w-full rounded-sm hover:scale-110 transition-all duration-300"
               />
               <button
-                @click="
-                  imagePreview.splice(index, 1),
-                    toast.warning('Đã xóa ảnh ' + fileImg.name)
-                "
+                @click="onDeleteImage(index)"
                 class="absolute top-2 right-3 bg-gray-100 rounded-sm px-1 py-1 hidden group-hover:block group-focus:block"
               >
                 <Trash2 class="w-5 h-5 text-red-500" />
@@ -149,6 +151,7 @@
                 class="object-center object-cover h-full w-full rounded-sm hover:scale-110 transition-all duration-300"
               />
               <button
+                @click="onDeleteImage2(index)"
                 class="absolute top-2 right-3 bg-gray-100 rounded-sm px-1 py-1 hidden group-hover:block group-focus:block"
               >
                 <Trash2 class="w-5 h-5 text-red-500" />
@@ -171,6 +174,7 @@ import {
   ChevronRight,
   Trash2,
   ImageUp,
+  LoaderCircle,
 } from "lucide-vue-next";
 import {
   Dialog,
@@ -183,6 +187,10 @@ import {
 } from "@/components/ui/dialog";
 import { onMounted, ref, watch } from "vue";
 import { toast } from "vue-sonner";
+import { Room } from "@/api/room";
+import { identity } from "@vueuse/core";
+
+const { updateRoom, isLoading } = Room();
 const emit = defineEmits<{
   (e: "update:open", value: boolean): void;
 }>();
@@ -206,9 +214,10 @@ const props = defineProps<{
       altext: string;
       isThum: boolean;
     }[];
+    deletedRoomImageIds?: string[];
   };
   roomTypes: {
-    id: number;
+    id?: number;
     name: string;
     size: number;
     price: number;
@@ -237,15 +246,20 @@ const onDrop = (e: DragEvent) => {
   }
 };
 //Xử lý nhiều file
+const selectFiles = ref<File[]>([]);
 interface ImagePreview {
+  file: File;
   src: string;
   name: string;
+  altText: string;
+  isThum: boolean;
 }
 const imagePreview = ref<ImagePreview[]>([]);
 const onFileChange = (e: Event) => {
   const files = (e.target as HTMLInputElement).files;
   if (files && files.length > 0) {
     const fileList = [];
+    selectFiles.value = Array.from(files);
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const reader = new FileReader();
@@ -253,8 +267,11 @@ const onFileChange = (e: Event) => {
       reader.onload = (event) => {
         const imageUrl = event.target?.result as string;
         imagePreview.value.push({
+          file,
           src: imageUrl,
           name: file.name,
+          altText: file.name,
+          isThum: imagePreview.value.length === 0,
         });
       };
       reader.readAsDataURL(file);
@@ -264,6 +281,43 @@ const onFileChange = (e: Event) => {
     });
   }
 };
-// Xử lý nhiều phòng
-const roomTypesData = ref(props.roomTypes);
+// Xử lý nhiều loại phòng
+const roomTypesData = ref({ ...props.roomTypes });
+watch(
+  () => props.roomTypes,
+  (newRoomTypes) => {
+    roomTypesData.value = [...newRoomTypes];
+  }
+);
+
+// Xử lý xóa ảnh
+const onDeleteImage = (index: number) => {
+  selectFiles.value.splice(index, 1);
+  imagePreview.value.splice(index, 1);
+  toast.warning("Đã xóa ảnh " + imagePreview.value[index].name);
+};
+const listDeletedRoomImageIds = ref<string[]>([]);
+const onDeleteImage2 = (index: number) => {
+  if (roomData.value.roomImages && roomData.value.roomImages[index]) {
+    listDeletedRoomImageIds.value.push(roomData.value.roomImages[index].url);
+    const removedImage = roomData.value.roomImages.splice(index, 1)[0];
+    toast.warning("Đã xóa ảnh " + (removedImage?.altext ?? ""));
+  }
+};
+// Xử lý update phòng
+
+const onSubmitUpdateRoom = async () => {
+  roomData.value.deletedRoomImageIds = listDeletedRoomImageIds.value;
+  const keptOldImages = roomData.value.roomImages.filter((img) => {
+    return !listDeletedRoomImageIds.value.includes(img.url);
+  });
+  const newImages = imagePreview.value.map((img) => ({
+    id: 0,
+    url: "",
+    altext: img.altText || "bin",
+    isThum: img.isThum,
+  }));
+  roomData.value.roomImages = [...keptOldImages, ...newImages];
+  await updateRoom(roomData.value, selectFiles.value);
+};
 </script>
