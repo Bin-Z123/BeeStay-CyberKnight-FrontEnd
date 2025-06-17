@@ -33,7 +33,7 @@ export const Facilities = defineStore('facilities', () => {
             facilities.value = response.data.data;
             return response.data;
         } catch (error) {
-            toast.error("Lỗi khi lấy danh sách diện tích");
+            toast.error("Lỗi khi lấy danh sách dịch vụ");
             throw error;
         }
     };
@@ -41,10 +41,10 @@ export const Facilities = defineStore('facilities', () => {
     const createFacility = async (facility: Facility): Promise<Facility> => {
         try {
             const response = await axios.post<Facility>(`${baseUrl}/admin/facility/create`, facility);
-            toast.success("Tạo diện tích thành công!");
+            toast.success("Tạo dịch vụ thành công!");
             return response.data;
         } catch (error) {
-            toast.error("Lỗi khi tạo diện tích");
+            toast.error("Lỗi khi tạo dịch vụ");
             throw error;
         }
     };
@@ -52,10 +52,10 @@ export const Facilities = defineStore('facilities', () => {
     const updateFacility = async (facility: Facility): Promise<Facility> => {
         try {
             const response = await axios.put<Facility>(`${baseUrl}/admin/facility/${facility.id}`, facility);
-            toast.success("Cập nhật diện tích thành công!");
+            toast.success("Cập nhật dịch vụ thành công!");
             return response.data;
         } catch (error) {
-            toast.error("Lỗi khi cập nhật diện tích");
+            toast.error("Lỗi khi cập nhật dịch vụ");
             throw error;
         }
     };
@@ -63,9 +63,9 @@ export const Facilities = defineStore('facilities', () => {
     const deleteFacility = async (facilityId: number): Promise<void> => {
         try {
             await axios.delete(`${baseUrl}/admin/facility/${facilityId}`);
-            toast.success("Xóa diện tích thành công!");
+            toast.success("Xóa dịch vụ thành công!");
         } catch (error) {
-            toast.error("Lỗi khi xóa diện tích");
+            toast.error("Lỗi khi xóa dịch");
             throw error;
         }
     };

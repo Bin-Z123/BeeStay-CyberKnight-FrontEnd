@@ -5,13 +5,13 @@ import { defineStore } from "pinia";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-interface Role {
-  id: number;
-  roleName: string;
-  users: string[];
+export interface UserResponse {
+  code: number;
+  message: string;
+  data: User[];
 }
 
-interface User {
+export interface User {
   id: number;
   phone: string;
   email: string;
@@ -19,12 +19,53 @@ interface User {
   gender: boolean;
   birthday: string;
   joinDate: string;
-  updateDate: string;
   fullname: string;
   cccd: string;
   point: number;
   role: Role;
-  eBlacklist: 'FIRST' | 'SECOND' | 'BLOCKED' | 'NONE';
+  rank: Rank;
+  eblacklist: number;
+}
+
+export interface Role {
+  id: number;
+  roleName: string;
+}
+
+export interface Rank {
+  id: number;
+  nameRank: string;
+  minPointRequired: number;
+  discount_percent: number;
+}
+
+export interface CreateUserRequest {
+  phone: string;
+  email: string;
+  password: string;
+  gender: boolean;
+  birthday: string;
+  fullname: string;
+  cccd: string;
+  point: number;
+  eblacklist: number;
+  roleId: number;
+  rankId: number;
+}
+
+interface UpdateUserRequest {
+    id: number;
+    phone: string;
+    email: string;
+    password: string;
+    gender: boolean;
+    birthday: string;
+    fullname: string;
+    cccd: string;
+    point: number;
+    eblacklist: number;
+    roleId: number;
+    rankId: number;
 }
 
 const isLoading = ref(false);
@@ -33,22 +74,26 @@ export const User = defineStore('user', () => {
     const users = ref<User[]>([]);
     const user = ref<User>({
         id: 0,
-        phone: '',
-        email: '',
-        password: '',
-        gender: false,
-        birthday: '',
-        joinDate: '',
-        updateDate: '',
-        fullname: '',
-        cccd: '',
+        phone: "",
+        email: "",
+        password: "",
+        gender: true,
+        birthday: "",
+        joinDate: "",
+        fullname: "",
+        cccd: "",
         point: 0,
         role: {
-            id: 1,
-            roleName: 'ADMIN',
-            users: []
+            id: 0,
+            roleName: "",
         },
-        eBlacklist: 'NONE'
+        rank: {
+            id: 0,
+            nameRank: "",
+            minPointRequired: 0,
+            discount_percent: 0,
+        },
+        eblacklist: 0,
     });
 
     const getAllUser = async (): Promise<User[]> => {
@@ -62,7 +107,6 @@ export const User = defineStore('user', () => {
             users.value = [];
             console.warn("Unexpected API format", response.data);
             }
-
             return users.value;
         } catch (error) {
             toast.error("Lỗi khi tải danh sách người dùng");
@@ -70,9 +114,13 @@ export const User = defineStore('user', () => {
         }
     };
 
-    const createReceptionist = async (user: User): Promise<User> => {
+    const createReceptionist = async (user: CreateUserRequest): Promise<User> => {
         try {
-            const response = await axios.post(`${baseUrl}/users`, user);
+            const response = await axios.post(`${baseUrl}/users`, user, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
             toast.success("Tạo người dùng thành công!");
             return response.data;
         } catch (error) {
@@ -81,9 +129,9 @@ export const User = defineStore('user', () => {
         }
     };
 
-    const updataReceptionist = async (user: User): Promise<User> => {
+    const updataReceptionist = async (user: UpdateUserRequest): Promise<User> => {
         try {
-            const response = await axios.put(`${baseUrl}/users/${user.id}`, user);
+            const response = await axios.put(`${baseUrl}/updateUser/${user.id}`, user);
             toast.success("Cập nhật người dùng thành công!");
             return response.data;
         } catch (error) {

@@ -164,7 +164,7 @@
                                 </tr>
                             </thead>
                             <tbody class="text-gray-700">
-                                <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="rank in ranks"
+                                <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="rank in ranks" @click="getRankById(rank.id)"
                                     :key="rank.id">
                                     <td class="py-2">{{ rank.nameRank }}</td>
                                     <td class="py-2">{{ rank.minPointRequired }}</td>
@@ -302,11 +302,11 @@
                             </thead>
                             <tbody class="text-gray-700">
                                 <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="discount in paginatedDiscounts"
-                                    :key="discount.id">
+                                    :key="discount.id" @click="getDiscountById(discount.id)">
                                     <td class="py-2">{{ discount.title }}</td>
                                     <td class="py-2">{{ discount.discountCode }}</td>
                                     <td class="py-2">{{ discount.discountType }}</td>
-                                    <td class="py-2">{{ discount.discountValue }}</td>
+                                    <td class="py-2">{{ discount.discountValue }}%</td>
                                     <td class="py-2">{{ discount.startDate.slice(0, 10) }}</td>
                                     <td class="py-2">{{ discount.endDate.slice(0, 10) }}</td>
                                     <td class="py-2" :class="discount.status == 'INACTIVE' ? 'text-red-500' : 'text-green-500'">{{ discount.status }}</td>
