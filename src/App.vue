@@ -1,5 +1,8 @@
 <script setup>
 import { MoveRight, MoveLeft } from "lucide-vue-next";
+import { ref, onMounted, watch, computed } from "vue";
+import { vi } from "date-fns/locale";
+import { addDays, format } from "date-fns";
 const toggleDarkMode = () => {
   const htmlElement = document.documentElement;
   htmlElement.classList.toggle("dark");
@@ -8,6 +11,25 @@ const toggleDarkMode = () => {
     htmlElement.classList.contains("dark") ? "enabled" : "disabled"
   );
 };
+const checkin = ref();
+const formatDate = (date) => {
+  return date ? format(date, "dd/MM/yyyy") : "";
+};
+onMounted(() => {
+  checkin.value = new Date();
+});
+
+const numberOfNights = ref(null);
+const checkOutDateText = (night) => {
+  if (!checkin.value) return "";
+  const date = addDays(checkin.value, night);
+  return format(date, "dd/MM/yyyy");
+};
+const checkOutDate = computed(() => {
+  return checkin.value && numberOfNights.value
+    ? addDays(checkin.value, numberOfNights.value)
+    : null;
+});
 </script>
 
 <template>
@@ -120,12 +142,35 @@ const toggleDarkMode = () => {
           <div
             class="space-y-2 flex flex-col sm:border-l-[0.1px] pl-6 border-gray-400"
           >
-            <label>Check In</label> <input type="date" />
+            <label>Check In</label>
+            <VueDatePicker
+              v-model="checkin"
+              :format-locale="vi"
+              :format="'dd/MM/yyyy'"
+              :min-date="new Date()"
+              multi-calendars
+            />
           </div>
           <div
-            class="space-y-2 flex flex-col sm:border-l-[0.1px] pl-6 border-gray-400"
+            class="relative space-y-2 flex flex-col sm:border-l-[0.1px] pl-6 border-gray-400"
           >
-            <label>Check Out</label> <input type="date" />
+            <label>Check Out</label
+            ><select
+              class="block w-full rounded-md border border-gray-300 bg-white px-3 py-1 pr-10 text-base text-gray-900 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition"
+              name=""
+              id=""
+              :disabled="!checkin"
+              v-model="numberOfNights"
+            >
+              <option :value="null" selected disabled>Chọn số đêm</option>
+              <option :value="i" v-for="i in 30" :key="i">
+                {{ i }} đêm - {{ checkOutDateText(i) }}
+              </option>
+            </select>
+            <!-- 
+            <p v-if="checkOutDate" class="hidden">
+              Bạn sẽ trả phòng vào {{ formatDate(checkOutDate) }}
+            </p> -->
           </div>
           <div
             class="space-y-2 flex flex-col sm:border-l-[0.1px] pl-6 border-gray-400"
@@ -157,7 +202,7 @@ const toggleDarkMode = () => {
       <!-- Image -->
       <div class="grid relative items-center justify-items-center">
         <div
-          class="relative rounded-lg h-[580px] w-[485px] inset-0 bg-[url('/src/assets/img/about-1.png')] bg-cover bg-center z-10"
+          class="relative rounded-lg h-[580px] w-[485px] inset-0 bg-[url('/src/assets/img/about-1.png')] bg-cover bg-center z-1"
         >
           <div
             class="absolute w-78 h-54 -top-4 -right-10 ring-8 bg-[url('/src/assets/img/about-1.png')] bg-cover bg-center rounded-2xl z-20 flex flex-col justify-center p-10 ring-white"
