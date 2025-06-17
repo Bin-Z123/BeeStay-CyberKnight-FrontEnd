@@ -170,7 +170,6 @@
 </template>
 <script setup lang="ts">
 import { Sidebar, SidebarContent } from "@/components/ui/sidebar";
-import { Sidebar, SidebarContent } from "@/components/ui/sidebar";
 
 import {
   LayoutGrid,

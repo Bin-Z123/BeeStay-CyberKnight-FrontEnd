@@ -27,7 +27,7 @@ const login = async (username: string, password: string): Promise<LoginResponse>
                 },
             })
             setTimeout(() => {
-                window.location.href = '/administration';
+                window.location.href = '/administration/dashboard';
             },1000);
             return response.data
         }else {
@@ -44,7 +44,6 @@ const login = async (username: string, password: string): Promise<LoginResponse>
         toast.error('Thông báo',{
                 description: 'Lỗi không xác định ' + error,
             })
-        // Return a default value or rethrow, here we throw to ensure type safety
         throw error
     }finally{
         setTimeout(() => {

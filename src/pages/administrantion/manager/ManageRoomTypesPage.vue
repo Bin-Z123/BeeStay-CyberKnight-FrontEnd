@@ -43,7 +43,7 @@
           </thead>
           <tbody class="text-gray-700">
             <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
-              v-for="roomtype in paginatedRoomTypes" :key="roomtype.id">
+              v-for="roomtype in paginatedRoomTypes" :key="roomtype.id" @click="openUpdateRoomType(roomtype)">
               <td class="py-2">{{ roomtype.name }}</td>
               <td class="py-2">{{ roomtype.size }}m²</td>
               <td class="py-2">{{ roomtype.price }}</td>

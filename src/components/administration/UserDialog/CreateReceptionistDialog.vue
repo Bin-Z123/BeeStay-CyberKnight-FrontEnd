@@ -96,9 +96,23 @@ const users = User();
 const { roles, getAllRoles } = Role();
 
 const handleCreateReceptionist = async () => {
-  users.user.point = 0;
-  users.user.eBlacklist = "NONE";
-  await users.createReceptionist(users.user);
+  const payLoad = {
+    phone: String(users.user.phone),
+    email: users.user.email,
+    password: users.user.password,
+    gender: users.user.gender,
+    birthday: users.user.birthday,
+    fullname: users.user.fullname,
+    cccd: String(users.user.cccd),
+    point: 0,
+    eblacklist: 1,
+    roleId: users.user.role.id,
+    rankId: 5
+  };
+  console.log("Id Role Nè" + users.user.role.id);
+  
+  console.log(JSON.stringify(payLoad, null, 2));
+  await users.createReceptionist(payLoad);
   await users.getAllUser();
   emit("update:open", false);
 }

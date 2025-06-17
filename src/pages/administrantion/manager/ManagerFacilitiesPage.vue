@@ -51,7 +51,7 @@
                 </thead>
                 <tbody class="text-gray-700">
                     <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
-                        v-for="facilitie in facilities.facilities" :key="facilitie.id">
+                        v-for="facilitie in facilities.facilities" :key="facilitie.id" @click.prevent="getFacilitiesById(facilitie.id)">
                         <td class="py-2">{{ facilitie.facilityName }}</td>
                         <td class="py-2">{{ facilitie.description }}</td>
                         <td class="py-2">{{ facilitie.price }}</td>
