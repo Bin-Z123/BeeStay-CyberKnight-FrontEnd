@@ -37,6 +37,26 @@ interface RoomCreateRequest {
         isThum: boolean;
     }[];
 }
+interface RoomUpdateRequest {
+    id: number;
+    roomNumber: string;
+    roomStatus: string;
+    floor: number;
+    roomType: {
+        id: number;
+        name: string;
+        size: number;
+        price: number;
+        peopleAbout: number;
+    };
+    roomImages: {
+        id: number;
+        url: string;
+        altext: string;
+        isThum: boolean;
+    }[];
+    deletedRoomImageIds?: string[]; // Mảng chứa ID của các ảnh đã xóa
+}
 export const Room = () => {
     //GET ALL ROOMS
     const getAllRooms = async (): Promise<RoomResponse[]> => {
@@ -45,9 +65,9 @@ export const Room = () => {
         try {
             const response = await axios.get<RoomResponse[]>(`${baseUrl}/rooms`);
             listRooms.value = response.data;
-            // toast.success("Lấy danh sách phòng thành công", {
-            //     description: "Số lượng phòng: " + response.data.length,
-            // });
+            toast.success("Lấy danh sách phòng thành công", {
+                description: "Số lượng phòng: " + response.data.length,
+            });
             return response.data;
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
@@ -64,6 +84,8 @@ export const Room = () => {
     const createRoom = async (room: RoomCreateRequest, files: File[]): Promise<RoomResponse> => {
         isLoading.value = true;
         try {
+            console.log("Room:", room);
+            console.log("Files:", files);
             const formData = new FormData();
             const roomBlob = new Blob([JSON.stringify(room)], { type: "application/json" });
             formData.append("rooms", roomBlob);
@@ -74,7 +96,7 @@ export const Room = () => {
             console.log("Form Data:", formData.getAll("rooms"));
             const response = await axios.post<RoomResponse>(`${baseUrl}/rooms`, formData)
             toast.success("Thông báo", {
-                description: "Tạo phòng" + response.data.roomNumber + " thành công!",
+                description: "Tạo phòng " + response.data.roomNumber + " thành công!",
             });
             return response.data
         } catch (error) {
@@ -89,10 +111,41 @@ export const Room = () => {
         }
     }
 
+    const updateRoom = async (room: RoomUpdateRequest, files: File[]): Promise<RoomResponse> => {
+        isLoading.value = true;
+        try {
+            console.log("Room to update:", room);
+            console.log("Files to upload:", files);
+            const formData = new FormData();
+            const roomBlob = new Blob([JSON.stringify(room)], { type: "application/json" });
+            formData.append("rooms", roomBlob);
+
+            files.forEach((file) => {
+                formData.append("file", file);
+            });
+
+            const response = await axios.put<RoomResponse>(`${baseUrl}/rooms/${room.id}`, formData);
+            toast.success("Thông báo", {
+                description: "Cập nhật phòng " + response.data.roomNumber + " thành công!",
+            });
+            return response.data;
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                toast.error("Thông báo", {
+                    description: "Lỗi cập nhật phòng: " + error.message,
+                });
+            }
+            throw error;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
 
     return {
         getAllRooms,
         createRoom,
+        updateRoom,
         listRooms,
         isLoading,
     };
