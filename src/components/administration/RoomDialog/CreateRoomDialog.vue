@@ -63,7 +63,7 @@
                 id=""
                 class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 text-center"
               >
-                <option value="CLEANUP">Đang dọn dẹp</option>
+                <option value="CLEANUP" selected>Đang dọn dẹp</option>
                 <option value="ACTIVE">Đang sử dụng</option>
               </select>
               <div
@@ -127,10 +127,7 @@
                 class="object-center object-cover h-full w-full rounded-sm hover:scale-110 transition-all duration-300"
               />
               <button
-                @click="
-                  imagePreview.splice(index, 1),
-                    toast.warning('Đã xóa ảnh ' + fileImg.name)
-                "
+                @click="onDeleteImage(index)"
                 class="absolute top-2 right-3 bg-gray-100 rounded-sm px-1 py-1 hidden group-hover:block group-focus:block"
               >
                 <Trash2 class="w-5 h-5 text-red-500" />
@@ -165,7 +162,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "vue-sonner";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { Room } from "@/api/room";
 
 const { createRoom, isLoading } = Room();
@@ -209,9 +206,9 @@ const onFileChange = (e: Event) => {
   const files = (e.target as HTMLInputElement).files;
   if (files && files.length > 0) {
     const fileList = [];
-    selectFiles.value = Array.from(files);
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
+      selectFiles.value.push(file);
       const reader = new FileReader();
       fileList.push(file);
       reader.onload = (event) => {
@@ -230,9 +227,16 @@ const onFileChange = (e: Event) => {
       description: fileList.map((file) => file.name).join(", "),
     });
   }
+  console.log("File Images:", selectFiles.value);
 };
 // Xử lý roomType
-const roomTypesData = ref(props.roomTypes);
+const roomTypesData = ref({ ...props.roomTypes });
+watch(
+  () => props.roomTypes,
+  (newRoomTypes) => {
+    roomTypesData.value = [...newRoomTypes];
+  }
+);
 // Xử lý phòng
 const selectFiles = ref<File[]>([]);
 const roomRequest = ref({
@@ -246,6 +250,7 @@ const roomRequest = ref({
     isThum: img.isThum,
   })),
 });
+// Xử lý submit tạo phòng
 const onSubmitCreateRoom = async () => {
   roomRequest.value.roomImages = imagePreview.value.map((img) => ({
     url: "",
@@ -253,5 +258,11 @@ const onSubmitCreateRoom = async () => {
     isThum: img.isThum,
   }));
   await createRoom(roomRequest.value, selectFiles.value);
+};
+// Xử lý xóa ảnh
+const onDeleteImage = (index: number) => {
+  selectFiles.value.splice(index, 1);
+  imagePreview.value.splice(index, 1);
+  toast.warning("Đã xóa ảnh " + imagePreview.value[index].name);
 };
 </script>
