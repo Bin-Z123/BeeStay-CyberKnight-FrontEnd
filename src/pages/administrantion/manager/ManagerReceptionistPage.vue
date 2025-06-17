@@ -27,40 +27,47 @@
                 </thead>
                 <tbody class="text-gray-700">
                     <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
-                        v-for="user in filteredUsers" :key="user.id">
+                        v-for="user in paginatedUsers" :key="user.id">
                         <td class="py-2">{{ user.fullname }}</td>
                         <td class="py-2">{{ user.gender == true ? 'Nam' : 'Nữ' }}</td>
                         <td class="py-2">{{ user.birthday }}</td>
                         <td class="py-2">{{ user.email }}</td>
                         <td class="py-2">{{ user.joinDate.split('T')[0] }}</td>
-                        <td class="py-2 flex justify-center items-center gap-5 h-full">
-                            <button
-                                class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
-                                <LockKeyhole class="w-4 h-4" />
+                        <td class="py-2 flex justify-center items-center gap-2 h-full">
+                            <button @click="handleUpdateBlock(user)" v-if="user.eblacklist === 1"
+                                class=" hover:text-green-700 m-1.5"
+                                :class="user.eblacklist === 1 ? ' text-green-500 ' : ''">
+                                <LockKeyholeOpen class="w-5.5 h-5.5" />
                             </button>
-                            <Button @click="openUpdateReceptionist(user)"
-                                class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white">
-                                <SquarePen />
-                            </Button>
+                            <button @click="handleUpdateBlock(user)" v-else class="hover:text-red-700 m-1.5"
+                                :class="user.eblacklist === 3 ? ' text-red-500' : ''">
+                                <LockKeyhole class="w-5.5 h-5.5" />
+                            </button>
+                            <button @click="openUpdateReceptionist(user)" class="text-blue-400 hover:text-blue-700">
+                                <SquarePen class="w-5.5 h-5.5" />
+                            </button>
 
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <div class="bg-white h-15 shadow-lg flex items-center justify-end gap-2 px-5">
+            <div class="bg-white h-15 mb-4 shadow-lg flex items-center justify-end gap-2 px-5">
                 <input type="text" class="w-12 h-8 border border-gray-300 rounded-sm text-center" disabled
-                    value="1" /><span>of 16</span>
-                <button class="hover:bg-muesli-100 w-10 h-10 flex items-center justify-center rounded-4xl">
+                    :value="currentPage" /><span>of {{ totalPages }}</span>
+                <button @click="currentPage--" :disabled="currentPage == 1"
+                    class="hover:bg-muesli-100 w-10 h-10 flex items-center justify-center rounded-4xl">
                     <ChevronLeft />
                 </button>
-                <button class="hover:bg-muesli-100 w-10 h-10 flex items-center justify-center rounded-4xl">
+                <button @click="currentPage++" :disabled="currentPage == totalPages"
+                    class="hover:bg-muesli-100 w-10 h-10 flex items-center justify-center rounded-4xl">
                     <ChevronRight />
                 </button>
             </div>
         </div>
     </section>
     <CreateReceptionistDialog v-model:open="openCreateUserDialog"></CreateReceptionistDialog>
-    <UpdateReceptionistDialog v-model:open="openUpdateUserDialog" :user="selectedReceptionist"></UpdateReceptionistDialog>
+    <UpdateReceptionistDialog v-model:open="openUpdateUserDialog" :user="selectedReceptionist">
+    </UpdateReceptionistDialog>
 </template>
 <script setup lang="ts">
 import {
@@ -69,6 +76,7 @@ import {
     LockKeyhole,
     ChevronLeft,
     ChevronRight,
+    LockKeyholeOpen,
 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { ref, onMounted, computed } from "vue";
@@ -85,10 +93,49 @@ const filteredUsers = computed(() =>
 );
 
 const selectedReceptionist = ref(null);
-const openUpdateReceptionist = async ( user: any ) => {
-    selectedReceptionist.value = {...user};
+const openUpdateReceptionist = async (user: any) => {
+    selectedReceptionist.value = { ...user };
     openUpdateUserDialog.value = true;
 }
+
+const handleUpdateBlock = async (user: any) => {
+    const block = ref(0);
+    if (user.eblacklist === 1) {
+        block.value = 3;
+    } else if (user.eblacklist === 3) {
+        block.value = 1;
+    }
+    const payLoad = {
+        id: user.id,
+        phone: String(user.phone),
+        email: user.email,
+        password: user.password,
+        gender: user.gender,
+        birthday: user.birthday,
+        fullname: user.fullname,
+        cccd: String(user.cccd),
+        point: user.point,
+        eblacklist: block.value,
+        roleId: 1,
+        rankId: user.rankId || 5
+    };
+    console.log(JSON.stringify(payLoad, null, 2));
+    await Users.updataReceptionist(payLoad);
+    openUpdateUserDialog.value = false;
+    await Users.getAllUser();
+};
+
+const currentPage = ref(1);
+const pageSize = ref(10);
+const totalPages = computed(() => {
+  return Math.ceil(filteredUsers.value.length / pageSize.value);
+});
+const paginatedUsers = computed(() => {
+  const startIndex = (currentPage.value - 1) * pageSize.value;
+  const endIndex = startIndex + pageSize.value;
+  return filteredUsers.value.slice(startIndex, endIndex);
+});
+
 
 onMounted(async () => {
     await Users.getAllUser();
