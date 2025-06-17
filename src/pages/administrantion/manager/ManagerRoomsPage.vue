@@ -37,7 +37,7 @@
           </Button>
           <DialogCreateRoom
             v-model:open="isOpen"
-            :roomTypes="roomtypes"
+            :roomTypes="roomTypeStore.roomtypes"
           ></DialogCreateRoom>
         </div>
       </div>
@@ -109,7 +109,7 @@
     <DialogUpdateRoom
       v-model:open="isUpdateRoom"
       :room="selectForm"
-      :roomTypes="roomtypes"
+      :roomTypes="roomTypeStore.roomtypes"
     ></DialogUpdateRoom>
   </section>
 </template>
@@ -130,7 +130,7 @@ import { Room } from "@/api/room";
 import { RoomType } from "@/api/roomtype";
 const { rooms } = Rooms();
 const { getAllRooms, isLoading, listRooms } = Room();
-const { getAllRoomType, roomtypes } = RoomType();
+const roomTypeStore = RoomType();
 // import { Input } from '@/components/ui/input'
 // import { Label } from '@/components/ui/label'
 const isOpen = ref(false);
@@ -140,18 +140,24 @@ const selectForm = ref({
   roomNumber: "",
   roomStatus: "",
   floor: 0,
-  roomType: "",
-  roomImage: [],
+  roomType: {
+    id: 0,
+    name: "",
+    size: 0,
+    price: 0,
+    peopleAbout: 0,
+  },
+  roomImages: [],
+  deletedRoomImageIds: [],
 });
-const openDialog = (room: any) => {
+const openDialog = async (room: any) => {
   isUpdateRoom.value = true;
   selectForm.value = room;
-  getAllRoomType();
-  console.log("Danh sách loai phòng:", roomtypes);
 };
 // Lấy danh sách phòng
 onMounted(async () => {
   await getAllRooms();
-  await getAllRoomType();
+  await roomTypeStore.getAllRoomType();
+  console.log("Danh sách loại phòng:", roomTypeStore.roomtypes);
 });
 </script>
