@@ -3,7 +3,7 @@
         <DialogContent class="sm:max-w-[425px]" @pointer-down-outside.prevent @escape-key-down.prevent>
             <form action="" class="flex flex-col gap-3">
                 <DialogHeader>
-                    <DialogTitle class="font-bold text-muesli-400">Cập Nhật Thông Tin Nhân Viên</DialogTitle>
+                    <DialogTitle class="font-bold text-muesli-400">Cập Nhật Thông Tin Khách Hàng</DialogTitle>
                     <hr class="text-muesli-400 bg-muesli-400 h-[2px]" />
                 </DialogHeader>
                 <div>

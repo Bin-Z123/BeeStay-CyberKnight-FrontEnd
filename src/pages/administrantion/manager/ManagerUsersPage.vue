@@ -47,15 +47,15 @@
                                 <td class="py-2">{{ user.gender == true ? 'Nam' : 'Nữ' }}</td>
                                 <td class="py-2">{{ user.birthday }}</td>
                                 <td class="py-2">{{ user.email }}</td>
-                                <td class="py-2" :class="getBlacklistClass(user.eBlacklist)">{{ user.eBlacklist }}</td>
+                                <td class="py-2" :class="getBlacklistClass(user.eblacklist)">{{ user.eblacklist }}</td>
                                 <td class="py-2">Đồng</td>
                                 <td class="py-2">{{ user.point }}</td>
                                 <td class="py-2 flex justify-center items-center gap-5 h-full">
-                                    <button
+                                    <button @click.prevent="handleUpdateEblacklist(user)"
                                         class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
                                         <LockKeyhole class="w-4 h-4" />
                                     </button>
-                                    <Button
+                                    <Button @click="openUpdateUser(user)"
                                         class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white">
                                         <SquarePen />
                                     </Button>
@@ -144,15 +144,15 @@
                             <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
                                 v-for="blacklist in filteredBlackList" :key="blacklist.id">
                                 <td class="py-2">{{ blacklist.fullname }}</td>
-                                <td class="py-2">{{ blacklist.gender }}</td>
+                                <td class="py-2">{{ blacklist.gender == true ? 'Nam' : 'Nữ' }}</td>
                                 <td class="py-2">{{ blacklist.birthday }}</td>
                                 <td class="py-2">{{ blacklist.email }}</td>
-                                <td class="py-2" :class="getBlacklistClass(blacklist.eBlacklist)">{{
-                                    blacklist.eBlacklist }}</td>
+                                <td class="py-2" :class="getBlacklistClass(blacklist.eblacklist)">{{
+                                    blacklist.eblacklist }}</td>
                                 <td class="py-2">Gỗ</td>
                                 <td class="py-2">{{ blacklist.point }}</td>
                                 <td class="py-2 flex justify-center items-center gap-5 h-full">
-                                    <button
+                                    <button @click.prevent="handleUpdateEblacklistAgain(blacklist)"
                                         class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
                                         <LockKeyhole class="w-4 h-4" />
                                     </button>
@@ -178,6 +178,7 @@
             </TabsContent>
         </Tabs>
     </section>
+    <UpdateCustomerDialog v-model:open="openUpdateUserDialog" :user="selectedUser"></UpdateCustomerDialog>
 </template>
 <script setup lang="ts">
 import {
@@ -193,30 +194,80 @@ import {
     ChevronLeft,
     ChevronRight,
 } from "lucide-vue-next";
+import UpdateCustomerDialog from "@/components/administration/UserDialog/UpdateCustomerDialog.vue";
 import { Button } from "@/components/ui/button";
 import { ref, onMounted, computed } from "vue";
 import { User } from "@/api/user";
 const Users = User();
+const openUpdateUserDialog = ref(false);
 
 const filteredUsers = computed(() =>
-    Users.users.filter(user => user.role?.id === 2 && user.eBlacklist !== 'BLOCKED')
+    Users.users.filter(user => user.role?.id === 2 && user.eblacklist !== 3)
 );
 
 const filteredBlackList = computed(() =>
-    Users.users.filter(user => user.eBlacklist == 'BLOCKED' && user.role?.id === 1)
+    Users.users.filter(user => user.eblacklist == 3 && user.role?.id === 2)
 );
 
-const getBlacklistClass = (blacklist: string) => {
+const getBlacklistClass = (blacklist: number) => {
     switch (blacklist) {
-        case 'NONE':
+        case 1:
             return 'text-green-400';
-        case 'SECOND':
+        case 3:
             return 'text-red-500';
-        case 'FIRST':
+        case 2:
             return 'text-yellow-500';
         default:
             return '';
     }
+};
+
+const selectedUser = ref(null);
+const openUpdateUser = (user: any) => {
+    selectedUser.value = { ...user };
+    openUpdateUserDialog.value = true;
+};
+
+const handleUpdateEblacklist = async (user: any) => {
+    const payLoad = {
+        id: user.id,
+        phone: String(user.phone),
+        email: user.email,
+        password: user.password,
+        gender: user.gender,
+        birthday: user.birthday,
+        fullname: user.fullname,
+        cccd: String(user.cccd),
+        point: user.point,
+        eblacklist: 3,
+        roleId: 2,
+        rankId: user.rankId || 5
+    };
+    console.log(JSON.stringify(payLoad, null, 2));
+    await Users.updataReceptionist(payLoad);
+    openUpdateUserDialog.value = false;
+    await Users.getAllUser();
+};
+
+const handleUpdateEblacklistAgain = async (blacklist: any) => {
+    const payLoad = {
+        id: blacklist.id,
+        phone: String(blacklist.phone),
+        email: blacklist.email,
+        password: blacklist.password,
+        gender: blacklist.gender,
+        birthday: blacklist.birthday,
+        fullname: blacklist.fullname,
+        cccd: String(blacklist.cccd),
+        point: blacklist.point,
+        eblacklist: 1,
+        roleId: 2,
+        rankId: blacklist.rankId || 5
+    };
+    console.log(JSON.stringify(payLoad, null, 2));
+    await Users.updataReceptionist(payLoad);
+    openUpdateUserDialog.value = false;
+    await Users.getAllUser();
 };
 
 onMounted(async () => {
