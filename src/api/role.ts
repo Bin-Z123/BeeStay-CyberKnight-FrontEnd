@@ -13,7 +13,7 @@ export const Role = () => {
     const roles = ref<Role[]>([]);
     const getAllRoles = async (): Promise<Role[]> => {
         try {
-            const response = await axios.get(`${baseUrl}/admin/role/list`);
+            const response = await axios.get(`${baseUrl}/role/list`);
             roles.value = response.data.data;
             return roles.value;
         } catch (error) {

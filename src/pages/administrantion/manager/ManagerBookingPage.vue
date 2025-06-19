@@ -50,13 +50,13 @@
                     </tr>
                 </thead>
                 <tbody class="text-gray-700">
-                    <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="i in 10" :key="i">
-                        <td class="py-2">Bin</td>
-                        <td class="py-2">06-07-2025</td>
-                        <td class="py-2">06-07-2025</td>
+                    <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="booking in bookings.bookings" :key="booking.id">
+                        <td class="py-2">{{ booking.user.fullname }}</td>
+                        <td class="py-2">{{ booking.checkInDate.split('T')[0] }}</td>
+                        <td class="py-2">{{ booking.checkOutDate.split('T')[0] }}</td>
                         <td class="py-2">VIP</td>
-                        <td class="py-2">Bin@gmail.com</td>
-                        <td class="py-2">1234567123</td>
+                        <td class="py-2">{{ booking.user.email }}</td>
+                        <td class="py-2">{{ booking.user.phone }}</td>
                         <td class="py-2">Chưa Thanh Toán</td>
                         <td class="py-2 flex justify-center items-center gap-5 h-full">
                             <button
@@ -92,8 +92,14 @@ import {
     ChevronLeft,
     ChevronRight,
 } from "lucide-vue-next";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { Button } from "@/components/ui/button";
+import { Booking } from "@/api/booking";
 
+const bookings = Booking();
 const isOpenBooking = ref(false);
+
+onMounted( async() => {
+    await bookings.getBookings();
+});
 </script>
