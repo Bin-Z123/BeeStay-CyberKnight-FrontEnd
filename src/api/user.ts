@@ -60,6 +60,7 @@ interface UpdateUserRequest {
     password: string;
     gender: boolean;
     birthday: string;
+    updateDate: string;
     fullname: string;
     cccd: string;
     point: number;

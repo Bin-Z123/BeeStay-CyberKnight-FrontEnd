@@ -7,31 +7,48 @@
           <hr class="text-muesli-400 bg-muesli-400 h-[2px]" />
         </DialogHeader>
         <div>
-          <label class="text-muesli-400">Loại Phòng</label><br />
-          <input type="text" v-model="roomTypes.roomtype.name"
-            class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
-            placeholder="Nhập loại phòng" />
+          <label class="text-muesli-400">Loại Phòng</label>
+          <input type="text" v-model="roomTypes.roomtype.name" :class="[
+            'w-full h-10 rounded-lg focus:outline-none px-5 text-center shadow-sm',
+            errors.name
+              ? 'border-red-500 ring-2 ring-red-300 shadow-red-200'
+              : 'border-gray-300 focus:ring-2 focus:ring-muesli-200 shadow-muesli-300'
+          ]" placeholder="Nhập loại phòng" />
+          <p v-if="errors.name" class="text-red-500 text-sm mt-1">{{ errors.name }}</p>
         </div>
         <div>
-          <label class="text-muesli-400">Diện Tích</label><br />
-          <input type="text" v-model="roomTypes.roomtype.size"
-            class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
-            placeholder="Nhập diện tích" />
+          <label class="text-muesli-400">Diện Tích(m2)</label>
+          <input type="text" v-model="roomTypes.roomtype.size" :class="[
+            'w-full h-10 rounded-lg focus:outline-none px-5 text-center shadow-sm',
+            errors.size
+              ? 'border-red-500 ring-2 ring-red-300 shadow-red-200'
+              : 'border-gray-300 focus:ring-2 focus:ring-muesli-200 shadow-muesli-300'
+          ]" placeholder="Nhập loại phòng" />
+          <p v-if="errors.size" class="text-red-500 text-sm mt-1">{{ errors.size }}</p>
         </div>
         <div>
-          <label class="text-muesli-400">Giá</label><br />
-          <input type="text" v-model="roomTypes.roomtype.price"
-            class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
-            placeholder="Nhập giá" />
+          <label class="text-muesli-400">Giá</label>
+          <input type="text" v-model="roomTypes.roomtype.price" :class="[
+            'w-full h-10 rounded-lg focus:outline-none px-5 text-center shadow-sm',
+            errors.price
+              ? 'border-red-500 ring-2 ring-red-300 shadow-red-200'
+              : 'border-gray-300 focus:ring-2 focus:ring-muesli-200 shadow-muesli-300'
+          ]" placeholder="Nhập loại phòng" />
+          <p v-if="errors.price" class="text-red-500 text-sm mt-1">{{ errors.price }}</p>
         </div>
         <div>
-          <label class="text-muesli-400">Số Lượng Người Ở</label><br />
-          <input type="text" v-model="roomTypes.roomtype.peopleAbout"
-            class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
-            placeholder="Nhập số lượng người ở" />
+          <label class="text-muesli-400">Số Lượng Người Ở</label>
+          <input type="text" v-model="roomTypes.roomtype.peopleAbout" :class="[
+            'w-full h-10 rounded-lg focus:outline-none px-5 text-center shadow-sm',
+            errors.peopleAbout
+              ? 'border-red-500 ring-2 ring-red-300 shadow-red-200'
+              : 'border-gray-300 focus:ring-2 focus:ring-muesli-200 shadow-muesli-300'
+          ]" placeholder="Nhập loại phòng" />
+          <p v-if="errors.peopleAbout" class="text-red-500 text-sm mt-1">{{ errors.peopleAbout }}</p>
         </div>
         <DialogFooter>
-          <button @click="handleCreateRoomType" type="button" class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm">
+          <button @click="handleCreateRoomType" type="button"
+            class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm">
             Lưu
           </button>
         </DialogFooter>
@@ -55,12 +72,49 @@ const emit = defineEmits<{
 defineProps<{
   open: boolean;
 }>();
+import { ref } from "vue";
 import { RoomType } from "@/api/roomtype";
 const roomTypes = RoomType();
 
+const errors = ref({
+  name: "",
+  size: "",
+  price: "",
+  peopleAbout: "",
+});
+
+const validateForm = () => {
+  let isValid = true;
+  errors.value = {
+    name: "",
+    size: "",
+    price: "",
+    peopleAbout: "",
+  };
+  const r = roomTypes.roomtype;
+  if (!r.name || r.name.trim() === "") {
+    errors.value.name = "Vui lòng nhập loại phòng";
+    isValid = false;
+  }
+  if (r.size == null || r.size < 1) {
+    errors.value.size = "Vui lòng nhập lại diện tích hợp lệ";
+    isValid = false;
+  }
+  if (r.price == null || r.price < 0) {
+    errors.value.price = "Vui lòng nhập lại giá hợp lệ";
+    isValid = false;
+  }
+  if (r.peopleAbout == null || r.peopleAbout < 1) {
+    errors.value.peopleAbout = "Vui lòng nhập số lượng người ở hợp lệ";
+    isValid = false;
+  }
+  return isValid;
+};
 const handleCreateRoomType = async () => {
+  if (!validateForm()) return;
   await roomTypes.createRoomType(roomTypes.roomtype);
   await roomTypes.getAllRoomType();
   emit("update:open", false);
-}
+};
+
 </script>

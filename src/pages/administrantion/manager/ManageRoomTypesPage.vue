@@ -8,10 +8,9 @@
               class="w-2/6 h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 ms-4 text-center"
               placeholder="Tìm kiếm" />
             <div class="relative w-2/6">
-              <select name="" id=""
+              <select
                 class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center">
-                <option value="">VIP</option>
-                <option value="">Thường</option>
+                <option :value="roomtype.id" v-for="roomtype in roomTypes.roomtypes" :key="roomtype.id">{{ roomtype.name }}</option>
               </select>
               <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                 <ChevronDown class="w-5 h-5 text-gray-400" />

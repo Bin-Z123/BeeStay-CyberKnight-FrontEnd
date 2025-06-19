@@ -164,7 +164,7 @@
                                 </tr>
                             </thead>
                             <tbody class="text-gray-700">
-                                <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="rank in ranks" @click="getRankById(rank.id)"
+                                <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="rank in filterRank"
                                     :key="rank.id">
                                     <td class="py-2">{{ rank.nameRank }}</td>
                                     <td class="py-2">{{ rank.minPointRequired }}</td>
@@ -302,7 +302,7 @@
                             </thead>
                             <tbody class="text-gray-700">
                                 <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="discount in paginatedDiscounts"
-                                    :key="discount.id" @click="getDiscountById(discount.id)">
+                                    :key="discount.id">
                                     <td class="py-2">{{ discount.title }}</td>
                                     <td class="py-2">{{ discount.discountCode }}</td>
                                     <td class="py-2">{{ discount.discountType }}</td>
@@ -387,6 +387,10 @@ const handleDeleteRank = async () => {
     await getAllRank();
     resetRank();
 }
+
+const filterRank = computed(() =>
+    ranks.value.filter(rank => rank.id !== 7)
+);
 
 const resetRank = () => {
     rank.value = {

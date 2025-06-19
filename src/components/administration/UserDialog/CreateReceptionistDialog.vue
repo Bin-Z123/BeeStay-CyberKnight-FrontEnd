@@ -107,7 +107,7 @@ const handleCreateReceptionist = async () => {
     point: 0,
     eblacklist: 1,
     roleId: users.user.role.id,
-    rankId: 5
+    rankId: 7
   };
   console.log("Id Role Nè" + users.user.role.id);
   

@@ -25,9 +25,9 @@ export const RoomType = defineStore('roomtype', () => {
     const roomtype = ref<RoomType>({
         id: 0,
         name: '',
-        size: 0,
+        size: 1,
         price: 0,
-        peopleAbout: 0
+        peopleAbout: 1
     });
     const getAllRoomType = async (): Promise<RoomType[]> => {
         try {
