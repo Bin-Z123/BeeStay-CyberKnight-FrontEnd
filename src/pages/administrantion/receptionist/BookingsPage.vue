@@ -3,12 +3,13 @@
     <div class="flex">
       <div class="w-1/2">
         <div class="flex gap-2 items-center">
-          <VueDatePicker/>
-          <input type="date"
-            class="w-2/6 h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 ms-4 text-center">
-          <label class="text-muesli-400 mx-4 font-medium">Đến</label>
-          <input type="date"
-            class="w-2/6 h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center">
+          <VueDatePicker :format-locale="vi" v-model="dateS" :format="'dd-MM-yyyy'" :select-text="'Chọn'" range
+            multi-calendars :cancel-text="'Hủy'"
+            class="w-2/6 h-10  border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3  my-3 ms-4 text-center" />
+          <!-- <label class="text-muesli-400 mx-4 font-medium">Đến</label>
+          <VueDatePicker :format-locale="vi" v-model="dateE" :format="'dd-MM-yyyy'" :select-text="'Chọn'"
+            :cancel-text="'Hủy'"
+            class="w-2/6 h-10  border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3  my-3 ms-4 text-center" /> -->
           <div class="relative w-2/6">
             <select name="" id=""
               class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center">
@@ -43,26 +44,27 @@
       </div>
 
       <div class="grid grid-cols-7 gap-2 max-w-[1050px] justify-center relative">
-        <div v-for="(room, index ) in rooms.slice(0, 14)" :key="room.id" class="w-[140px]" :class="{ '-ml-[74px] -mt-10': index >= 7 }">
+        <div v-for="(room, index) in rooms.slice(0, 14)" :key="room.id" class="w-[140px]"
+          :class="{ '-ml-[74px] -mt-10': index >= 7 }">
           <div @contextmenu.prevent="openContextMenu($event, room)" :data-id="room.id"
             class="h-40 bg-white hover:bg-gray-200 flex justify-center items-center [clip-path:polygon(0%_25%,50%_0%,100%_25%,100%_75%,50%_100%,0%_75%)]">
             <div class="flex flex-col items-center p-4">
               <h1 class="text-muesli-400 font-bold text-lg">{{ room.roomNumber }}</h1>
-              <h1>{{ room.roomType.name  }}</h1>
+              <h1>{{ room.roomType.name }}</h1>
               <h1>2 người</h1>
             </div>
           </div>
         </div>
-        
+
       </div>
     </div>
-<div v-if="menu.isOpen" class="absolute bg-white border rounded shadow-md z-50 w-32"
-          :style="{ top: menu.y + 'px', left: menu.x + 'px' }">
-          {{ menu.data.roomNumber }}
-          <button class="w-full text-left px-4 py-2 hover:bg-gray-100" @click="isOpenBooking = true">
-            Đặt phòng
-          </button>
-        </div>
+    <div v-if="menu.isOpen" class="absolute bg-white border rounded shadow-md z-50 w-32"
+      :style="{ top: menu.y + 'px', left: menu.x + 'px' }">
+      {{ menu.data.roomNumber }}
+      <button class="w-full text-left px-4 py-2 hover:bg-gray-100" @click="isOpenBooking = true">
+        Đặt phòng
+      </button>
+    </div>
     <BookingDialog v-model:open="isOpenBooking" />
   </section>
 </template>
@@ -78,7 +80,8 @@ import { computed, onMounted, reactive, ref } from "vue";
 import BookingDialog from "@/components/administration/BookingDialog/BookingDialog.vue";
 import { Button } from "@/components/ui/button";
 import { useMockRooms } from "./mockRoom";
-import { on } from "events";
+import { vi } from "date-fns/locale";
+import { format } from "path";
 
 const mockRoomData = useMockRooms();
 
@@ -122,21 +125,35 @@ interface Room {
     isThum: boolean;
   }[];
 }
-onMounted(()=>{
-  console.log("mockData: ",mockRoomData.mockRooms);
-  console.log("Raw: ",rawRoomData.value);
-  console.log("floor: ",groupedByFloor.value);
+onMounted(() => {
+  console.log("mockData: ", mockRoomData.mockRooms);
+  console.log("Raw: ", rawRoomData.value);
+  console.log("floor: ", groupedByFloor.value);
 })
-const rawRoomData =ref<Room[]>(mockRoomData.mockRooms)
-const groupedByFloor = computed(() =>{
+const rawRoomData = ref<Room[]>(mockRoomData.mockRooms)
+const groupedByFloor = computed(() => {
   const grouped: Record<number, Room[]> = {};
-  
-  rawRoomData.value.forEach((room)=>{
-    if(!grouped[room.floor]){
+
+  rawRoomData.value.forEach((room) => {
+    if (!grouped[room.floor]) {
       grouped[room.floor] = [];
     }
     grouped[room.floor].push(room);
   })
   return grouped;
 })
+
+const dateS = ref([] as Date[]);
+
+onMounted(() => {
+  const startDate = new Date();
+  const endDate = new Date(new Date().setDate(startDate.getDate() + 1));
+  dateS.value = [startDate, endDate];
+})
+
+// const dateE = computed(() => {
+//   const newDate = new Date(dateS.value);
+//   newDate.setDate(newDate.getDate() + 1);
+//   return newDate;
+// })
 </script>
