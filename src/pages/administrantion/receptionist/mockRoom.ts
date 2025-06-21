@@ -48,7 +48,7 @@ export const useMockRooms = defineStore("mockRooms", () => {
             return {
                 id: roomId,
                 roomNumber: roomNumber,
-                roomStatus: "AVAILABLE",
+                roomStatus: "STAYING",
                 floor: 1,
                 roomType: {
                     id: 1,
@@ -70,7 +70,7 @@ export const useMockRooms = defineStore("mockRooms", () => {
         {
             id: 2,
             roomNumber: "102",
-            roomStatus: "OCCUPIED",
+            roomStatus: "BOOKED",
             floor: 1,
             roomType: {
                 id: 2,
@@ -93,7 +93,7 @@ export const useMockRooms = defineStore("mockRooms", () => {
         {
             id: 3,
             roomNumber: "201",
-            roomStatus: "AVAILABLE",
+            roomStatus: "STAYING",
             floor: 2,
             roomType: {
                 id: 1,
@@ -114,7 +114,7 @@ export const useMockRooms = defineStore("mockRooms", () => {
         {
             id: 4,
             roomNumber: "202",
-            roomStatus: "MAINTENANCE",
+            roomStatus: "STAYING",
             floor: 2,
             roomType: {
                 id: 3,
@@ -135,7 +135,7 @@ export const useMockRooms = defineStore("mockRooms", () => {
         {
             id: 5,
             roomNumber: "203",
-            roomStatus: "AVAILABLE",
+            roomStatus: "MAINTENANCE",
             floor: 2,
             roomType: {
                 id: 2,
@@ -158,7 +158,7 @@ export const useMockRooms = defineStore("mockRooms", () => {
         {
             id: 6,
             roomNumber: "301",
-            roomStatus: "OCCUPIED",
+            roomStatus: "LATE",
             floor: 3,
             roomType: {
                 id: 1,
@@ -179,7 +179,7 @@ export const useMockRooms = defineStore("mockRooms", () => {
         {
             id: 7,
             roomNumber: "302",
-            roomStatus: "AVAILABLE",
+            roomStatus: "BOOKED",
             floor: 3,
             roomType: {
                 id: 3,

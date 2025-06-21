@@ -4,7 +4,7 @@
       <div class="w-1/2">
         <div class="flex gap-2 items-center">
           <VueDatePicker :format-locale="vi" v-model="dateS" :format="'dd-MM-yyyy'" :select-text="'Chọn'" range
-            multi-calendars :cancel-text="'Hủy'"
+            multi-calendars :min-date="new Date()" :cancel-text="'Hủy'"
             class="w-2/6 h-10  border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3  my-3 ms-4 text-center" />
           <!-- <label class="text-muesli-400 mx-4 font-medium">Đến</label>
           <VueDatePicker :format-locale="vi" v-model="dateE" :format="'dd-MM-yyyy'" :select-text="'Chọn'"
@@ -46,10 +46,11 @@
       <div class="grid grid-cols-7 gap-2 max-w-[1050px] justify-center relative">
         <div v-for="(room, index) in rooms.slice(0, 14)" :key="room.id" class="w-[140px]"
           :class="{ '-ml-[74px] -mt-10': index >= 7 }">
-          <div @contextmenu.prevent="openContextMenu($event, room)" :data-id="room.id"
-            class="h-40 bg-white hover:bg-gray-200 flex justify-center items-center [clip-path:polygon(0%_25%,50%_0%,100%_25%,100%_75%,50%_100%,0%_75%)]">
+          <div @contextmenu.prevent="openContextMenu($event, room)" :data-id="room.id" tabindex="0"
+            :class="`status-${room.roomStatus.toLowerCase()}`"
+            class="h-40 bg-white hover:brightness-90  hover:bg-gray-200  flex justify-center items-center [clip-path:polygon(0%_25%,50%_0%,100%_25%,100%_75%,50%_100%,0%_75%)]">
             <div class="flex flex-col items-center p-4">
-              <h1 class="text-muesli-400 font-bold text-lg">{{ room.roomNumber }}</h1>
+              <h1 class=" font-bold text-lg">{{ room.roomNumber }}</h1>
               <h1>{{ room.roomType.name }}</h1>
               <h1>2 người</h1>
             </div>
@@ -58,14 +59,22 @@
 
       </div>
     </div>
-    <div v-if="menu.isOpen" class="absolute bg-white border rounded shadow-md z-50 w-32"
+    <div v-if="menu.isOpen" class="absolute bg-white border rounded-xs shadow-md z-50 w-48 "
       :style="{ top: menu.y + 'px', left: menu.x + 'px' }">
-      {{ menu.data.roomNumber }}
-      <button class="w-full text-left px-4 py-2 hover:bg-gray-100" @click="isOpenBooking = true">
-        Đặt phòng
+      <p class="bg-muesli-100/50 px-4 py-2 font-bold text-muesli-400">Phòng {{ menu.data.roomNumber }}
+      </p>
+      <button class="w-full text-left px-4 py-2 hover:bg-gray-100" @click="openNewBookingDialog()">
+        Đặt phòng mới
+      </button>
+      <button class="w-full text-left px-4 py-2 hover:bg-gray-100">Xác nhận đặt phòng</button>
+      <button class="w-full text-left px-4 py-2 hover:bg-gray-100">Trả phòng</button>
+
+      <hr>
+      <button class="w-full  text-left px-4 py-2 hover:bg-gray-100">
+        Hủy phòng
       </button>
     </div>
-    <BookingDialog v-model:open="isOpenBooking" />
+    <NewBookingDialog v-model:open="isOpenBooking" :bookingRoom="menu.data" />
   </section>
 </template>
 <script setup lang="ts">
@@ -77,7 +86,7 @@ import {
   ChevronRight,
 } from "lucide-vue-next";
 import { computed, onMounted, reactive, ref } from "vue";
-import BookingDialog from "@/components/administration/BookingDialog/BookingDialog.vue";
+import NewBookingDialog from "@/components/administration/BookingDialog/NewBookingDialog.vue";
 import { Button } from "@/components/ui/button";
 import { useMockRooms } from "./mockRoom";
 import { vi } from "date-fns/locale";
@@ -149,6 +158,7 @@ onMounted(() => {
   const startDate = new Date();
   const endDate = new Date(new Date().setDate(startDate.getDate() + 1));
   dateS.value = [startDate, endDate];
+  console.log("dateS: ", dateS.value[0]);
 })
 
 // const dateE = computed(() => {
@@ -156,4 +166,9 @@ onMounted(() => {
 //   newDate.setDate(newDate.getDate() + 1);
 //   return newDate;
 // })
+// Mở new Booking Dialog
+const openNewBookingDialog = () => {
+  isOpenBooking.value = true;
+  console.log("openNewBookingDialog: ", menu.data);
+}
 </script>

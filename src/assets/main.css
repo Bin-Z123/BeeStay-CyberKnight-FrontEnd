@@ -9,6 +9,7 @@
 .scrollbar-hidden::-webkit-scrollbar {
   display: none;
 }
+/* Primary Color */
 @theme{
   /* Muesli Nâu */
   --color-muesli-50: #f6f4f0;
@@ -23,7 +24,22 @@
   --color-muesli-900: #513932;
   --color-muesli-950: #2d1e1b;
 }
-
+/* Màu trạng thái Room */
+.status-available {
+  @apply bg-green-500/90 text-gray-100
+}
+.status-staying {
+  @apply bg-red-500/80 text-gray-100
+}
+.status-maintenance {
+  @apply bg-gray-300
+}
+.status-booked {
+  @apply bg-blue-200
+}
+.status-late {
+  @apply bg-yellow-950 text-gray-200
+}
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
