@@ -146,7 +146,7 @@
                                     class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm w-[85px]" @click.prevent="handleDeleteRank">
                                     Xoá
                                 </button>
-                                <button type="reset"
+                                <button @click.prevent="resetRank"
                                     class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm">
                                     Làm Mới
                                 </button>
@@ -208,10 +208,10 @@
                             </div>
                             <div>
                                 <label class="text-muesli-400">Mô Tả</label><br />
-                                <input type="text"
+                                <textarea type="text"
                                     v-model="discount.description"
-                                    class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
-                                    placeholder="Nhập mô tả" />
+                                    class="w-full h-24 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
+                                    placeholder="Nhập mô tả"></textarea>
                             </div>
                             <div>
                                 <label class="text-muesli-400">Mã Giảm Giá</label><br />
@@ -279,7 +279,7 @@
                                     class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm w-[80px]">
                                     Xóa
                                 </button>
-                                <button type="reset"
+                                <button @click.prevent="resetDiscount"
                                     class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm">
                                     Làm Mới
                                 </button>

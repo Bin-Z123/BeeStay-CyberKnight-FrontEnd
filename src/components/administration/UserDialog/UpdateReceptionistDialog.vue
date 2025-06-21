@@ -124,8 +124,35 @@ const handleUpdateReceptionist = async () => {
     console.log(JSON.stringify(payLoad, null, 2));
     await users.updataReceptionist(payLoad);
     await users.getAllUser();
+    resetForm();
     emit("update:open", false);
 }
+
+const resetForm = () => {
+  users.user = {
+        id: 0,
+        phone: "",
+        email: "",
+        password: "",
+        gender: true,
+        birthday: "",
+        joinDate: "",
+        fullname: "",
+        cccd: "",
+        point: 0,
+        role: {
+            id: 0,
+            roleName: "",
+        },
+        rank: {
+            id: 0,
+            nameRank: "",
+            minPointRequired: 0,
+            discount_percent: 0,
+        },
+        eblacklist: 0,
+    };
+};
 
 onMounted(async () => {
     await getAllRoles();
