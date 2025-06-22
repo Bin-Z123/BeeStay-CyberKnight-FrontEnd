@@ -2,9 +2,9 @@
     <section>
         <div class="flex">
             <div class="w-2/3">
-                <input type="text"
+                <input type="text" v-model="searchText"
                     class="mx-4 my-3 h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
-                    placeholder="Tìm kiếm">
+                    placeholder="Tìm kiếm nhân viên ...">
             </div>
             <div class="w-1/3 flex justify-end">
                 <Button @click="openCreateUserDialog = true"
@@ -88,9 +88,18 @@ const Users = User();
 const openCreateUserDialog = ref(false);
 const openUpdateUserDialog = ref(false);
 
-const filteredUsers = computed(() =>
-    Users.users.filter(user => user.role?.id === 1)
-);
+// Tìm kiếm
+const searchText = ref('');
+
+const filteredUsers = computed(() => {
+  return Users.users.filter(user => {
+    const matchRole = user.role?.id === 1;
+    const matchSearch =
+      user.fullname?.toLowerCase().includes(searchText.value.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchText.value.toLowerCase());
+    return matchRole && matchSearch;
+  });
+});
 
 const selectedReceptionist = ref(null);
 const openUpdateReceptionist = async (user: any) => {
@@ -125,9 +134,6 @@ const handleUpdateBlock = async (user: any) => {
     openUpdateUserDialog.value = false;
     await Users.getAllUser();
 };
-
-// search
-const seletedUser = ref('');
 
 const currentPage = ref(1);
 const pageSize = ref(10);
