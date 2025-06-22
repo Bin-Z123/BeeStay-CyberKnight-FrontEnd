@@ -16,41 +16,44 @@ import {
 } from 'chart.js'
 import { Bar } from 'vue-chartjs'
 
-// Đăng ký các thành phần cần thiết
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
-// Nhận props từ component cha
 const props = defineProps<{
   data: { name: string; total: number; predicted: number }[]
 }>()
 
-// Dữ liệu cho biểu đồ
+// 🔄 Dữ liệu biểu đồ cột đơn (chỉ dùng 'total' chẳng hạn)
 const chartData = {
   labels: props.data.map((d) => d.name),
   datasets: [
     {
-      label: 'Total',
+      label: 'Doanh thu',
       backgroundColor: '#4f46e5',
       data: props.data.map((d) => d.total),
-    },
-    {
-      label: 'Predicted',
-      backgroundColor: '#22c55e',
-      data: props.data.map((d) => d.predicted),
+      categoryPercentage: 0.5, // căn giữa tốt hơn
     },
   ],
 }
 
-// Sửa lỗi type bằng cách ép kiểu options rõ ràng
 const chartOptions: ChartOptions<'bar'> = {
   responsive: true,
   plugins: {
     legend: {
-      position: 'top', // <-- hợp lệ với ChartOptions<'bar'>
+      position: 'top',
     },
     title: {
       display: true,
       text: 'Doanh thu theo tháng',
+    },
+  },
+  scales: {
+    x: {
+      ticks: {
+        align: 'center', // 📌 căn giữa text label
+      },
+    },
+    y: {
+      beginAtZero: true,
     },
   },
 }

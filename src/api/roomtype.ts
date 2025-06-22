@@ -25,16 +25,16 @@ export const RoomType = defineStore('roomtype', () => {
     const roomtype = ref<RoomType>({
         id: 0,
         name: '',
-        size: 0,
+        size: 1,
         price: 0,
-        peopleAbout: 0
+        peopleAbout: 1
     });
     const getAllRoomType = async (): Promise<RoomType[]> => {
         try {
-            const response = await axios.get<RoomType[]>(`${baseUrl}/roomTypes`);
-            roomtypes.value = response.data;
+            const response = await axios.get<RoomTypeResponse>(`${baseUrl}/roomTypes`);
+            roomtypes.value = response.data.data;
 
-            return response.data;
+            return response.data.data;
         } catch (error) {
             throw error;
         }

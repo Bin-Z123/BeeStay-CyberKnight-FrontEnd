@@ -113,18 +113,46 @@ const handleUpdateReceptionist = async () => {
         password: localReceptionist.value.password,
         gender: localReceptionist.value.gender,
         birthday: localReceptionist.value.birthday,
+        updateDate: new Date().toISOString(),
         fullname: localReceptionist.value.fullname,
         cccd: String(localReceptionist.value.cccd),
         point: 0,
         eblacklist: 1,
         roleId: localReceptionist.value.role.id,
-        rankId: 5
+        rankId: localReceptionist.value.rank.id
     };
     console.log(JSON.stringify(payLoad, null, 2));
     await users.updataReceptionist(payLoad);
     await users.getAllUser();
+    resetForm();
     emit("update:open", false);
 }
+
+const resetForm = () => {
+  users.user = {
+        id: 0,
+        phone: "",
+        email: "",
+        password: "",
+        gender: true,
+        birthday: "",
+        joinDate: "",
+        fullname: "",
+        cccd: "",
+        point: 0,
+        role: {
+            id: 0,
+            roleName: "",
+        },
+        rank: {
+            id: 0,
+            nameRank: "",
+            minPointRequired: 0,
+            discount_percent: 0,
+        },
+        eblacklist: 0,
+    };
+};
 
 onMounted(async () => {
     await getAllRoles();

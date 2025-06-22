@@ -112,12 +112,13 @@ const handleUpdateBlock = async (user: any) => {
         password: user.password,
         gender: user.gender,
         birthday: user.birthday,
+        updateDate: new Date().toISOString(),
         fullname: user.fullname,
         cccd: String(user.cccd),
         point: user.point,
         eblacklist: block.value,
         roleId: 1,
-        rankId: user.rankId || 5
+        rankId: user.rank.id
     };
     console.log(JSON.stringify(payLoad, null, 2));
     await Users.updataReceptionist(payLoad);

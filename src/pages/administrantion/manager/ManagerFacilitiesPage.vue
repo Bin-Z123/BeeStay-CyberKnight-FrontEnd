@@ -4,21 +4,33 @@
             <form action="" class="flex flex-col gap-3">
                 <div>
                     <label class="text-muesli-400">Dịch Vụ</label><br />
-                    <input type="text" v-model="facilities.facility.facilityName"
-                        class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
-                        placeholder="Nhập dịch vụ" />
+                    <input type="text" v-model="facilities.facility.facilityName" :class="[
+                        'w-full h-10 rounded-lg focus:outline-none px-5 text-center shadow-sm',
+                        errors.facilityName
+                            ? 'border-red-500 ring-2 ring-red-300 shadow-red-200 text-red-600'
+                            : 'border-gray-300 focus:ring-2 focus:ring-muesli-200 shadow-muesli-300'
+                    ]" placeholder="Nhập dịch vụ" />
+                    <p v-if="errors.facilityName" class="text-red-500 text-sm mt-1">{{ errors.facilityName }}</p>
                 </div>
                 <div>
                     <label class="text-muesli-400">Mô Tả</label><br />
-                    <input type="text" v-model="facilities.facility.description"
-                        class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
-                        placeholder="Nhập mô tả" />
+                    <textarea type="text" v-model="facilities.facility.description" :class="[
+                        'w-full h-25 rounded-lg focus:outline-none px-5 text-center shadow-sm p-3',
+                        errors.description
+                            ? 'border-red-500 ring-2 ring-red-300 shadow-red-200 text-red-600'
+                            : 'border-gray-300 focus:ring-2 focus:ring-muesli-200 shadow-muesli-300'
+                    ]" placeholder="Nhập mô tả"></textarea>
+                    <p v-if="errors.description" class="text-red-500 text-sm mt-1">{{ errors.description }}</p>
                 </div>
                 <div>
                     <label class="text-muesli-400">Giá</label><br />
-                    <input type="number" v-model="facilities.facility.price"
-                        class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
-                        placeholder="Nhập giá" />
+                    <input type="number" v-model="facilities.facility.price" :class="[
+                        'w-full h-10 rounded-lg focus:outline-none px-5 text-center shadow-sm',
+                        errors.price
+                            ? 'border-red-500 ring-2 ring-red-300 shadow-red-200 text-red-600'
+                            : 'border-gray-300 focus:ring-2 focus:ring-muesli-200 shadow-muesli-300'
+                    ]" placeholder="Nhập giá" />
+                    <p v-if="errors.price" class="text-red-500 text-sm mt-1">{{ errors.price }}</p>
                 </div>
                 <div class="flex justify-center gap-2">
                     <button type="button" @click.prevent="handleCreateFacility"
@@ -33,7 +45,8 @@
                         class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm w-[80px]">
                         Xóa
                     </button>
-                    <button type="reset" class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm">
+                    <button @click.prevent="resetFacility"
+                        class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm">
                         Làm Mới
                     </button>
                 </div>
@@ -51,12 +64,13 @@
                 </thead>
                 <tbody class="text-gray-700">
                     <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
-                        v-for="facilitie in facilities.facilities" :key="facilitie.id" @click.prevent="getFacilitiesById(facilitie.id)">
+                        v-for="facilitie in facilities.facilities" :key="facilitie.id">
                         <td class="py-2">{{ facilitie.facilityName }}</td>
                         <td class="py-2">{{ facilitie.description }}</td>
                         <td class="py-2">{{ facilitie.price }}</td>
                         <td class="py-2 flex justify-center items-center gap-2 h-full m-1.5">
-                            <button @click.prevent="getFacilitiesById(facilitie.id)" class="text-blue-400 hover:text-blue-700">
+                            <button @click.prevent="getFacilitiesById(facilitie.id)"
+                                class="text-blue-400 hover:text-blue-700">
                                 <SquarePen />
                             </button>
                         </td>
@@ -80,17 +94,14 @@
 </template>
 <script setup lang="ts">
 import {
-    ChevronDown,
     SquarePen,
-    LockKeyhole,
-    ChevronLeft,
-    ChevronRight,
 } from "lucide-vue-next";
 import { ref, onMounted, computed } from 'vue';
 import { Facilities } from '@/api/facilities';
 const facilities = Facilities();
 
 const handleCreateFacility = async () => {
+    if (!validateForm()) return;
     await facilities.createFacility(facilities.facility);
     await facilities.getAllFacilities();
     resetFacility();
@@ -102,6 +113,7 @@ const getFacilitiesById = async (id: number) => {
 }
 
 const handleUpdateFacility = async () => {
+    if (!validateForm()) return;
     await facilities.updateFacility(facilities.facility);
     await facilities.getAllFacilities();
     resetFacility();
@@ -120,6 +132,39 @@ const resetFacility = () => {
         description: '',
         price: 0,
     };
+    errors.value = {
+        facilityName: '',
+        description: '',
+        price: '',
+    };
+}
+
+const errors = ref({
+    facilityName: '',
+    description: '',
+    price: '',
+});
+const validateForm = () => {
+    let isValid = true;
+    errors.value = {
+        facilityName: '',
+        description: '',
+        price: '',
+    };
+    const f = facilities.facility;
+    if (!f.facilityName || f.facilityName.trim() === '') {
+        errors.value.facilityName = 'Vui lòng nhập tên dịch vụ hợp lệ';
+        isValid = false;
+    }
+    if (!f.description || f.description.trim() === '') {
+        errors.value.description = 'Vui lòng nhập mô tả hợp lệ';
+        isValid = false;
+    }
+    if (f.price == null || f.price < 0) {
+        errors.value.price = 'Vui lòng nhập giá hợp lệ';
+        isValid = false;
+    }
+    return isValid;
 }
 
 onMounted(async () => {

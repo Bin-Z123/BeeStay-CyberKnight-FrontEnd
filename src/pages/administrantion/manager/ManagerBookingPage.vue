@@ -42,22 +42,22 @@
                         <th class="px-4 py-2 border">Khách Hàng</th>
                         <th class="px-4 py-2 border">Ngày Đến</th>
                         <th class="px-4 py-2 border">Ngày Đi</th>
-                        <th class="px-4 py-2 border">Loại Phòng</th>
-                        <th class="px-4 py-2 border">Email</th>
-                        <th class="px-4 py-2 border">SĐT</th>
+                        <!-- <th class="px-4 py-2 border">Email</th>
+                        <th class="px-4 py-2 border">SĐT</th> -->
+                        <th class="px-4 py-2 border">Tổng Tiền</th>
                         <th class="px-4 py-2 border">Trạng Thái</th>
                         <th class="px-4 py-2 border">Tùy Chọn</th>
                     </tr>
                 </thead>
                 <tbody class="text-gray-700">
-                    <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="i in 10" :key="i">
-                        <td class="py-2">Bin</td>
-                        <td class="py-2">06-07-2025</td>
-                        <td class="py-2">06-07-2025</td>
-                        <td class="py-2">VIP</td>
-                        <td class="py-2">Bin@gmail.com</td>
-                        <td class="py-2">1234567123</td>
-                        <td class="py-2">Chưa Thanh Toán</td>
+                    <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="booking in paginatedRoomTypes" :key="booking.id">
+                        <td class="py-2">{{ booking.user?.fullname || booking.guestBooking.fullname }}</td>
+                        <td class="py-2">{{ booking.checkInDate.split('T')[0] }}</td>
+                        <td class="py-2">{{ booking.checkOutDate.split('T')[0] }}</td>
+                        <!-- <td class="py-2">{{ booking.user?.email || booking.guestBooking.email }}</td>
+                        <td class="py-2">{{ booking.user?.phone || booking.guestBooking.phone }}</td> -->
+                        <td class="py-2">{{ booking.totalAmount }}</td>
+                        <td class="py-2" :class="booking.bookingStatus == 'CONFIRMED' ? 'text-green-500' : 'text-red-500'">{{ booking.bookingStatus }}</td>
                         <td class="py-2 flex justify-center items-center gap-5 h-full">
                             <button
                                 class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
@@ -72,15 +72,17 @@
                 </tbody>
             </table>
             <div class="bg-white h-15 mb-4 shadow-lg flex items-center justify-end gap-2 px-5">
-                <input type="text" class="w-12 h-8 border border-gray-300 rounded-sm text-center" disabled
-                    value="1" /><span>of 16</span>
-                <button class="hover:bg-muesli-100 w-10 h-10 flex items-center justify-center rounded-4xl">
-                    <ChevronLeft />
-                </button>
-                <button class="hover:bg-muesli-100 w-10 h-10 flex items-center justify-center rounded-4xl">
-                    <ChevronRight />
-                </button>
-            </div>
+          <input type="text" class="w-12 h-8 border border-gray-300 rounded-sm text-center" disabled
+            :value="currentPage" /><span>of {{ totalPages }}</span>
+          <button @click="currentPage--" :disabled="currentPage == 1"
+            class="hover:bg-muesli-100 w-10 h-10 flex items-center justify-center rounded-4xl">
+            <ChevronLeft />
+          </button>
+          <button @click="currentPage++" :disabled="currentPage == totalPages"
+            class="hover:bg-muesli-100 w-10 h-10 flex items-center justify-center rounded-4xl">
+            <ChevronRight />
+          </button>
+        </div>
         </div>
     </section>
 </template>
@@ -92,8 +94,24 @@ import {
     ChevronLeft,
     ChevronRight,
 } from "lucide-vue-next";
-import { ref } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { Button } from "@/components/ui/button";
+import { Booking } from "@/api/booking";
 
+const bookings = Booking();
 const isOpenBooking = ref(false);
+
+const currentPage = ref(1);
+const pageSize = ref(10);
+const totalPages = computed(() => {
+  return Math.ceil(bookings.bookings.length / pageSize.value);
+});
+const paginatedRoomTypes = computed(() => {
+  const startIndex = (currentPage.value - 1) * pageSize.value;
+  const endIndex = startIndex + pageSize.value;
+  return bookings.bookings.slice(startIndex, endIndex);
+});
+onMounted( async() => {
+    await bookings.getBookings();
+});
 </script>

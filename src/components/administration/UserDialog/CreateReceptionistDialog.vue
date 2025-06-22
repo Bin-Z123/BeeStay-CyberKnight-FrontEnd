@@ -1,67 +1,76 @@
 <template>
   <Dialog :open="open" @update:open="emit('update:open', $event)">
-    <DialogContent class="sm:max-w-[425px]" @pointer-down-outside.prevent @escape-key-down.prevent>
+    <DialogContent class="sm:max-w-[700px]" @pointer-down-outside.prevent @escape-key-down.prevent>
       <form action="" class="flex flex-col gap-3">
         <DialogHeader>
           <DialogTitle class="font-bold text-muesli-400">Thêm Nhân Viên Mới</DialogTitle>
           <hr class="text-muesli-400 bg-muesli-400 h-[2px]" />
         </DialogHeader>
-        <div>
-          <label class="text-muesli-400">Họ Tên</label><br />
-          <input type="text" v-model="users.user.fullname"
-            class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
-            placeholder="Nhập họ tên" />
-        </div>
-        <div>
-          <label class="text-muesli-400">Email</label><br />
-          <input type="email" v-model="users.user.email"
-            class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
-            placeholder="Nhập email" />
-        </div>
-        <div>
-          <label class="text-muesli-400">Số Điện Thoại</label><br />
-          <input type="number" v-model="users.user.phone"
-            class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
-            placeholder="Nhập số điện thoại" />
-        </div>
-        <div>
-          <label class="text-muesli-400">Mật Khẩu</label><br />
-          <input type="password" v-model="users.user.password"
-            class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
-            placeholder="Nhập mật khẩu" />
-        </div>
-        <div>
-          <label class="text-muesli-400 block mb-2">Giới tính</label>
-          <div class="flex gap-5">
-            <label class="flex items-center gap-2">
-              <input type="radio" :value="true" v-model="users.user.gender" />
-              Nam
-            </label>
-            <label class="flex items-center gap-2">
-              <input type="radio" :value="false" v-model="users.user.gender" />
-              Nữ
-            </label>
+        <div class="flex gap-5">
+          <div class="w-1/2">
+            <div>
+              <label class="text-muesli-400">Họ Tên</label><br />
+              <input type="text" v-model="users.user.fullname"
+                class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
+                placeholder="Nhập họ tên" />
+            </div>
+            <div>
+              <label class="text-muesli-400">Ngày Sinh</label><br />
+              <input type="date" v-model="users.user.birthday"
+                class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center" />
+            </div>
+            <div>
+              <label class="text-muesli-400">Mật Khẩu</label><br />
+              <input type="password" v-model="users.user.password"
+                class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
+                placeholder="Nhập mật khẩu" />
+            </div>
+            <div>
+              <label class="text-muesli-400 block mb-2">Giới Tính</label>
+              <div class="flex gap-5">
+                <label class="flex items-center gap-2">
+                  <input type="radio" :value="true" v-model="users.user.gender" />
+                  Nam
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="radio" :value="false" v-model="users.user.gender" />
+                  Nữ
+                </label>
+              </div>
+            </div>
           </div>
-        </div>
-        <div>
-          <label class="text-muesli-400">Ngày Sinh</label><br />
-          <input type="date" v-model="users.user.birthday"
-            class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center" />
-        </div>
-        <div>
-          <label class="text-muesli-400">CCCD</label><br />
-          <input type="number" v-model="users.user.cccd"
-            class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
-            placeholder="Nhập cccd" />
-        </div>
-        <div>
-          <label class="text-muesli-400 block mb-2">Quyền</label>
-          <select v-model="users.user.role.id"
-            class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5">
-            <option v-for="role in roles" :key="role.id" :value="role.id">
-              {{ role.roleName }}
-            </option>
-          </select>
+          <div class="w-1/2">
+
+            <div>
+              <label class="text-muesli-400">Email</label><br />
+              <input type="email" v-model="users.user.email"
+                class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
+                placeholder="Nhập email" />
+            </div>
+            <div>
+              <label class="text-muesli-400">Số Điện Thoại</label><br />
+              <input type="number" v-model="users.user.phone"
+                class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
+                placeholder="Nhập số điện thoại" />
+            </div>
+            <div>
+              <label class="text-muesli-400">CCCD</label><br />
+              <input type="number" v-model="users.user.cccd"
+                class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
+                placeholder="Nhập cccd" />
+            </div>
+            <div>
+              <label class="text-muesli-400 block mb-2">Quyền</label>
+              <select v-model="users.user.role.id"
+                class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5">
+                <option v-for="role in roles" :key="role.id" :value="role.id">
+                  {{ role.roleName }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+
         </div>
         <DialogFooter>
           <button @click="handleCreateReceptionist" type="button"
@@ -77,11 +86,9 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 const emit = defineEmits<{
   (e: "update:open", value: boolean): void;
@@ -107,15 +114,42 @@ const handleCreateReceptionist = async () => {
     point: 0,
     eblacklist: 1,
     roleId: users.user.role.id,
-    rankId: 5
+    rankId: 7
   };
   console.log("Id Role Nè" + users.user.role.id);
-  
+
   console.log(JSON.stringify(payLoad, null, 2));
   await users.createReceptionist(payLoad);
   await users.getAllUser();
+  resetForm();
   emit("update:open", false);
 }
+
+const resetForm = () => {
+  users.user = {
+        id: 0,
+        phone: "",
+        email: "",
+        password: "",
+        gender: true,
+        birthday: "",
+        joinDate: "",
+        fullname: "",
+        cccd: "",
+        point: 0,
+        role: {
+            id: 0,
+            roleName: "",
+        },
+        rank: {
+            id: 0,
+            nameRank: "",
+            minPointRequired: 0,
+            discount_percent: 0,
+        },
+        eblacklist: 0,
+    };
+};
 
 onMounted(async () => {
   await getAllRoles();

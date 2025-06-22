@@ -52,13 +52,13 @@
                                 <td class="py-2">{{ user.point }}</td>
                                 <td class="py-2 flex justify-center items-center gap-5 h-full">
                                     <button @click.prevent="handleUpdateEblacklist(user)"
-                                        class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
-                                        <LockKeyhole class="w-4 h-4" />
+                                        class="text-green-500 hover:text-green-700 m-1.5">
+                                        <LockKeyholeOpen class="w-5.5 h-5.5" />
                                     </button>
-                                    <Button @click="openUpdateUser(user)"
-                                        class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white">
-                                        <SquarePen />
-                                    </Button>
+                                    <button @click="openUpdateUser(user)"
+                                        class="text-blue-400 hover:text-blue-700">
+                                        <SquarePen class="w-5.5 h-5.5"/>
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
@@ -149,17 +149,17 @@
                                 <td class="py-2">{{ blacklist.email }}</td>
                                 <td class="py-2" :class="getBlacklistClass(blacklist.eblacklist)">{{
                                     blacklist.eblacklist }}</td>
-                                <td class="py-2">Gỗ</td>
+                                <td class="py-2">{{ blacklist.rank && blacklist.rank.nameRank ? blacklist.rank.nameRank : 'Không có' }}</td>
                                 <td class="py-2">{{ blacklist.point }}</td>
                                 <td class="py-2 flex justify-center items-center gap-5 h-full">
                                     <button @click.prevent="handleUpdateEblacklistAgain(blacklist)"
-                                        class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
-                                        <LockKeyhole class="w-4 h-4" />
+                                        class="hover:text-red-700 m-1.5 text-red-500">
+                                        <LockKeyhole class="w-5.5 h-5.5" />
                                     </button>
-                                    <Button
-                                        class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white">
-                                        <SquarePen />
-                                    </Button>
+                                    <button
+                                        class="text-blue-400 hover:text-blue-700">
+                                        <SquarePen class="w-5.5 h-5.5"/>
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
@@ -189,6 +189,7 @@ import {
 } from '@/components/ui/tabs'
 import {
     ChevronDown,
+    LockKeyholeOpen,
     SquarePen,
     LockKeyhole,
     ChevronLeft,
@@ -236,12 +237,13 @@ const handleUpdateEblacklist = async (user: any) => {
         password: user.password,
         gender: user.gender,
         birthday: user.birthday,
+        updateDate: new Date().toISOString(),
         fullname: user.fullname,
         cccd: String(user.cccd),
         point: user.point,
         eblacklist: 3,
         roleId: 2,
-        rankId: user.rankId || 5
+        rankId: user.rank.id
     };
     console.log(JSON.stringify(payLoad, null, 2));
     await Users.updataReceptionist(payLoad);
@@ -257,12 +259,13 @@ const handleUpdateEblacklistAgain = async (blacklist: any) => {
         password: blacklist.password,
         gender: blacklist.gender,
         birthday: blacklist.birthday,
+        updateDate: new Date().toISOString(),
         fullname: blacklist.fullname,
         cccd: String(blacklist.cccd),
         point: blacklist.point,
         eblacklist: 1,
         roleId: 2,
-        rankId: blacklist.rankId || 5
+        rankId: blacklist.rank.id
     };
     console.log(JSON.stringify(payLoad, null, 2));
     await Users.updataReceptionist(payLoad);

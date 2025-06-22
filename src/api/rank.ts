@@ -26,7 +26,7 @@ export const Rank = () =>{
     });
     const getAllRank = async (): Promise<RankResponse> => {
         try{
-            const response = await axios.get<RankResponse>(`${baseUrl}/admin/rank/list`);
+            const response = await axios.get<RankResponse>(`${baseUrl}/rank/list`);
             console.log("status: "+response.status)
             ranks.value = response.data.data;
             return response.data
@@ -38,7 +38,7 @@ export const Rank = () =>{
     const createRank = async (rank: Rank): Promise<RankResponse> => {
         isLoading.value = true;
         try {
-            const response = await axios.post<RankResponse>(`${baseUrl}/admin/rank/create`, rank);
+            const response = await axios.post<RankResponse>(`${baseUrl}/rank/create`, rank);
             
             if (response.status === 200) {
                 toast.success('Thông báo', {
@@ -65,7 +65,7 @@ export const Rank = () =>{
     const updateRank = async (rank: Rank): Promise<RankResponse> => {
         isLoading.value = true;
         try {
-            const response = await axios.put<RankResponse>(`${baseUrl}/admin/rank/${rank.id}`, rank);
+            const response = await axios.put<RankResponse>(`${baseUrl}/rank/${rank.id}`, rank);
             if (response.status === 200) {
                 toast.success('Thông báo', {
                     description: 'Cập nhật rank thành công!',
@@ -91,7 +91,7 @@ export const Rank = () =>{
     const deleteRank = async (id: number): Promise<RankResponse> => {
         isLoading.value = true;
         try {
-            const response = await axios.delete<RankResponse>(`${baseUrl}/admin/rank/${id}`);
+            const response = await axios.delete<RankResponse>(`${baseUrl}/rank/${id}`);
             if(response.status === 200){
                 toast.success('Thông báo', {
                     description: 'Xóa rank thành công!',

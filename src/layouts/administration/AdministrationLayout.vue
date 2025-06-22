@@ -5,7 +5,7 @@
         <Sidebar />
       </div>
       <div class="bg-white w-full flex flex-col">
-        <div>
+        <div class="sticky top-0 z-10 bg-white shadow-md">
           <Header></Header>
         </div>
         <div class="bg-gray-100 h-screen">
