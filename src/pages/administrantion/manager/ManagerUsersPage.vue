@@ -156,7 +156,7 @@
                                         class="hover:text-red-700 m-1.5 text-red-500">
                                         <LockKeyhole class="w-5.5 h-5.5" />
                                     </button>
-                                    <button
+                                    <button @click.prevent="openUpdateUser(blacklist)"
                                         class="text-blue-400 hover:text-blue-700">
                                         <SquarePen class="w-5.5 h-5.5"/>
                                     </button>

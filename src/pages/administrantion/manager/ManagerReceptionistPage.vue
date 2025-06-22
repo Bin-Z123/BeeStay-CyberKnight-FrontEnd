@@ -126,6 +126,9 @@ const handleUpdateBlock = async (user: any) => {
     await Users.getAllUser();
 };
 
+// search
+const seletedUser = ref('');
+
 const currentPage = ref(1);
 const pageSize = ref(10);
 const totalPages = computed(() => {

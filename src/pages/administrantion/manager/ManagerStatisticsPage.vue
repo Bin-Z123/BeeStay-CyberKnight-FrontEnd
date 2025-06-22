@@ -53,10 +53,10 @@ import {
 import { ref, computed, onMounted, watchEffect } from "vue";
 import BarChart from "@/components/ui/barChart/BarChart.vue";
 import { statistics } from "@/api/statistic";
-import { Booking } from "@/api/booking";
+import { Bookings } from "@/api/booking";
 import { User } from "@/api/user";
 
-const booking = Booking();
+const booking = Bookings();
 const statistic = statistics();
 const user = User();
 
@@ -83,7 +83,7 @@ const totalYear = computed(() => {
 })
 
 const sortedUsers = computed(() => {
-    return [...user.users].sort((a, b) => b.point - a.point).slice(0, 10);
+    return [...user.users].filter(user => user.role.id === 2).sort((a, b) => b.point - a.point).slice(0, 10);
 })
 
 onMounted( async () => {

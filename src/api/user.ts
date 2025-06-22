@@ -85,8 +85,8 @@ export const User = defineStore('user', () => {
         cccd: "",
         point: 0,
         role: {
-            id: 0,
-            roleName: "",
+            id: 1,
+            roleName: "ADMIN",
         },
         rank: {
             id: 0,

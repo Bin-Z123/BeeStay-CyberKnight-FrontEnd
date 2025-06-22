@@ -96,9 +96,9 @@ import {
 } from "lucide-vue-next";
 import { ref, onMounted, computed } from "vue";
 import { Button } from "@/components/ui/button";
-import { Booking } from "@/api/booking";
+import { Bookings } from "@/api/booking";
 
-const bookings = Booking();
+const bookings = Bookings();
 const isOpenBooking = ref(false);
 
 const currentPage = ref(1);

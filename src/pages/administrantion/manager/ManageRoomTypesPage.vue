@@ -4,13 +4,14 @@
       <div class="flex relative">
         <div class="w-1/2">
           <div class="flex gap-2 items-center">
-            <input type="text"
+            <!-- <input type="text"
               class="w-2/6 h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 ms-4 text-center"
-              placeholder="Tìm kiếm" />
-            <div class="relative w-2/6">
-              <select
+              placeholder="Tìm kiếm" /> -->
+            <div class="relative w-2/6 mx-4">
+              <select v-model="searchQuery"
                 class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center">
-                <option :value="roomtype.id" v-for="roomtype in roomTypes.roomtypes" :key="roomtype.id">{{ roomtype.name }}</option>
+                <option value="">Tất cả</option>
+                <option :value="roomtype.name" v-for="roomtype in roomTypes.roomtypes" :key="roomtype.id">{{ roomtype.name }}</option>
               </select>
               <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                 <ChevronDown class="w-5 h-5 text-gray-400" />
@@ -42,20 +43,20 @@
           </thead>
           <tbody class="text-gray-700">
             <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
-              v-for="roomtype in paginatedRoomTypes" :key="roomtype.id" @click="openUpdateRoomType(roomtype)">
+              v-for="roomtype in paginatedRoomTypes" :key="roomtype.id">
               <td class="py-2">{{ roomtype.name }}</td>
               <td class="py-2">{{ roomtype.size }}m²</td>
               <td class="py-2">{{ roomtype.price }}</td>
               <td class="py-2">{{ roomtype.peopleAbout }}</td>
               <td class="py-2 flex justify-center items-center gap-5 h-full">
-                <button
-                  class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
-                  <LockKeyhole class="w-4 h-4" />
+                <button @click.prevent="handleDeleteRoomType(roomtype)"
+                  class="hover:text-red-700 m-1.5 text-red-500">
+                  <Trash2 />
                 </button>
-                <Button @click="openUpdateRoomType(roomtype)"
-                  class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white">
+                <button @click="openUpdateRoomType(roomtype)"
+                  class="text-blue-400 hover:text-blue-700">
                   <SquarePen />
-                </Button>
+                </button>
               </td>
             </tr>
           </tbody>
@@ -81,11 +82,11 @@
 import {
   ChevronDown,
   SquarePen,
-  LockKeyhole,
+  Trash2 ,
   ChevronLeft,
   ChevronRight,
 } from "lucide-vue-next";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watchEffect } from "vue";
 import { Button } from "@/components/ui/button";
 import DialogCreateRoomType from "@/components/administration/roomTypeDialog/CreateRoomTypeDialog.vue";
 import DialogUpdateRoomType from "@/components/administration/roomTypeDialog/UpdateRoomTypeDialog.vue";
@@ -95,21 +96,37 @@ const isOpen = ref(false);
 const isOpenUpdate = ref(false);
 const roomTypes = RoomType();
 
+// Search
+const searchQuery = ref("");
+const filteredRoomTypes = computed(() => {
+  if (!searchQuery.value) {
+    return roomTypes.roomtypes;
+  }
+  return roomTypes.roomtypes.filter((roomtype) =>
+    roomtype.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+});
+
 const currentPage = ref(1);
 const pageSize = ref(10);
 const totalPages = computed(() => {
-  return Math.ceil(roomTypes.roomtypes.length / pageSize.value);
+  return Math.ceil(filteredRoomTypes.value.length / pageSize.value);
 });
 const paginatedRoomTypes = computed(() => {
   const startIndex = (currentPage.value - 1) * pageSize.value;
   const endIndex = startIndex + pageSize.value;
-  return roomTypes.roomtypes.slice(startIndex, endIndex);
+  return filteredRoomTypes.value.slice(startIndex, endIndex);
 });
 
 const selectedRoomType = ref(null);
 const openUpdateRoomType = async (roomtype: any) => {
   selectedRoomType.value = {...roomtype};
   isOpenUpdate.value = true;
+}
+
+const handleDeleteRoomType = async (roomtype: any) => {
+  await roomTypes.deleteRoomType(roomtype.id);
+  await roomTypes.getAllRoomType();
 }
 
 onMounted(async () => {
