@@ -44,7 +44,7 @@
       </div>
 
       <div class="grid grid-cols-7 gap-2 max-w-[1050px] justify-center relative">
-        <div v-for="(room, index) in rooms.slice(0, 14)" :key="room.id" class="w-[140px]"
+        <div v-for="(room, index) in listRooms.slice(0, 14)" :key="room.id" class="w-[140px]"
           :class="{ '-ml-[74px] -mt-10': index >= 7 }">
           <div @contextmenu.prevent="openContextMenu($event, room)" :data-id="room.id" tabindex="0"
             :class="`status-${room.roomStatus.toLowerCase()}`"
@@ -52,7 +52,7 @@
             <div class="flex flex-col items-center p-4">
               <h1 class=" font-bold text-lg">{{ room.roomNumber }}</h1>
               <h1>{{ room.roomType.name }}</h1>
-              <h1>2 người</h1>
+              <h1>{{ room.roomType.peopleAbout }} Người</h1>
             </div>
           </div>
         </div>
@@ -91,7 +91,13 @@ import { Button } from "@/components/ui/button";
 import { useMockRooms } from "./mockRoom";
 import { vi } from "date-fns/locale";
 import { format } from "path";
+import { Room } from "@/api/room";
 
+const { getAllRooms,
+  createRoom,
+  updateRoom,
+  listRooms,
+  isLoading } = Room();
 const mockRoomData = useMockRooms();
 
 const isOpen = ref(false);
@@ -134,12 +140,11 @@ interface Room {
     isThum: boolean;
   }[];
 }
-onMounted(() => {
-  console.log("mockData: ", mockRoomData.mockRooms);
-  console.log("Raw: ", rawRoomData.value);
-  console.log("floor: ", groupedByFloor.value);
+onMounted(async () => {
+  await getAllRooms();
+  console.log("getAllRooms: ", listRooms.value);
 })
-const rawRoomData = ref<Room[]>(mockRoomData.mockRooms)
+const rawRoomData = ref<Room[]>(listRooms.value)
 const groupedByFloor = computed(() => {
   const grouped: Record<number, Room[]> = {};
 

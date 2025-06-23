@@ -2,6 +2,7 @@ import { Rooms } from "@/components/administration/RoomDialog/Room";
 import axios from "axios";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
+import { defineStore } from "pinia";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const isLoading = ref(false);

@@ -25,10 +25,10 @@
   --color-muesli-950: #2d1e1b;
 }
 /* Màu trạng thái Room */
-.status-available {
+.status-inactive {
   @apply bg-green-500/90 text-gray-100
 }
-.status-staying {
+.status-active {
   @apply bg-red-500/80 text-gray-100
 }
 .status-maintenance {

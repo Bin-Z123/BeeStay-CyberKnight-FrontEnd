@@ -2,6 +2,7 @@ import axios from "axios";
 import { ref } from "vue";
 import { toast } from 'vue-sonner'
 import { defineStore } from "pinia";
+import { RoomTypeResponse2 } from "@/types";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const isLoading = ref(false);
@@ -11,17 +12,17 @@ interface RoomType {
     name: string,
     size: number,
     price: number,
-    peopleAbout: number
+    peopleAbout: number,
 }
 
 interface RoomTypeResponse {
     code: number,
     message: string,
-    data: RoomType[]
+    data: RoomTypeResponse2[]
 }
 
 export const RoomType = defineStore('roomtype', () => {
-    const roomtypes = ref<RoomType[]>([]);
+    const roomtypes = ref<RoomTypeResponse2[]>([]);
     const roomtype = ref<RoomType>({
         id: 0,
         name: '',
@@ -29,12 +30,12 @@ export const RoomType = defineStore('roomtype', () => {
         price: 0,
         peopleAbout: 1
     });
-    const getAllRoomType = async (): Promise<RoomType[]> => {
+    const getAllRoomType = async (): Promise<RoomTypeResponse> => {
         try {
             const response = await axios.get<RoomTypeResponse>(`${baseUrl}/roomTypes`);
             roomtypes.value = response.data.data;
 
-            return response.data.data;
+            return response.data;
         } catch (error) {
             throw error;
         }

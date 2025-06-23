@@ -107,14 +107,13 @@
                                 <option disabled value="0">-- Chọn loại phòng --</option>
                                 <option v-for="type in getAvailableRoomTypeOptions(index).value" :key="type.id"
                                     :value="type.id">
-                                    {{ type.name }}
+                                    {{ type.name }} ({{ type.quantityAvailable }} lượt đặt phòng)
                                 </option>
                             </select>
                             <input type="number" min="1" v-model.number="detail.quantity"
                                 @input="listenQuantity(detail)" :disabled="detail.roomTypeId === 0" class="input w-1/3"
                                 placeholder="Số lượng" />
-                            <button class="btn btn-error"
-                                @click="newBooking.bookingDetailRequest.splice(index, 1)">Xóa</button>
+                            <button class="btn btn-error" @click="bookingDetails.splice(index, 1)">Xóa</button>
                         </div>
                         <button class="btn btn-info" @click="addRoomType">+ Thêm
                             loại phòng</button>
@@ -183,7 +182,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import type {
     CreateBookingRequest,
     GuestBookingRequest,
@@ -193,14 +192,8 @@ import type {
     StayRequest,
     InfoGuestRequest
 } from "@/types";
-import { RoomType } from "@/api/roomtype";
 import { toast } from "vue-sonner";
-const roomTypes = RoomType();
 
-onMounted(async () => {
-    await roomTypes.getAllRoomType();
-    console.log("Danh sách loại phòng:", roomTypes.roomtypes);
-})
 const props = defineProps<{
     bookingRoom: {
         id: number;
@@ -273,8 +266,10 @@ const availableRoomTypes = ref([
         }]
     },
 ])
-
-
+const bookingDetails = ref([{ roomTypeId: 0, quantity: 1 }])
+const addRoomType = () => {
+    bookingDetails.value.push({ roomTypeId: 0, quantity: 1 })
+}
 const stayList = ref([
     {
         roomNumber: '',
@@ -317,14 +312,28 @@ interface Room {
     roomNumber: string
     roomStatus: string
 }
-const roomtypes = roomTypes.roomtypes
+// Tính lại số phòng (Stay)
+const listRoomNumber = computed(() => {
+    const selectedRomTypeIds = bookingDetails.value
+        .filter(detail => detail.roomTypeId !== 0)
+        .map(detail => detail.roomTypeId);
+
+    const rooms: Room[] = [];
+    for (const typeId of selectedRomTypeIds) {
+        const found = availableRoomTypes.value.find(type => type.id === typeId);
+        if (found?.rooms) {
+            rooms.push(...found.rooms);
+        }
+    }
+    return rooms;
+})
 //  Trả ra danh sách ID loại phòng đã chọn (trừ chính mình)
 const getAvailableRoomTypeOptions = (index: number) => {
     return computed(() => {
         const selectedIds = bookingDetails.value
             .map((d, i) => (i !== index ? d.roomTypeId : ''))
             .filter(id => id !== '')
-        return roomtypes.filter(rt => !selectedIds.includes(rt.id))
+        return availableRoomTypes.value.filter(rt => !selectedIds.includes(rt.id))
     })
 }
 // Dữ liệu thật
@@ -347,25 +356,5 @@ const newBooking = ref<CreateBookingRequest>({
     bookingDetailRequest: [],
     bookingFacilityRequest: [],
     stayRequest: []
-})
-const bookingDetails = ref(newBooking.value.bookingDetailRequest)
-const addRoomType = () => {
-    newBooking.value.bookingDetailRequest.push({ roomTypeId: 0, quantity: 1 })
-}
-
-// Tính lại số phòng (Stay)
-const listRoomNumber = computed(() => {
-    const selectedRomTypeIds = newBooking.value.bookingDetailRequest
-        .filter(detail => detail.roomTypeId !== 0)
-        .map(detail => detail.roomTypeId);
-
-    const rooms: Room[] = [];
-    for (const typeId of selectedRomTypeIds) {
-        const found = roomtypes.find(type => type.id === typeId);
-        if (found?.roomResponseList) {
-            rooms.push(...found.roomResponseList);
-        }
-    }
-    return rooms;
 })
 </script>

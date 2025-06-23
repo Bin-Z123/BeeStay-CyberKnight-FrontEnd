@@ -2,6 +2,7 @@ import axios from "axios";
 import { defineStore } from "pinia";
 import { toast } from "vue-sonner";
 import { ref } from "vue";
+import { CreateBookingRequest } from "@/types";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -218,6 +219,18 @@ export const Booking = defineStore("booking", () => {
       throw error;
     }
   };
+
+  const createBooking = async (booking: CreateBookingRequest) => {
+    try {
+      const response = await axios.post(`${baseUrl}/booking/create`, booking)
+      toast.success("Tạo booking thành công!");
+      return response.data
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error("Lỗi khi tạo booking");
+      }
+    }
+  }
 
   return {
     bookings,
