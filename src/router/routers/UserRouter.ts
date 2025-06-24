@@ -10,6 +10,11 @@ const userRouter: RouteRecordRaw = {
             name: "home",
             component: () => import("../../pages/user/home/HomePages.vue"),
         },
+        {
+            path: "roomdetail",
+            name: "roomdetail",
+            component: () => import("../../pages/user/roomDetail/RoomDetail.vue"),
+        },
     ],
 };
 
