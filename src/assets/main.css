@@ -9,6 +9,9 @@
 .scrollbar-hidden::-webkit-scrollbar {
   display: none;
 }
+body {
+  font-family: 'Lora', serif !important;
+}
 /* Primary Color */
 @theme{
   /* Muesli Nâu */
@@ -31,7 +34,7 @@
 .status-active {
   @apply bg-red-500/80 text-gray-100
 }
-.status-maintenance {
+.status-fix {
   @apply bg-gray-300
 }
 .status-booked {
@@ -39,6 +42,20 @@
 }
 .status-late {
   @apply bg-yellow-950 text-gray-200
+}
+.dp__menu {
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+}
+/* Input cho booking page */
+.input-booking {
+  @apply w-full  border border-muesli-300 rounded-xs focus:outline-none focus:ring-2 focus:ring-muesli-200  shadow-muesli-300 px-1 disabled:border-gray-300 disabled:bg-gray-50 disabled:text-gray-600
+}
+.btn-del-booking{
+  @apply text-black border border-red-500 px-1 py-0.5 text-sm rounded-xs hover:bg-red-500 transition-all duration-200 hover:text-white
+}
+.btn-add-booking{
+  @apply text-black border border-muesli-400 px-1 py-0.5 text-sm rounded-xs hover:bg-muesli-400 transition-all duration-200 hover:text-white
 }
 @theme inline {
   --color-background: var(--background);

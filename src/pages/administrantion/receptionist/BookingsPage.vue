@@ -44,15 +44,15 @@
       </div>
 
       <div class="grid grid-cols-7 gap-2 max-w-[1050px] justify-center relative">
-        <div v-for="(room, index) in listRooms.slice(0, 14)" :key="room.id" class="w-[140px]"
+        <div v-for="(room, index) in rooms.slice(0, 14)" :key="room.id" class="w-[140px]"
           :class="{ '-ml-[74px] -mt-10': index >= 7 }">
           <div @contextmenu.prevent="openContextMenu($event, room)" :data-id="room.id" tabindex="0"
-            :class="`status-${room.roomStatus.toLowerCase()}`"
+            :class="[`status-${room.roomStatus.toLowerCase()}`, `${room.roomStatus == 'FIX' ? 'cursor-not-allowed' : ''}`]"
             class="h-40 bg-white hover:brightness-90  hover:bg-gray-200  flex justify-center items-center [clip-path:polygon(0%_25%,50%_0%,100%_25%,100%_75%,50%_100%,0%_75%)]">
             <div class="flex flex-col items-center p-4">
               <h1 class=" font-bold text-lg">{{ room.roomNumber }}</h1>
-              <h1>{{ room.roomType.name }}</h1>
-              <h1>{{ room.roomType.peopleAbout }} Người</h1>
+              <!-- <h1>{{ room.roomType.name }}</h1>
+              <h1>{{ room.roomType.peopleAbout }} Người</h1> -->
             </div>
           </div>
         </div>
@@ -85,7 +85,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-vue-next";
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import NewBookingDialog from "@/components/administration/BookingDialog/NewBookingDialog.vue";
 import { Button } from "@/components/ui/button";
 import { useMockRooms } from "./mockRoom";
@@ -93,11 +93,7 @@ import { vi } from "date-fns/locale";
 import { format } from "path";
 import { Room } from "@/api/room";
 
-const { getAllRooms,
-  createRoom,
-  updateRoom,
-  listRooms,
-  isLoading } = Room();
+const roomStore = Room();
 const mockRoomData = useMockRooms();
 
 const isOpen = ref(false);
@@ -141,10 +137,16 @@ interface Room {
   }[];
 }
 onMounted(async () => {
-  await getAllRooms();
-  console.log("getAllRooms: ", listRooms.value);
+  await roomStore.getAllRooms();
+  console.log("getAllRooms: ", roomStore.listRooms);
+
+  const startDate = new Date();
+  const endDate = new Date(new Date().setDate(startDate.getDate() + 1));
+  dateS.value = [startDate, endDate];
+  console.log("dateS: ", dateS.value[0]);
 })
-const rawRoomData = ref<Room[]>(listRooms.value)
+
+const rawRoomData = computed(() => roomStore.listRooms)
 const groupedByFloor = computed(() => {
   const grouped: Record<number, Room[]> = {};
 
@@ -160,10 +162,7 @@ const groupedByFloor = computed(() => {
 const dateS = ref([] as Date[]);
 
 onMounted(() => {
-  const startDate = new Date();
-  const endDate = new Date(new Date().setDate(startDate.getDate() + 1));
-  dateS.value = [startDate, endDate];
-  console.log("dateS: ", dateS.value[0]);
+
 })
 
 // const dateE = computed(() => {
@@ -176,4 +175,6 @@ const openNewBookingDialog = () => {
   isOpenBooking.value = true;
   console.log("openNewBookingDialog: ", menu.data);
 }
+
+
 </script>

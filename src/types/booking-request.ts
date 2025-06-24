@@ -33,7 +33,7 @@ export interface BookingFacilityRequest {
 }
 
 export interface StayRequest {
-    roomTypeId: number
+    roomId: number
     roomNumber: string
     actualCheckIn: string
     actualCheckOut: string

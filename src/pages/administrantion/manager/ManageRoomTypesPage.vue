@@ -10,7 +10,8 @@
             <div class="relative w-2/6">
               <select
                 class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center">
-                <option :value="roomtype.id" v-for="roomtype in roomTypes.roomtypes" :key="roomtype.id">{{ roomtype.name }}</option>
+                <option :value="roomtype.id" v-for="roomtype in roomTypes.roomtypes" :key="roomtype.id">{{ roomtype.name
+                }}</option>
               </select>
               <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                 <ChevronDown class="w-5 h-5 text-gray-400" />
@@ -37,6 +38,7 @@
               <th class="px-4 py-2 border">Diện Tích</th>
               <th class="px-4 py-2 border">Giá</th>
               <th class="px-4 py-2 border">Lượng Người Ở</th>
+              <th class="px-4 py-2 border">Số lượng phòng</th>
               <th class="px-4 py-2 border">Tùy Chọn</th>
             </tr>
           </thead>
@@ -47,6 +49,7 @@
               <td class="py-2">{{ roomtype.size }}m²</td>
               <td class="py-2">{{ roomtype.price }}</td>
               <td class="py-2">{{ roomtype.peopleAbout }}</td>
+              <td class="py-2">{{ roomtype.rooms?.length ?? 0 }}</td>
               <td class="py-2 flex justify-center items-center gap-5 h-full">
                 <button
                   class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
@@ -108,11 +111,12 @@ const paginatedRoomTypes = computed(() => {
 
 const selectedRoomType = ref(null);
 const openUpdateRoomType = async (roomtype: any) => {
-  selectedRoomType.value = {...roomtype};
+  selectedRoomType.value = { ...roomtype };
   isOpenUpdate.value = true;
 }
 
 onMounted(async () => {
   await roomTypes.getAllRoomType();
+
 });
 </script>

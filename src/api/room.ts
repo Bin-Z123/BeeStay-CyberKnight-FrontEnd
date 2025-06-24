@@ -6,7 +6,7 @@ import { defineStore } from "pinia";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const isLoading = ref(false);
-const listRooms = ref<RoomResponse[]>([]);
+
 interface RoomResponse {
     id: number;
     roomNumber: string;
@@ -58,7 +58,8 @@ interface RoomUpdateRequest {
     }[];
     deletedRoomImageIds?: string[]; // Mảng chứa ID của các ảnh đã xóa
 }
-export const Room = () => {
+export const Room = defineStore('room', () => {
+    const listRooms = ref<RoomResponse[]>([]);
     //GET ALL ROOMS
     const getAllRooms = async (): Promise<RoomResponse[]> => {
 
@@ -150,4 +151,4 @@ export const Room = () => {
         listRooms,
         isLoading,
     };
-};
+});

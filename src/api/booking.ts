@@ -2,7 +2,8 @@ import axios from "axios";
 import { defineStore } from "pinia";
 import { toast } from "vue-sonner";
 import { ref } from "vue";
-import { CreateBookingRequest } from "@/types";
+import { CreateBookingRequest, RoomAvailabilityResponse } from "@/types";
+import { format } from "date-fns";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -157,6 +158,7 @@ export type BookingStatus = "CONFIRMED" | "CANCEL" | string;
 export type BlacklistStatus = "NORM" | "BLACKLISTED" | string;
 
 export const Booking = defineStore("booking", () => {
+  const isloading = ref(false);
   const bookings = ref<Booking[]>([]);
 
   const booking = ref<Booking>({
@@ -222,13 +224,39 @@ export const Booking = defineStore("booking", () => {
 
   const createBooking = async (booking: CreateBookingRequest) => {
     try {
-      const response = await axios.post(`${baseUrl}/booking/create`, booking)
+      isloading.value = true
+      const response = await axios.post(`${baseUrl}/booking/order`, booking)
       toast.success("Tạo booking thành công!");
       return response.data
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         toast.error("Lỗi khi tạo booking");
       }
+    } finally {
+      isloading.value = false
+    }
+  }
+
+  interface AvalableResponse {
+    code: number
+    message: string
+    data: RoomAvailabilityResponse[]
+  }
+  const listRoomsAvailable = ref<RoomAvailabilityResponse[]>([]);
+  const getAvailableRooms = async (checkinDateF: Date, checkoutDateF: Date): Promise<AvalableResponse> => {
+    try {
+      const checkinDate = format(checkinDateF, "dd/MM/yyyy")
+      const checkoutDate = format(checkoutDateF, "dd/MM/yyyy")
+      console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate);
+      const response = await axios.get<AvalableResponse>(`${baseUrl}/booking/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`);
+      listRoomsAvailable.value = response.data.data;
+      return response.data
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error("Lỗi khi tải danh sách phòng trống")
+        throw error
+      }
+      throw error
     }
   }
 
@@ -236,5 +264,9 @@ export const Booking = defineStore("booking", () => {
     bookings,
     booking,
     getBookings,
+    getAvailableRooms,
+    createBooking,
+    listRoomsAvailable,
+    isloading,
   };
 });
