@@ -47,8 +47,8 @@
                                 <td class="py-2">{{ user.gender == true ? 'Nam' : 'Nữ' }}</td>
                                 <td class="py-2">{{ user.birthday }}</td>
                                 <td class="py-2">{{ user.email }}</td>
-                                <td class="py-2" :class="getBlacklistClass(user.eblacklist)">{{ user.eblacklist }}</td>
-                                <td class="py-2">Đồng</td>
+                                <td class="py-2" :class="getBlacklistClass(user.eblacklist)">{{ user.eblacklist == 1 ? 'Normal' : 'Blacklist' }}</td>
+                                <td class="py-2">{{ user.rank && user.rank.nameRank ? user.rank.nameRank : 'Không có' }}</td>
                                 <td class="py-2">{{ user.point }}</td>
                                 <td class="py-2 flex justify-center items-center gap-5 h-full">
                                     <button @click.prevent="handleUpdateEblacklist(user)"
@@ -147,8 +147,7 @@
                                 <td class="py-2">{{ blacklist.gender == true ? 'Nam' : 'Nữ' }}</td>
                                 <td class="py-2">{{ blacklist.birthday }}</td>
                                 <td class="py-2">{{ blacklist.email }}</td>
-                                <td class="py-2" :class="getBlacklistClass(blacklist.eblacklist)">{{
-                                    blacklist.eblacklist }}</td>
+                                <td class="py-2" :class="getBlacklistClass(blacklist.eblacklist)">{{ blacklist.eblacklist == 1 ? 'Normal' : 'Blacklist' }}</td>
                                 <td class="py-2">{{ blacklist.rank && blacklist.rank.nameRank ? blacklist.rank.nameRank : 'Không có' }}</td>
                                 <td class="py-2">{{ blacklist.point }}</td>
                                 <td class="py-2 flex justify-center items-center gap-5 h-full">
@@ -156,7 +155,7 @@
                                         class="hover:text-red-700 m-1.5 text-red-500">
                                         <LockKeyhole class="w-5.5 h-5.5" />
                                     </button>
-                                    <button
+                                    <button @click.prevent="openUpdateUser(blacklist)"
                                         class="text-blue-400 hover:text-blue-700">
                                         <SquarePen class="w-5.5 h-5.5"/>
                                     </button>

@@ -243,11 +243,11 @@ import type {
 } from "@/types";
 import { RoomType } from "@/api/roomtype";
 import { toast } from "vue-sonner";
-import { Booking } from "@/api/booking";
+import { Bookings } from "@/api/booking";
 import { formatVND, formatDateWithTime, formatDateWithTimeToSQL } from "@/utils";
 import { RoomAvailabilityResponse } from "@/types";
 const roomTypes = RoomType();
-const bookingStore = Booking();
+const bookingStore = Bookings();
 const formatPrice = (price: number) => formatVND(price);
 
 onMounted(async () => {

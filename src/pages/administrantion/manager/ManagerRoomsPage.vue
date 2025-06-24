@@ -4,14 +4,15 @@
       <div class="flex relative">
         <div class="w-1/2">
           <div class="flex gap-2 items-center">
-            <input type="text"
+            <input type="text" v-model="selectedRoomByNumber"
               class="w-2/6 h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 ms-4 text-center"
               placeholder="Tìm kiếm" />
             <div class="relative w-2/6">
-              <select name="" id=""
+              <select v-model="selectedRoom"
                 class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center">
-                <option value="">VIP</option>
-                <option value="">Thường</option>
+                <option value="">Tất Cả</option>
+                <option :value="roomtype.name" v-for="roomtype in roomTypeStore.roomtypes" :key="roomtype.id">{{
+                  roomtype.name }}</option>
               </select>
               <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                 <ChevronDown class="w-5 h-5 text-gray-400" />
@@ -33,7 +34,6 @@
         <table class="w-full border border-gray-300 text-sm text-center bg-white">
           <thead class="bg-gradient-to-r from-muesli-200 to-muesli-400 text-white">
             <tr>
-              <th class="px-4 py-2 border">ID</th>
               <th class="px-4 py-2 border">Số Phòng</th>
               <th class="px-4 py-2 border">Loại Phòng</th>
               <th class="px-4 py-2 border">Tầng</th>
@@ -42,13 +42,13 @@
             </tr>
           </thead>
           <tbody class="text-gray-700">
-            <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="room in roomStore.listRooms"
+            <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="room in paginatedRooms"
               :key="room.id">
-              <td class="py-2">P0{{ room.id }}</td>
               <td class="py-2">{{ room.roomNumber }}</td>
               <td class="py-2">{{ room.roomType.name }}</td>
               <td class="py-2">{{ room.floor }}</td>
-              <td class="py-2">{{ room.roomStatus }}</td>
+              <td class="py-2" :class="room.roomStatus == 'INACTIVE' ? 'text-red-500' : 'text-green-500'">{{
+                room.roomStatus }}</td>
               <td class="py-2 flex justify-center items-center gap-5 h-full">
                 <button
                   class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
@@ -64,11 +64,13 @@
         </table>
         <div class="bg-white h-15 mb-4 shadow-lg flex items-center justify-end gap-2 px-5">
           <input type="text" class="w-12 h-8 border border-gray-300 rounded-sm text-center" disabled
-            value="1" /><span>of 16</span>
-          <button class="hover:bg-muesli-100 w-10 h-10 flex items-center justify-center rounded-4xl">
+            :value="currentPage" /><span>of {{ totalPages }}</span>
+          <button @click="currentPage--" :disabled="currentPage == 1"
+            class="hover:bg-muesli-100 w-10 h-10 flex items-center justify-center rounded-4xl">
             <ChevronLeft />
           </button>
-          <button class="hover:bg-muesli-100 w-10 h-10 flex items-center justify-center rounded-4xl">
+          <button @click="currentPage++" :disabled="currentPage == totalPages"
+            class="hover:bg-muesli-100 w-10 h-10 flex items-center justify-center rounded-4xl">
             <ChevronRight />
           </button>
         </div>
@@ -86,7 +88,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-vue-next";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { Button } from "@/components/ui/button";
 import DialogCreateRoom from "@/components/administration/RoomDialog/CreateRoomDialog.vue";
 import DialogUpdateRoom from "@/components/administration/RoomDialog/UpdateRoomDialog.vue";
@@ -119,6 +121,31 @@ const openDialog = async (room: any) => {
   isUpdateRoom.value = true;
   selectForm.value = room;
 };
+
+// Search
+const selectedRoom = ref('');
+const selectedRoomByNumber = ref('');
+const listRooms = computed(() => roomStore.listRooms || []);
+
+const filteredRooms = computed(() => {
+  return listRooms.value.filter((room) => {
+    const matchType = selectedRoom.value === '' || room.roomType.name.toLowerCase().includes(selectedRoom.value.toLowerCase());
+    const matchNumber = selectedRoomByNumber.value === '' || room.roomNumber.toLowerCase().includes(selectedRoomByNumber.value.toLowerCase());
+    return matchType && matchNumber;
+  });
+})
+
+const currentPage = ref(1);
+const pageSize = ref(10);
+const totalPages = computed(() => {
+  return Math.ceil(filteredRooms.value.length / pageSize.value);
+});
+const paginatedRooms = computed(() => {
+  const startIndex = (currentPage.value - 1) * pageSize.value;
+  const endIndex = startIndex + pageSize.value;
+  return filteredRooms.value.slice(startIndex, endIndex);
+});
+
 // Lấy danh sách phòng
 onMounted(async () => {
   await roomStore.getAllRooms();

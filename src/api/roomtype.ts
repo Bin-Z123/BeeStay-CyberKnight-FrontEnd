@@ -79,5 +79,23 @@ export const RoomType = defineStore('roomtype', () => {
         }
     }
 
-    return { roomtype, roomtypes, getAllRoomType, createRoomType, updateRoomType, isLoading };
+    const deleteRoomType = async (roomtypeId: number): Promise<void> => {
+        isLoading.value = true;
+        try {
+            await axios.delete(`${baseUrl}/roomTypes/${roomtypeId}`);
+            toast.success("Thông báo", {
+                description: "Xóa loại phòng thành công!",
+                action: { label: "Thoát" }
+            });
+        } catch (error: any) {
+            toast.error("Thông báo", {
+                description: "Lỗi xóa loại phòng: " + (error.response?.data?.message || error.message)
+            });
+            throw error;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
+    return { roomtype, roomtypes, getAllRoomType, createRoomType, updateRoomType, deleteRoomType, isLoading };
 });
