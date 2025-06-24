@@ -74,19 +74,26 @@
             <!-- Image -->
             <div class="lg:grid relative items-center justify-items-center">
                 <div
-                    class="relative rounded-lg lg:h-[580px] lg:w-[485px] h-100 w-115 inset-0 bg-[url('/src/assets/images/bg_auth.png')] bg-cover bg-center z-1">
+                    class="relative rounded-2xl lg:h-[580px] lg:w-[485px] h-100 w-115 inset-0 bg-[url('/src/assets/images/about.png')] bg-cover bg-center z-1">
                     <div
                         class="absolute lg:block hidden w-78 h-54 -top-5 -right-10 ring-8 bg-[url('/src/assets/images/bg_auth1.png')] bg-cover bg-center rounded-2xl z-20 ring-white">
                     </div>
                     <div
-                        class="absolute w-48 h-24 bottom-5 lg:-left-14 bg-white shadow-2xl rounded-2xl z-20 flex flex-col justify-center p-10 ring-1 ring-gray-300">
-                        <h2 class="text-3xl font-bold">50+</h2>
-                        <p>Experience Staff</p>
+                        class="absolute w-60 h-30 bottom-8 lg:-left-14 bg-white shadow-2xl rounded-2xl z-20 flex items-center justify-center">
+                        <div class="w-1/2 flex items-center justify-center">
+                            <div class="bg-gray-200/60 w-20 h-20 rounded-2xl">
+                                <Users class="w-full h-full p-4 text-muesli-400"/>
+                            </div>
+                        </div>
+                        <div class="w-1/2 flex flex-col gap-1">
+                            <h2 class="text-2xl font-bold">50+</h2>
+                            <p class="text-gray-500 text-sm">Experience Staff</p>
+                        </div>
                     </div>
                 </div>
             </div>
             <!-- Content -->
-            <div class="w-full">
+            <div class="w-full md:mt-0 mt-10">
                 <h2 class="text-3xl font-bold mb-4">About Us</h2>
                 <p class="text-lg mb-6">
                     Welcome to Bokinn, where luxury meets comfort in the heart of canada.
@@ -160,7 +167,7 @@
                             to ensure a restful night's sleep.</h1>
                     </div>
                 </div>
-                <div ref="container" class="keen-slider mt-10">
+                <div ref="container" class="keen-slider mt-10 rounded-xl">
                     <div class="keen-slider__slide h-[500px] flex items-center justify-center">
                         <div
                             class="w-full h-full bg-[url('@/assets/images/slider1.png')] bg-cover bg-center rounded-xl shadow-md">
@@ -185,9 +192,142 @@
             </div>
         </div>
     </section>
+
+    <section>
+        <div class="bg-white px-4 pb-15">
+            <div class="container mx-auto">
+                <div>
+                    <h1 class="text-2xl text-muesli-400">Minh Chứng</h1>
+                    <h1 class="text-4xl font-bold">Những Đánh Giá Tốt Của Khách Hàng</h1>
+                </div>
+                <div ref="reviews" class="keen-slider">
+                    <div class="keen-slider__slide flex flex-col md:flex-row items-center justify-center">
+                        <div class="md:w-1/5 py-10 w-70">
+                            <img src="@/assets/images/bin.png" alt="" class="rounded-full border-6 border-gray-400/15">
+                        </div>
+                        <div class="md:w-4/5 md:p-10 flex flex-col gap-3">
+                            <div class="flex flex-row">
+                                <Star class="text-muesli-400" />
+                                <Star class="text-muesli-400" />
+                                <Star class="text-muesli-400" />
+                                <Star class="text-muesli-400" />
+                                <Star class="text-muesli-400" />
+                            </div>
+                            <div>
+                                <h1 class="text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem
+                                    ipsum dolor sit amet
+                                    consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing
+                                    elit.Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem ipsum dolor sit
+                                    amet consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing
+                                    elit.Lorem ipsum dolor sit amet consectetur adipisicing elit.</h1>
+                            </div>
+                            <div>
+                                <h1 class="font-bold">Võ Thanh Bin1</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="keen-slider__slide flex flex-col md:flex-row items-center justify-center">
+                        <div class="md:w-1/5 py-10 w-70">
+                            <img src="@/assets/images/bin.png" alt="" class="rounded-full border-6 border-gray-400/15">
+                        </div>
+                        <div class="md:w-4/5 md:p-10 flex flex-col gap-3">
+                            <div class="flex flex-row">
+                                <Star class="text-muesli-400" />
+                                <Star class="text-muesli-400" />
+                                <Star class="text-muesli-400" />
+                                <Star class="text-muesli-400" />
+                                <Star class="text-muesli-400" />
+                            </div>
+                            <div>
+                                <h1 class="text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem
+                                    ipsum dolor sit amet
+                                    consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing
+                                    elit.Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem ipsum dolor sit
+                                    amet consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing
+                                    elit.Lorem ipsum dolor sit amet consectetur adipisicing elit.</h1>
+                            </div>
+                            <div>
+                                <h1 class="font-bold">Võ Thanh Bin2</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="keen-slider__slide flex flex-col md:flex-row items-center justify-center">
+                        <div class="md:w-1/5 py-10 w-70">
+                            <img src="@/assets/images/bin.png" alt="" class="rounded-full border-6 border-gray-400/15">
+                        </div>
+                        <div class="md:w-4/5 md:p-10 flex flex-col gap-3">
+                            <div class="flex flex-row">
+                                <Star class="text-muesli-400" />
+                                <Star class="text-muesli-400" />
+                                <Star class="text-muesli-400" />
+                                <Star class="text-muesli-400" />
+                                <Star class="text-muesli-400" />
+                            </div>
+                            <div>
+                                <h1 class="text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem
+                                    ipsum dolor sit amet
+                                    consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing
+                                    elit.Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem ipsum dolor sit
+                                    amet consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing
+                                    elit.Lorem ipsum dolor sit amet consectetur adipisicing elit.</h1>
+                            </div>
+                            <div>
+                                <h1 class="font-bold">Võ Thanh Bin3</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="bg-[url('@/assets/images/body.png')] bg-fixed bg-cover bg-center h-150 relative">
+            <div class="absolute inset-0 bg-blue-900 opacity-16"></div>
+        </div>
+    </section>
+
+    <section>
+        <div class="flex flex-col justify-center items-center px-4 pt-25 gap-3 bg-white">
+            <h1 class="text-2xl text-muesli-400">Dịch Vụ</h1>
+            <h1 class="text-4xl font-bold mb-10">Dịch Vụ Của Khách Sạn</h1>
+            <div ref="post" class="keen-slider rounded-2xl">
+                <div class="keen-slider__slide rounded-2xl">
+                    <div>
+                        <img src="@/assets/images/bin.png" alt="">
+                    </div>
+                </div>
+                <div class="keen-slider__slide rounded-2xl">
+                    <div>
+                        <img src="@/assets/images/bin.png" alt="">
+                    </div>
+                </div>
+                <div class="keen-slider__slide rounded-2xl">
+                    <div>
+                        <img src="@/assets/images/bin.png" alt="">
+                    </div>
+                </div>
+                <div class="keen-slider__slide rounded-2xl">
+                    <div>
+                        <img src="@/assets/images/bin.png" alt="">
+                    </div>
+                </div>
+                <div class="keen-slider__slide rounded-2xl">
+                    <div>
+                        <img src="@/assets/images/bin.png" alt="">
+                    </div>
+                </div>
+                <div class="keen-slider__slide rounded-2xl">
+                    <div>
+                        <img src="@/assets/images/bin.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </template>
 <script setup>
-import { MoveRight, MoveLeft, BedDouble, ShieldCheck, WavesLadder, Monitor } from "lucide-vue-next";
+import { MoveRight, MoveLeft, BedDouble, ShieldCheck, WavesLadder, Monitor, Star, Users } from "lucide-vue-next";
 import { ref, onMounted, watch, computed } from "vue";
 import { vi } from "date-fns/locale";
 import { addDays, format } from "date-fns";
@@ -222,22 +362,46 @@ const checkOutDate = computed(() => {
 
 // Slider
 const [container] = useKeenSlider({
-  loop: true,
-  slides: {
-    perView: 4,
-    spacing: 15,
-  },
-  breakpoints: {
-    '(max-width: 768px)': {
-      slides: {
-        perView: 1,
-        spacing: 10,
-      },
+    loop: true,
+    slides: {
+        perView: 4,
+        spacing: 15,
     },
-  },
+    breakpoints: {
+        '(max-width: 768px)': {
+            slides: {
+                perView: 1,
+                spacing: 10,
+            },
+        },
+    },
 })
 
+// Slider reviews
+const [reviews] = useKeenSlider({
+    loop: true,
+    slides: {
+        perView: 1,
+        spacing: 15,
+    },
+})
 
+// Slider reviews
+const [post] = useKeenSlider({
+    loop: true,
+    slides: {
+        perView: 6,
+        spacing: 15,
+    },
+    breakpoints: {
+        '(max-width: 768px)': {
+            slides: {
+                perView: 2,
+                spacing: 10,
+            },
+        },
+    }
+})
 
 </script>
 <style scoped>
