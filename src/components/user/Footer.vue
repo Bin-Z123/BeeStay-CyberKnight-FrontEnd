@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-        <div class="flex md:flex-row flex-col container md:mx-auto mx-4 mb-10 gap-5">
+        <div class="flex md:flex-row flex-col container md:px-auto px-4 mb-10 gap-5">
             <div class="md:w-4/10 md:mx-auto mx-1">
                 <img src="@/assets/images/BeeStay.png" alt="" class="w-1/3">
                 <h1 class="md:ps-6 md:pe-40 text-gray-500">Each room features plush bedding, high-quality linens, and a
