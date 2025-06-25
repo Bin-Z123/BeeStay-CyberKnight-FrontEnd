@@ -16,7 +16,8 @@
                 <div class="lg:w-3/5 px-4 lg:px-0">
                     <div class="flex flex-col justify-center h-full lg:gap-8 gap-4">
                         <p class="text-2xl text-muesli-400">Thông Tin Chúng Tôi</p>
-                        <h1 class="lg:text-5xl md:text-4xl text-3xl font-bold">Chào Mừng Bạn Đến Với Khách Sạn BEESTAY</h1>
+                        <h1 class="lg:text-5xl md:text-4xl text-3xl font-bold">Chào Mừng Bạn Đến Với Khách Sạn BEESTAY
+                        </h1>
                         <p class="text-gray-500 text-lg mt-6">Welcome to Bokinn, where luxury meets comfort in the heart
                             of canada. Since 1999, we have
                             been dedicated to providing an exceptional stay for our guests, blending modern amenities
@@ -57,40 +58,42 @@
                                 equipped with essentials like beds.</h1>
                         </div>
                     </div>
-                    <div class="lg:absolute lg:top-38 lg:right-30 lg:h-135 h-135 lg:w-140 bg-[url('@/assets/images/about3.png')] bg-cover"></div>
+                    <div
+                        class="lg:absolute lg:top-38 lg:right-30 lg:h-135 h-135 lg:w-140 bg-[url('@/assets/images/about3.png')] bg-cover">
+                    </div>
                 </div>
             </div>
 
-            <div class="flex flex-col container mx-auto py-25 justify-center items-center">
+            <div class="flex flex-col container mx-auto py-25 gap-5 items-center justify-center">
                 <p class="text-2xl text-muesli-400">Nhóm Chúng Tôi</p>
                 <h1 class="text-4xl font-bold">Thông Tin Về Nhóm</h1>
-                <div class="grid grid-cols-6 mt-10 gap-4">
-                    <div class="flex flex-col justify-center items-center gap-2">
+                <div ref="users" class="keen-slider">
+                    <div class="keen-slider__slide flex flex-col justify-center items-center gap-2">
                         <img src="@/assets/images/bin.png" alt="" class="rounded-2xl">
                         <h1 class="font-bold text-2xl">Võ Thanh Bin</h1>
                         <p class="text-sm">Full Stack Developer</p>
                     </div>
-                    <div class="flex flex-col justify-center items-center gap-2">
+                    <div class="keen-slider__slide flex flex-col justify-center items-center gap-2">
                         <img src="@/assets/images/bin.png" alt="" class="rounded-2xl">
                         <h1 class="font-bold text-2xl">Võ Thanh Bin</h1>
                         <p class="text-sm">Full Stack Developer</p>
                     </div>
-                    <div class="flex flex-col justify-center items-center gap-2">
+                    <div class="keen-slider__slide flex flex-col justify-center items-center gap-2">
                         <img src="@/assets/images/bin.png" alt="" class="rounded-2xl">
                         <h1 class="font-bold text-2xl">Võ Thanh Bin</h1>
                         <p class="text-sm">Full Stack Developer</p>
                     </div>
-                    <div class="flex flex-col justify-center items-center gap-2">
+                    <div class="keen-slider__slide flex flex-col justify-center items-center gap-2">
                         <img src="@/assets/images/bin.png" alt="" class="rounded-2xl">
                         <h1 class="font-bold text-2xl">Võ Thanh Bin</h1>
                         <p class="text-sm">Full Stack Developer</p>
                     </div>
-                    <div class="flex flex-col justify-center items-center gap-2">
+                    <div class="keen-slider__slide flex flex-col justify-center items-center gap-2">
                         <img src="@/assets/images/bin.png" alt="" class="rounded-2xl">
                         <h1 class="font-bold text-2xl">Võ Thanh Bin</h1>
                         <p class="text-sm">Full Stack Developer</p>
                     </div>
-                    <div class="flex flex-col justify-center items-center gap-2">
+                    <div class="keen-slider__slide flex flex-col justify-center items-center gap-2">
                         <img src="@/assets/images/bin.png" alt="" class="rounded-2xl">
                         <h1 class="font-bold text-2xl">Võ Thanh Bin</h1>
                         <p class="text-sm">Full Stack Developer</p>
@@ -197,6 +200,22 @@ const [reviews] = useKeenSlider({
     slides: {
         perView: 1,
         spacing: 15,
+    },
+})
+
+const [users] = useKeenSlider({
+    loop: true,
+    slides: {
+        perView: 6,
+        spacing: 15,
+    },
+    breakpoints: {
+        '(max-width: 768px)': {
+            slides: {
+                perView: 1,
+                spacing: 10,
+            },
+        },
     },
 })
 </script>
