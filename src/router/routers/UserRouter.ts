@@ -20,6 +20,11 @@ const userRouter: RouteRecordRaw = {
             name: "about",
             component: () => import("../../pages/user/about/AboutPages.vue"),
         },
+        {
+            path: "roomtype",
+            name: "roomtype",
+            component: () => import("../../pages/user/room/RoomType.vue"),
+        }
     ],
 };
 

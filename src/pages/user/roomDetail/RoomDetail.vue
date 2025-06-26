@@ -113,7 +113,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-col items-center mt-20 gap-3 mx-4 lg:mx-0">
+                <div class="flex flex-col items-center mt-20 gap-3 mx-4 lg:mx-0 pb-25 ">
                     <p class="text-2xl text-muesli-400">Một Số Loại Phòng Khác</p>
                     <h1 class="text-4xl font-bold">Một Số Loại Phòng Khác</h1>
                     <div ref="roomtype" class="keen-slider rounded-2xl mt-10">

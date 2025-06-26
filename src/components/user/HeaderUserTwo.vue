@@ -2,21 +2,6 @@
   <div class="">
     <div class="container mx-auto flex justify-center items-center text-gray-500">
       <div class="w-5/12 lg:flex hidden items-center gap-5">
-        <!-- <RouterLink to="" class="flex items-center gap-0.5">Trang Chủ
-          <ChevronDown class="w-4 h-4"/>
-        </RouterLink>
-        <RouterLink to="" class="flex items-center gap-0.5">Phòng
-          <ChevronDown class="w-4 h-4"/>
-        </RouterLink>
-        <RouterLink to="" class="flex items-center gap-0.5">Trang
-          <ChevronDown class="w-4 h-4"/>
-        </RouterLink>
-        <RouterLink to="" class="flex items-center gap-0.5">Blog
-          <ChevronDown class="w-4 h-4"/>
-        </RouterLink>
-        <RouterLink to="" class="flex items-center gap-0.5">Kết Nối
-          <ChevronDown class="w-4 h-4"/>
-        </RouterLink> -->
         <div class="relative group">
           <div class="flex items-center gap-1 text-base font-semibold cursor-pointer group-hover:text-muesli-500">
             Trang Chủ
@@ -43,9 +28,9 @@
             <RouterLink to="/user/roomdetail" class="block px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400 hover:rounded-t-lg">
               Chi tiết phòng
             </RouterLink>
-            <RouterLink to="/gioi-thieu"
+            <RouterLink to="/user/roomtype"
               class="block px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400 hover:rounded-b-lg">
-              Giới thiệu
+              Loại Phòng
             </RouterLink>
           </div>
         </div>
@@ -101,14 +86,14 @@
       <div class="md:w-2/12 w-2/3 md:flex justify-center py-1"><img src="../../assets/images/BeeStay.png" alt=""
           class="w-40"></div>
       <div class="md:w-5/12 2-1/3 flex justify-end gap-3 items-center">
-        <button
+        <RouterLink to="/auth/login"
           class="lg:block hidden py-2 px-4 hover:bg-muesli-400/10 text-gray-400 hover:text-muesli-400 rounded-lg border hover:border-muesli-400 transition-all duration-300 hover:scale-105 hover:shadow-md">
           Đăng Nhập
-        </button>
-        <button
+        </RouterLink>
+        <RouterLink to="/auth/register"
           class="lg:block hidden py-2 px-4 hover:bg-muesli-400/10 text-gray-400 hover:text-muesli-400 rounded-lg border hover:border-muesli-400 transition-all duration-300 hover:scale-105 hover:shadow-md">
           Đăng Ký
-        </button>
+      </RouterLink>
         <RouterLink to=""
           class="py-2 px-4 bg-muesli-400 hover:bg-muesli-400/10 text-white hover:text-muesli-400 rounded-lg border hover:border-muesli-400 transition-all duration-300 hover:scale-105 hover:shadow-md">
           Đặt Ngay</RouterLink>
@@ -119,7 +104,7 @@
 </template>
 <script setup lang="ts">
 import { SidebarTrigger } from '@/components/ui/sidebar'
-import { ChevronDown } from 'lucide-vue-next';
+import { ChevronDown, Router } from 'lucide-vue-next';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -128,4 +113,5 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { RouterLink } from 'vue-router';
 </script>

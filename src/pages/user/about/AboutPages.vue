@@ -64,7 +64,7 @@
                 </div>
             </div>
 
-            <div class="flex flex-col container mx-auto py-25 gap-5 items-center justify-center">
+            <div class="flex flex-col container mx-auto py-25 gap-5 items-center justify-center px-4 lg:px-0">
                 <p class="text-2xl text-muesli-400">Nhóm Chúng Tôi</p>
                 <h1 class="text-4xl font-bold">Thông Tin Về Nhóm</h1>
                 <div ref="users" class="keen-slider">

@@ -288,7 +288,7 @@
     </section>
 
     <section>
-        <div class="flex flex-col justify-center items-center px-4 pt-25 gap-3 bg-white">
+        <div class="flex flex-col justify-center items-center px-4 pt-25 gap-3 bg-white pb-25">
             <h1 class="text-2xl text-muesli-400">Dịch Vụ</h1>
             <h1 class="text-4xl font-bold mb-10">Dịch Vụ Của Khách Sạn</h1>
             <div ref="post" class="keen-slider rounded-2xl">
