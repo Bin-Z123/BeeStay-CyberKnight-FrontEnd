@@ -181,6 +181,7 @@
                                     <input v-model="guest.cccd" class="input-booking" placeholder="CCCD" />
                                     <select v-model="guest.occupantType" class="input-booking">
                                         <option value="" selected disabled>Chọn loại khách ở</option>
+                                        <option value="INFANT">Người đặt</option>
                                         <option value="ADULT">Người lớn</option>
                                         <option value="CHILD">Trẻ em</option>
                                     </select>

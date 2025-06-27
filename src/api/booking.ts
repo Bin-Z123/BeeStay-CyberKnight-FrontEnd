@@ -2,6 +2,7 @@ import axios from "axios";
 import { defineStore } from "pinia";
 import { toast } from "vue-sonner";
 import { ref } from "vue";
+import { formatDateWitCheckInCheckOutAvailable, } from "@/utils";
 import {
   Booking,
   BookingResponse,
@@ -19,8 +20,8 @@ export const Bookings = defineStore("booking", () => {
 
   const booking = ref<Booking>({
     id: 0,
-    checkInDate: "",
-    checkOutDate: "",
+    checkInDate: new Date(),
+    checkOutDate: new Date(),
     totalAmount: 0,
     isDeposit: false,
     bookingStatus: "CONFIRMED",
@@ -101,8 +102,8 @@ export const Bookings = defineStore("booking", () => {
   const listRoomsAvailable = ref<RoomAvailabilityResponse[]>([]);
   const getAvailableRooms = async (checkinDateF: Date, checkoutDateF: Date): Promise<AvalableResponse> => {
     try {
-      const checkinDate = format(checkinDateF, "dd/MM/yyyy")
-      const checkoutDate = format(checkoutDateF, "dd/MM/yyyy")
+      const checkinDate = formatDateWitCheckInCheckOutAvailable(checkinDateF, 14, 0, 0)
+      const checkoutDate = formatDateWitCheckInCheckOutAvailable(checkoutDateF, 12, 0, 0)
       console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate);
       const response = await axios.get<AvalableResponse>(`${baseUrl}/booking/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`);
       listRoomsAvailable.value = response.data.data;

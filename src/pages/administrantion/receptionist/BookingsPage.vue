@@ -68,6 +68,8 @@
       </button>
       <button class="w-full text-left px-4 py-2 hover:bg-gray-100">Xác nhận đặt phòng</button>
       <button class="w-full text-left px-4 py-2 hover:bg-gray-100">Trả phòng</button>
+      <button class="w-full text-left px-4 py-2 hover:bg-gray-100">Gia hạn phòng</button>
+
 
       <hr>
       <button class="w-full  text-left px-4 py-2 hover:bg-gray-100">

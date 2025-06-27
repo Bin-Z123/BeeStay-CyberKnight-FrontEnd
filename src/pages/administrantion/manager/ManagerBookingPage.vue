@@ -50,14 +50,17 @@
                     </tr>
                 </thead>
                 <tbody class="text-gray-700">
-                    <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="booking in paginatedRoomTypes" :key="booking.id">
+                    <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
+                        v-for="booking in paginatedRoomTypes" :key="booking.id">
                         <td class="py-2">{{ booking.user?.fullname || booking.guestBooking.fullname }}</td>
-                        <td class="py-2">{{ booking.checkInDate.split('T')[0] }}</td>
-                        <td class="py-2">{{ booking.checkOutDate.split('T')[0] }}</td>
+                        <td class="py-2">{{ formatDateWithTimeToUI(booking.checkInDate) }}</td>
+                        <td class="py-2">{{ formatDateWithTimeToUI(booking.checkOutDate) }}</td>
                         <!-- <td class="py-2">{{ booking.user?.email || booking.guestBooking.email }}</td>
                         <td class="py-2">{{ booking.user?.phone || booking.guestBooking.phone }}</td> -->
                         <td class="py-2">{{ booking.totalAmount }}</td>
-                        <td class="py-2" :class="booking.bookingStatus == 'CONFIRMED' ? 'text-green-500' : 'text-red-500'">{{ booking.bookingStatus }}</td>
+                        <td class="py-2"
+                            :class="booking.bookingStatus == 'CONFIRMED' ? 'text-green-500' : 'text-red-500'">{{
+                                booking.bookingStatus }}</td>
                         <td class="py-2 flex justify-center items-center gap-5 h-full">
                             <button
                                 class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
@@ -72,17 +75,17 @@
                 </tbody>
             </table>
             <div class="bg-white h-15 mb-4 shadow-lg flex items-center justify-end gap-2 px-5">
-          <input type="text" class="w-12 h-8 border border-gray-300 rounded-sm text-center" disabled
-            :value="currentPage" /><span>of {{ totalPages }}</span>
-          <button @click="currentPage--" :disabled="currentPage == 1"
-            class="hover:bg-muesli-100 w-10 h-10 flex items-center justify-center rounded-4xl">
-            <ChevronLeft />
-          </button>
-          <button @click="currentPage++" :disabled="currentPage == totalPages"
-            class="hover:bg-muesli-100 w-10 h-10 flex items-center justify-center rounded-4xl">
-            <ChevronRight />
-          </button>
-        </div>
+                <input type="text" class="w-12 h-8 border border-gray-300 rounded-sm text-center" disabled
+                    :value="currentPage" /><span>of {{ totalPages }}</span>
+                <button @click="currentPage--" :disabled="currentPage == 1"
+                    class="hover:bg-muesli-100 w-10 h-10 flex items-center justify-center rounded-4xl">
+                    <ChevronLeft />
+                </button>
+                <button @click="currentPage++" :disabled="currentPage == totalPages"
+                    class="hover:bg-muesli-100 w-10 h-10 flex items-center justify-center rounded-4xl">
+                    <ChevronRight />
+                </button>
+            </div>
         </div>
     </section>
 </template>
@@ -97,6 +100,7 @@ import {
 import { ref, onMounted, computed } from "vue";
 import { Button } from "@/components/ui/button";
 import { Bookings } from "@/api/booking";
+import { formatDateWithTimeToUI } from "@/utils";
 
 const bookings = Bookings();
 const isOpenBooking = ref(false);
@@ -104,14 +108,14 @@ const isOpenBooking = ref(false);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const totalPages = computed(() => {
-  return Math.ceil(bookings.bookings.length / pageSize.value);
+    return Math.ceil(bookings.bookings.length / pageSize.value);
 });
 const paginatedRoomTypes = computed(() => {
-  const startIndex = (currentPage.value - 1) * pageSize.value;
-  const endIndex = startIndex + pageSize.value;
-  return bookings.bookings.slice(startIndex, endIndex);
+    const startIndex = (currentPage.value - 1) * pageSize.value;
+    const endIndex = startIndex + pageSize.value;
+    return bookings.bookings.slice(startIndex, endIndex);
 });
-onMounted( async() => {
+onMounted(async () => {
     await bookings.getBookings();
 });
 </script>
