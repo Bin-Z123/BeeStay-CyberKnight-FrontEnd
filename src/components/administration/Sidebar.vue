@@ -3,7 +3,7 @@
     <Sidebar>
       <SidebarContent class="bg-muesli-400 text-white">
         <div>
-          <RouterLink to="/auth/login"
+          <RouterLink to="/user/home"
             ><img
               class="w-85 pt-6"
               src="/src/assets/images/LogoBeeStay.svg"

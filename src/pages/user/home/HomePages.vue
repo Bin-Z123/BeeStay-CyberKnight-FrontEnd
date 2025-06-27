@@ -25,7 +25,7 @@
     <!-- SEARCH BOX -->
     <div class="relative z-10">
         <div class="px-4 lg:mx-0 mx-auto xl:container absolute lg:left-1/2 lg:transform lg:-translate-x-1/2 w-full">
-            <form action="" class="bg-white lg:rounded-2xl rounded-b-2xl shadow-xl lg:-mt-15 text-[20px]">
+            <form action="" class="bg-white lg:rounded-2xl rounded-b-2xl shadow-xl lg:-mt-14 text-[20px]">
                 <div
                     class="lg:flex justify-between items-center md:grid md:grid-cols-3 sm:grid sm:grid-cols-2 gap-5 grid grid-cols-1 py-4 px-6">
                     <div class="space-y-2 flex flex-col border-gray-200 sm:border-r-1 lg:w-4/18">
@@ -288,7 +288,7 @@
     </section>
 
     <section>
-        <div class="flex flex-col justify-center items-center px-4 pt-25 gap-3 bg-white">
+        <div class="flex flex-col justify-center items-center px-4 pt-25 gap-3 bg-white pb-25">
             <h1 class="text-2xl text-muesli-400">Dịch Vụ</h1>
             <h1 class="text-4xl font-bold mb-10">Dịch Vụ Của Khách Sạn</h1>
             <div ref="post" class="keen-slider rounded-2xl">
