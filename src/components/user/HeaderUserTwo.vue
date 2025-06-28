@@ -68,18 +68,7 @@
         </div>
         <div class="relative group">
           <div class="flex items-center gap-1 text-base font-semibold cursor-pointer group-hover:text-muesli-500">
-            Kết Nối
-            <ChevronDown class="w-4 h-4" />
-          </div>
-          <div
-            class="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-            <RouterLink to="/" class="block px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400 hover:rounded-t-lg">
-              Trang chủ chính
-            </RouterLink>
-            <RouterLink to="/gioi-thieu"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400 hover:rounded-b-lg">
-              Giới thiệu
-            </RouterLink>
+            <RouterLink to="/user/contact">Kết Nối</RouterLink>
           </div>
         </div>
       </div>
