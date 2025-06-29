@@ -11,14 +11,14 @@
                     <div class="relative w-2/8">
                         <select name="" id=""
                             class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center">
-                            <option value="">VIP</option>
+                            <option value="">Tất cả </option>
                             <option value="">Thường</option>
                         </select>
                         <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                             <ChevronDown class="w-5 h-5 text-gray-400" />
                         </div>
                     </div>
-                    <input type="text"
+                    <input type="text" v-model="searchInput"
                         class="w-2/8 h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center"
                         placeholder="Tìm kiếm">
                 </div>
@@ -40,10 +40,10 @@
                 <thead class="bg-gradient-to-r from-muesli-200 to-muesli-400 text-white">
                     <tr>
                         <th class="px-4 py-2 border">Khách Hàng</th>
+                        <th class="px-4 py-2 border">SĐT</th>
+                        <th class="px-4 py-2 border">Email</th>
                         <th class="px-4 py-2 border">Ngày Đến</th>
                         <th class="px-4 py-2 border">Ngày Đi</th>
-                        <!-- <th class="px-4 py-2 border">Email</th>
-                        <th class="px-4 py-2 border">SĐT</th> -->
                         <th class="px-4 py-2 border">Tổng Tiền</th>
                         <th class="px-4 py-2 border">Trạng Thái</th>
                         <th class="px-4 py-2 border">Tùy Chọn</th>
@@ -52,7 +52,9 @@
                 <tbody class="text-gray-700">
                     <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
                         v-for="booking in paginatedRoomTypes" :key="booking.id">
-                        <td class="py-2">{{ booking.user?.fullname || booking.guestBooking.fullname }}</td>
+                        <td class="py-2">{{ booking.user?.fullname || booking.guestBooking.fullname + ' (Guest)' }}</td>
+                        <td class="py-2">{{ booking.user?.phone || booking.guestBooking.phone }}</td>
+                        <td class="py-2">{{ booking.user?.email || booking.guestBooking.email }}</td>
                         <td class="py-2">{{ formatDateWithTimeToUI(booking.checkInDate) }}</td>
                         <td class="py-2">{{ formatDateWithTimeToUI(booking.checkOutDate) }}</td>
                         <!-- <td class="py-2">{{ booking.user?.email || booking.guestBooking.email }}</td>
@@ -101,6 +103,12 @@ import { ref, onMounted, computed } from "vue";
 import { Button } from "@/components/ui/button";
 import { Bookings } from "@/api/booking";
 import { formatDateWithTimeToUI } from "@/utils";
+import {
+    Booking,
+    BookingResponse,
+    BookingStatus,
+    BlacklistStatus
+} from "@/interface/booking.interface";
 
 const bookings = Bookings();
 const isOpenBooking = ref(false);
@@ -108,14 +116,41 @@ const isOpenBooking = ref(false);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const totalPages = computed(() => {
-    return Math.ceil(bookings.bookings.length / pageSize.value);
+    return Math.ceil(filteredBookings.value.length / pageSize.value);
 });
 const paginatedRoomTypes = computed(() => {
     const startIndex = (currentPage.value - 1) * pageSize.value;
     const endIndex = startIndex + pageSize.value;
-    return bookings.bookings.slice(startIndex, endIndex);
+    return filteredBookings.value.slice(startIndex, endIndex);
 });
+// Sort theo ngày mới nhất
+const sortedBookings = ref<Booking[]>([]);
 onMounted(async () => {
     await bookings.getBookings();
+    sortedBookings.value = [...bookings.bookings].sort((a, b) => new Date(b.bookingDate).getTime() - new Date(a.bookingDate).getTime());
 });
+
+//Search booking
+const searchInput = ref('');
+const filteredBookings = computed(() => {
+    const keyword = searchInput.value.trim().toLowerCase();
+    if (!keyword) return sortedBookings.value;
+
+    return sortedBookings.value.filter(b => {
+        const user = b.user
+        const guest = b.guestBooking
+
+        const userMatch = b.user &&
+            (user.phone.toLowerCase().includes(keyword) ||
+                user.email.toLowerCase().includes(keyword) ||
+                user.fullname?.toLowerCase().includes(keyword));
+
+        const guestMatch = b.guestBooking &&
+            (guest.phone.toLowerCase().includes(keyword) ||
+                guest.email.toLowerCase().includes(keyword) ||
+                guest.fullname?.toLowerCase().includes(keyword));
+
+        return userMatch || guestMatch;
+    })
+})
 </script>
