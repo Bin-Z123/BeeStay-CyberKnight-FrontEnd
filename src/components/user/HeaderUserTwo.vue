@@ -9,7 +9,8 @@
           </div>
           <div
             class="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-            <RouterLink to="/user/home" class="block px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400 hover:rounded-t-lg">
+            <RouterLink to="/user/home"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400 hover:rounded-t-lg">
               Trang chủ
             </RouterLink>
             <RouterLink to="/gioi-thieu"
@@ -25,7 +26,8 @@
           </div>
           <div
             class="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-            <RouterLink to="/user/roomdetail" class="block px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400 hover:rounded-t-lg">
+            <RouterLink to="/user/roomdetail"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400 hover:rounded-t-lg">
               Chi tiết phòng
             </RouterLink>
             <RouterLink to="/user/roomtype"
@@ -41,7 +43,8 @@
           </div>
           <div
             class="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-            <RouterLink to="/user/about" class="block px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400 hover:rounded-t-lg">
+            <RouterLink to="/user/about"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400 hover:rounded-t-lg">
               Thông Tin Về Chúng Tôi
             </RouterLink>
             <RouterLink to="/gioi-thieu"
@@ -57,7 +60,8 @@
           </div>
           <div
             class="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-            <RouterLink to="/" class="block px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400 hover:rounded-t-lg">
+            <RouterLink to="/"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400 hover:rounded-t-lg">
               Trang chủ chính
             </RouterLink>
             <RouterLink to="/gioi-thieu"
@@ -75,14 +79,51 @@
       <div class="md:w-2/12 w-2/3 md:flex justify-center py-1"><img src="../../assets/images/BeeStay.png" alt=""
           class="w-40"></div>
       <div class="md:w-5/12 2-1/3 flex justify-end gap-3 items-center">
-        <RouterLink to="/auth/login"
+        <!-- <RouterLink to="/auth/login"
           class="lg:block hidden py-2 px-4 hover:bg-muesli-400/10 text-gray-400 hover:text-muesli-400 rounded-lg border hover:border-muesli-400 transition-all duration-300 hover:scale-105 hover:shadow-md">
           Đăng Nhập
         </RouterLink>
         <RouterLink to="/auth/register"
           class="lg:block hidden py-2 px-4 hover:bg-muesli-400/10 text-gray-400 hover:text-muesli-400 rounded-lg border hover:border-muesli-400 transition-all duration-300 hover:scale-105 hover:shadow-md">
           Đăng Ký
-      </RouterLink>
+      </RouterLink> -->
+
+        <div class="relative group lg:block hidden">
+          <div
+            class="flex items-center gap-1 text-base font-semibold cursor-pointer group-hover:text-muesli-500 border-2 border-gray-500 hover:border-muesli-400 py-2 px-4 rounded-lg">
+            <RouterLink to="">Võ Thanh Bin | 0 Điểm
+              <ChevronDown class="w-4 h-4 inline-block" />
+            </RouterLink>
+          </div>
+          <div
+            class="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+            <div class="bg-muesli-400 py-2 px-4 rounded-t-lg">
+              <p class="text-lg text-white font-bold rounded-t-lg">Võ Thanh Bin</p>
+              <p class="text-sm text-white flex gap-2">Bạn là thành viên <span class="font-bold">Đồng</span><ChevronRight class="ml-auto"/></p>
+            </div>
+            <hr>
+            <RouterLink to=""
+              class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400">
+              <CircleDollarSign class="w-4 h-4 inline-block"/> 0 Điểm
+            </RouterLink>
+            <RouterLink to="/user/setting/profile"
+              class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400 hover:rounded-b-lg">
+              <User class="w-4 h-4 inline-block"/>Chỉnh sửa hồ sơ
+            </RouterLink>
+            <RouterLink to=""
+              class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400 hover:rounded-b-lg">
+              <Wallet class="w-4 h-4 inline-block"/>Hoàn tiền
+            </RouterLink>
+            <RouterLink to=""
+              class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400 hover:rounded-b-lg">
+              <TicketPercent class="w-4 h-4 inline-block"/>Khuyến mãi
+            </RouterLink>
+            <RouterLink to=""
+              class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400 hover:rounded-b-lg">
+              <LogOut class="w-4 h-4 inline-block"/>Đăng xuất
+            </RouterLink>
+          </div>
+        </div>
         <RouterLink to=""
           class="py-2 px-4 bg-muesli-400 hover:bg-muesli-400/10 text-white hover:text-muesli-400 rounded-lg border hover:border-muesli-400 transition-all duration-300 hover:scale-105 hover:shadow-md">
           Đặt Ngay</RouterLink>
@@ -93,7 +134,7 @@
 </template>
 <script setup lang="ts">
 import { SidebarTrigger } from '@/components/ui/sidebar'
-import { ChevronDown, Router } from 'lucide-vue-next';
+import { ChevronDown, Router, User, CircleDollarSign, Wallet, TicketPercent, LogOut, ChevronRight } from 'lucide-vue-next';
 import {
   DropdownMenu,
   DropdownMenuContent,
