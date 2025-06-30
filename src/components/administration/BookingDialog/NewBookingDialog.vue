@@ -3,8 +3,7 @@
         <DialogContent class="sm:max-w-[900px] grid-rows-[auto_minmax(0,1fr)_auto] p-0 max-h-[90dvh]"
             @pointer-down-outside.prevent>
             <DialogHeader class="p-6 pb-0">
-                <DialogTitle class="font-bold text-muesli-400 text-center">Đặt Phòng Mới | Phòng {{
-                    mockData.roomNumber }}</DialogTitle>
+                <DialogTitle class="font-bold text-muesli-400 text-center">Đặt Phòng Mới </DialogTitle>
                 <DialogDescription>
                     Make changes to your profile here. Click save when you're done.
                 </DialogDescription>
@@ -57,7 +56,7 @@
                             đặt phòng</div>
                         <div class="h-36  grid grid-cols-3 items-center">
                             <div class="col-1 pr-2 flex flex-col items-end space-y-3">
-                                <div>Giá (Tạm tính): </div>
+                                <div>Giá (tạm tính): </div>
                                 <div>Ngày đến: </div>
                                 <div>Số đêm dự kiến: </div>
                             </div>
@@ -114,7 +113,8 @@
                                 <option disabled value="0">-- Chọn loại phòng --</option>
                                 <option v-for="type in getAvailableRoomTypeOptions(index).value" :key="type.roomTypeId"
                                     :value="type.roomTypeId">
-                                    {{ type.nameRoomType }} - {{ type.availableRooms }} Phòng trống - Giá/đêm: {{
+                                    {{ type.nameRoomType }} - {{ type.availableRoomDTO.length }} Phòng trống - Giá/đêm:
+                                    {{
                                         formatPrice(type.price) }}
                                 </option>
                             </select>
@@ -270,6 +270,10 @@ const dateCheckout = computed(() => {
     return dateCheckin.value && numberOfNights.value ? addDays(dateCheckin.value, numberOfNights.value) : addDays(new Date(), 1);
 
 })
+// Tính lại số đêm
+watch(() => numberOfNights.value, (newValue) => {
+    newBooking.value.bookingRequest.numberOfNights = newValue
+})
 // Theo dõi checkin checkout
 watch([dateCheckin, dateCheckout], ([checkin, checkout]) => {
     newBooking.value.bookingRequest.checkInDate = formatDateWithTime(checkin, 14, 0, 0);
@@ -355,7 +359,7 @@ const getAvailableRoomTypeOptions = (index: number) => {
 const getAvailableQuantities = (roomTypeId: number): number[] => {
     const selectedType = bookingStore.listRoomsAvailable.find(type => type.roomTypeId === roomTypeId);
     if (!selectedType) return [];
-    const quantity = selectedType.availableRooms;
+    const quantity = selectedType.availableRoomDTO.length;
     return Array.from({ length: quantity }, (_, i) => i + 1);
 };
 
@@ -374,7 +378,8 @@ const newBooking = ref<CreateBookingRequest>({
         isDeposit: false,
         bookingStatus: '',
         numGuest: 1,
-        userId: 0
+        userId: 0,
+        numberOfNights: numberOfNights.value
     },
     bookingDetailRequest: [],
     bookingFacilityRequest: [],
@@ -494,7 +499,7 @@ const getAvailableRoomsForStay = (sIndex: number) => {
         .filter((stay, index) => index !== sIndex) // Loại trừ chính nó
         .map((stay) => stay.roomNumber)
         .filter(Boolean); // Loại undefined/null
-    console.log("List Room Number", listRoomNumber.value);
+    // console.log("List Room Number", listRoomNumber.value);
     return listRoomNumber.value.filter(
         (room) =>
             room.roomTypeId === currentRoomTypeId &&
@@ -521,4 +526,6 @@ const handleCrateBooking = async () => {
     await bookingStore.createBooking(newBooking.value);
     console.log("Booking: ", newBooking.value);
 }
+
+
 </script>

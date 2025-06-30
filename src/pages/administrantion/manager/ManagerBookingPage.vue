@@ -1,7 +1,7 @@
 <template>
-    <section>
-        <div class="flex">
-            <div class="w-2/3">
+    <section class="">
+        <div class="flex ">
+            <div class="w-2/3 ">
                 <div class="flex gap-2 items-center">
                     <VueDatePicker v-model="date" range multi-calendars :format-locale="vi"
                         :format="customFormatDatePicker" :select-text="'Chọn'" :cancel-text="'Hủy'"
@@ -17,10 +17,14 @@
                         nay</Button>
 
                     <div class="relative w-2/8">
-                        <select name="" id=""
-                            class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center">
+                        <select v-model="selectedStatus"
+                            class="appearance-none w-full h-10 px-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-start">
                             <option value="">Tất cả </option>
-                            <option value="CONFIRMED">Thường</option>
+                            <option value="CONFIRMED">Chờ nhận phòng</option>
+                            <option value="STAY">Đang ở</option>
+                            <option value="COMPLETED">Đã trả phòng</option>
+                            <option value="CANCEL">Đã Hủy</option>
+                            <option value="NOSHOW">Quá giờ giữ phòng</option>
                         </select>
                         <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                             <ChevronDown class="w-5 h-5 text-gray-400" />
@@ -71,7 +75,13 @@
                         <td class="py-2">{{ booking.totalAmount }}</td>
                         <td class="py-2"
                             :class="booking.bookingStatus == 'CONFIRMED' ? 'text-green-500' : 'text-red-500'">{{
-                                booking.bookingStatus }}</td>
+                                booking.bookingStatus === 'CONFIRMED'
+                                    ? 'Chờ Nhận Phòng'
+                                    : booking.bookingStatus === 'CANCEL'
+                                        ? 'Đã Hủy'
+                                        : booking.bookingStatus === 'STAY'
+                                            ? 'Đang Ở'
+                                            : 'Chưa Nhận Phòng' }}</td>
                         <td class="py-2 flex justify-center items-center gap-5 h-full">
                             <button
                                 class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
@@ -131,13 +141,15 @@ const totalPages = computed(() => {
 const paginatedRoomTypes = computed(() => {
     const startIndex = (currentPage.value - 1) * pageSize.value;
     const endIndex = startIndex + pageSize.value;
-    return filteredBookings.value.slice(startIndex, endIndex);
+    return fillterselectedStatus.value.slice(startIndex, endIndex);
 });
 // Sort theo ngày mới nhất
 const sortedBookings = ref<Booking[]>([]);
 onMounted(async () => {
     await bookings.getBookings();
-    sortedBookings.value = [...bookings.bookings].sort((a, b) => new Date(b.bookingDate).getTime() - new Date(a.bookingDate).getTime());
+    sortedBookings.value = [...bookings.bookings]
+        .filter(b => b.bookingStatus !== 'X')
+        .sort((a, b) => new Date(b.bookingDate).getTime() - new Date(a.bookingDate).getTime());
 
     const startDate = new Date();
     const endDate = new Date(new Date().setDate(startDate.getDate() + 30));
@@ -190,5 +202,13 @@ const fillteredBookingsByDate = computed(() => {
     return sortedBookings.value.filter(b => {
         return new Date(b.checkInDate) >= start && new Date(b.checkInDate) <= end
     })
+})
+
+
+// Lọc theo trạng thái
+const selectedStatus = ref('')
+const fillterselectedStatus = computed(() => {
+    if (selectedStatus.value === '') return filteredBookings.value
+    return filteredBookings.value.filter(b => b.bookingStatus === selectedStatus.value)
 })
 </script>

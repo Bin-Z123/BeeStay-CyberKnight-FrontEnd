@@ -20,6 +20,7 @@ export interface BookingRequest {
     bookingStatus: string
     numGuest: number
     userId: number
+    numberOfNights: number
 }
 
 export interface BookingDetailRequest {
