@@ -3,16 +3,24 @@
         <div class="flex">
             <div class="w-2/3">
                 <div class="flex gap-2 items-center">
-                    <input type="date"
-                        class="w-2/8 h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 ms-4 text-center">
-                    <label class="text-muesli-400 mx-4 font-medium">Đến</label>
-                    <input type="date"
-                        class="w-2/8 h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center">
+                    <VueDatePicker v-model="date" range multi-calendars :format-locale="vi"
+                        :format="customFormatDatePicker" :select-text="'Chọn'" :cancel-text="'Hủy'"
+                        class="w-78 h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 ms-4 ">
+                        <template #day="{ date, day }">
+                            <div :class="isToday(date) ? 'bg-green-500 text-white w-full h-full rounded-2xl' : ''">
+                                {{ day }}
+                            </div>
+                        </template>
+                    </VueDatePicker>
+                    <Button @click="selectToday"
+                        class=" me-4 h-10  bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white my-3">Hôm
+                        nay</Button>
+
                     <div class="relative w-2/8">
                         <select name="" id=""
                             class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center">
                             <option value="">Tất cả </option>
-                            <option value="">Thường</option>
+                            <option value="CONFIRMED">Thường</option>
                         </select>
                         <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                             <ChevronDown class="w-5 h-5 text-gray-400" />
@@ -21,6 +29,7 @@
                     <input type="text" v-model="searchInput"
                         class="w-2/8 h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center"
                         placeholder="Tìm kiếm">
+
                 </div>
             </div>
 
@@ -102,7 +111,8 @@ import {
 import { ref, onMounted, computed } from "vue";
 import { Button } from "@/components/ui/button";
 import { Bookings } from "@/api/booking";
-import { formatDateWithTimeToUI } from "@/utils";
+import { formatDateWithTimeToUI, customFormatDatePicker } from "@/utils";
+import { vi } from 'date-fns/locale';
 import {
     Booking,
     BookingResponse,
@@ -128,15 +138,19 @@ const sortedBookings = ref<Booking[]>([]);
 onMounted(async () => {
     await bookings.getBookings();
     sortedBookings.value = [...bookings.bookings].sort((a, b) => new Date(b.bookingDate).getTime() - new Date(a.bookingDate).getTime());
+
+    const startDate = new Date();
+    const endDate = new Date(new Date().setDate(startDate.getDate() + 30));
+    date.value = [startDate, endDate];
 });
 
 //Search booking
 const searchInput = ref('');
 const filteredBookings = computed(() => {
     const keyword = searchInput.value.trim().toLowerCase();
-    if (!keyword) return sortedBookings.value;
+    if (!keyword) return fillteredBookingsByDate.value;
 
-    return sortedBookings.value.filter(b => {
+    return fillteredBookingsByDate.value.filter(b => {
         const user = b.user
         const guest = b.guestBooking
 
@@ -151,6 +165,30 @@ const filteredBookings = computed(() => {
                 guest.fullname?.toLowerCase().includes(keyword));
 
         return userMatch || guestMatch;
+    })
+})
+//Lọc ngày checkin-out
+const date = ref();
+const isToday = (d: Date) => {
+    const t = new Date();
+    return d.getDate() === t.getDate() &&
+        d.getMonth() === t.getMonth() &&
+        d.getFullYear() === t.getFullYear();
+}
+const selectToday = () => {
+    const sDate = new Date();
+    sDate.setHours(14, 0, 0, 0);
+    const eDate = new Date(new Date().setDate(sDate.getDate() + 1));
+    eDate.setHours(12, 0, 0, 0);
+    date.value = [sDate, eDate];
+}
+
+const fillteredBookingsByDate = computed(() => {
+    if (!date.value || !date.value[1]) return sortedBookings.value;
+
+    const [start, end] = date.value;
+    return sortedBookings.value.filter(b => {
+        return new Date(b.checkInDate) >= start && new Date(b.checkInDate) <= end
     })
 })
 </script>

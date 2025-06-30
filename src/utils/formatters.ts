@@ -64,3 +64,20 @@ export function formatDateWithTimeToUI(date: Date): string {
 
     return `T${t} ${dd}/${MM}/${yyyy} ${HH}h${mm}`;
 }
+export function customFormatDatePicker(dates: [Date, Date] | null): string {
+    if (!dates || !dates[0] || !dates[1]) return '';
+
+    const formatDate = (date: Date): string => {
+        const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+        const t = days[date.getDay()];
+        const dd = String(date.getDate()).padStart(2, '0');
+        const MM = String(date.getMonth() + 1).padStart(2, '0');
+        const yyyy = date.getFullYear();
+        const HH = String(date.getHours()).padStart(2, '0');
+        const mm = String(date.getMinutes()).padStart(2, '0');
+
+        return `${t} ${dd}/${MM}/${yyyy} ${HH}h${mm}`;
+    };
+
+    return `${formatDate(dates[0])} - ${formatDate(dates[1])}`;
+}
