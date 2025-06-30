@@ -24,6 +24,11 @@ const userRouter: RouteRecordRaw = {
             path: "roomtype",
             name: "roomtype",
             component: () => import("../../pages/user/room/RoomType.vue"),
+        },
+        {
+            path: "contact",
+            name: "contact",
+            component: () => import("../../pages/user/contact/ConTact.vue"),
         }
     ],
 };
