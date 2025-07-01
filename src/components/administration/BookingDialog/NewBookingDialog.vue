@@ -92,7 +92,7 @@
                                 </div>
                                 <div class="col-span-2 flex flex-col space-y-1 pr-2">
                                     <div>
-                                        <input type="text" v-model="mockData.floor" class="input-booking">
+                                        <input type="text" class="input-booking">
                                     </div>
                                     <div>
                                         <textarea
@@ -113,7 +113,7 @@
                                 <option disabled value="0">-- Chọn loại phòng --</option>
                                 <option v-for="type in getAvailableRoomTypeOptions(index).value" :key="type.roomTypeId"
                                     :value="type.roomTypeId">
-                                    {{ type.nameRoomType }} - {{ type.availableRoomDTO.length }} Phòng trống - Giá/đêm:
+                                    {{ type.nameRoomType }} - {{ type.availableRooms }} Phòng trống - Giá/đêm:
                                     {{
                                         formatPrice(type.price) }}
                                 </option>
@@ -282,7 +282,7 @@ watch([dateCheckin, dateCheckout], ([checkin, checkout]) => {
         stay.actualCheckIn = formatDateWithTime(checkin, 14, 0, 0);
         stay.actualCheckOut = formatDateWithTime(checkout, 12, 0, 0);
     })
-    bookingStore.getAvailableRooms(dateCheckin.value, dateCheckin.value);
+    bookingStore.getAvailableRooms(dateCheckin.value, dateCheckout.value);
     toast.success("Thêm ngày check-in, check-out");
 })
 
@@ -307,32 +307,32 @@ const totalPrice = computed(() => {
 });
 
 
-const props = defineProps<{
-    bookingRoom: {
-        id: number;
-        roomNumber: string;
-        roomStatus: string;
-        floor: number;
-        roomType: {
-            id: number;
-            name: string;
-            size: number;
-            price: number;
-            peopleAbout: number;
-        };
-        roomImages: {
-            id: number;
-            url: string;
-            altext: string;
-            isThum: boolean;
-        }[];
-    }
-}>();
-const mockData = ref({ ...props.bookingRoom });
+// const props = defineProps<{
+//     bookingRoom: {
+//         id: number;
+//         roomNumber: string;
+//         roomStatus: string;
+//         floor: number;
+//         roomType: {
+//             id: number;
+//             name: string;
+//             size: number;
+//             price: number;
+//             peopleAbout: number;
+//         };
+//         roomImages: {
+//             id: number;
+//             url: string;
+//             altext: string;
+//             isThum: boolean;
+//         }[];
+//     }
+// }>();
+// const mockData = ref({ ...props.bookingRoom });
 
-watch(() => props.bookingRoom, (newVal) => {
-    mockData.value = { ...newVal };
-})
+// watch(() => props.bookingRoom, (newVal) => {
+//     mockData.value = { ...newVal };
+// })
 
 
 // Tính lại số phòng khi nhập số phòng (Booking Detail)
@@ -359,7 +359,7 @@ const getAvailableRoomTypeOptions = (index: number) => {
 const getAvailableQuantities = (roomTypeId: number): number[] => {
     const selectedType = bookingStore.listRoomsAvailable.find(type => type.roomTypeId === roomTypeId);
     if (!selectedType) return [];
-    const quantity = selectedType.availableRoomDTO.length;
+    const quantity = selectedType.availableRooms;
     return Array.from({ length: quantity }, (_, i) => i + 1);
 };
 
@@ -376,7 +376,7 @@ const newBooking = ref<CreateBookingRequest>({
         checkInDate: formatDateWithTime(dateCheckin.value, 14, 0, 0),
         checkOutDate: formatDateWithTime(dateCheckout.value, 12, 0, 0),
         isDeposit: false,
-        bookingStatus: '',
+        bookingStatus: 'STAY',
         numGuest: 1,
         userId: 0,
         numberOfNights: numberOfNights.value

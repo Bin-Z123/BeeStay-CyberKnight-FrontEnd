@@ -21,7 +21,7 @@
                             class="appearance-none w-full h-10 px-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-start">
                             <option value="">Tất cả </option>
                             <option value="CONFIRMED">Chờ nhận phòng</option>
-                            <option value="STAY">Đang ở</option>
+                            <option value="STAY">Đặt tại khách sạn</option>
                             <option value="COMPLETED">Đã trả phòng</option>
                             <option value="CANCEL">Đã Hủy</option>
                             <option value="NOSHOW">Quá giờ giữ phòng</option>
@@ -63,8 +63,9 @@
                     </tr>
                 </thead>
                 <tbody class="text-gray-700">
-                    <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
-                        v-for="booking in paginatedRoomTypes" :key="booking.id">
+                    <tr class="hover:bg-muesli-100 focus:bg-muesli-200 transition odd:bg-white even:bg-gray-100"
+                        tabindex="0" v-for="booking in paginatedRoomTypes" :key="booking.id"
+                        @contextmenu.prevent="openContextMenu($event, booking)">
                         <td class="py-2">{{ booking.user?.fullname || booking.guestBooking.fullname + ' (Guest)' }}</td>
                         <td class="py-2">{{ booking.user?.phone || booking.guestBooking.phone }}</td>
                         <td class="py-2">{{ booking.user?.email || booking.guestBooking.email }}</td>
@@ -73,15 +74,23 @@
                         <!-- <td class="py-2">{{ booking.user?.email || booking.guestBooking.email }}</td>
                         <td class="py-2">{{ booking.user?.phone || booking.guestBooking.phone }}</td> -->
                         <td class="py-2">{{ booking.totalAmount }}</td>
-                        <td class="py-2"
-                            :class="booking.bookingStatus == 'CONFIRMED' ? 'text-green-500' : 'text-red-500'">{{
+                        <td class="py-2" :class="booking.bookingStatus == 'CONFIRMED' ? 'text-green-500'
+                            : booking.bookingStatus === 'STAY'
+                                ? 'text-blue-500'
+                                : booking.bookingStatus === 'NOSHOW' ? 'text-yellow-500'
+                                    : 'text-red-500'">
+                            {{
                                 booking.bookingStatus === 'CONFIRMED'
                                     ? 'Chờ Nhận Phòng'
                                     : booking.bookingStatus === 'CANCEL'
                                         ? 'Đã Hủy'
                                         : booking.bookingStatus === 'STAY'
-                                            ? 'Đang Ở'
-                                            : 'Chưa Nhận Phòng' }}</td>
+                                            ? 'Đặt tại khách sạn'
+                                            : booking.bookingStatus === 'COMPLETED'
+                                                ? 'Đã Trả Phòng'
+                                                : booking.bookingStatus === 'NOSHOW'
+                                                    ? 'Quá giờ giữ phòng'
+                                                    : 'Chưa Nhận Phòng' }}</td>
                         <td class="py-2 flex justify-center items-center gap-5 h-full">
                             <button
                                 class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
@@ -108,7 +117,38 @@
                 </button>
             </div>
         </div>
+        <!-- Menu Context -->
+        <div v-if="menu.isOpen" class="absolute bg-white border rounded-xs shadow-md z-50 w-48 "
+            :style="{ top: menu.y + 'px', left: menu.x + 'px' }">
+            <p class="bg-muesli-100/50 px-4 py-2 font-bold text-muesli-400">Khách: {{ menu.data.guestBooking?.fullname
+                ||
+                menu.data.user?.fullname }}
+            </p>
+            <div v-if="menu.data.bookingStatus == 'CONFIRMED'">
+                <button @click="isOpenConfirmBooking = true" class="w-full text-left px-4 py-2 hover:bg-gray-100">Xác
+                    nhận đặt
+                    phòng</button>
+
+
+                <hr>
+                <button class="w-full  text-left px-4 py-2 hover:bg-gray-100">
+                    Hủy phòng
+                </button>
+            </div>
+            <div v-if="menu.data.bookingStatus == 'STAY'">
+                <button class="w-full text-left px-4 py-2 hover:bg-gray-100">Trả phòng</button>
+            </div>
+            <div v-if="menu.data.bookingStatus == 'NOSHOW'">
+                <button class="w-full text-left px-4 py-2 hover:bg-gray-100">Gia hạn ngày đến</button>
+                <hr>
+                <button class="w-full  text-left px-4 py-2 hover:bg-gray-100">
+                    Hủy phòng
+                </button>
+            </div>
+        </div>
     </section>
+    <NewBookingDialog v-model:open="isOpenBooking"></NewBookingDialog>
+    <ConfirmBookingDialog v-model:open="isOpenConfirmBooking" :Booking="menu.data"></ConfirmBookingDialog>
 </template>
 <script setup lang="ts">
 import {
@@ -118,11 +158,13 @@ import {
     ChevronLeft,
     ChevronRight,
 } from "lucide-vue-next";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, reactive } from "vue";
 import { Button } from "@/components/ui/button";
 import { Bookings } from "@/api/booking";
 import { formatDateWithTimeToUI, customFormatDatePicker } from "@/utils";
 import { vi } from 'date-fns/locale';
+import NewBookingDialog from "@/components/administration/BookingDialog/NewBookingDialog.vue";
+import ConfirmBookingDialog from "@/components/administration/BookingDialog/ConfirmBookingDialog.vue";
 import {
     Booking,
     BookingResponse,
@@ -132,6 +174,7 @@ import {
 
 const bookings = Bookings();
 const isOpenBooking = ref(false);
+const isOpenConfirmBooking = ref(false);
 
 const currentPage = ref(1);
 const pageSize = ref(10);
@@ -189,7 +232,7 @@ const isToday = (d: Date) => {
 }
 const selectToday = () => {
     const sDate = new Date();
-    sDate.setHours(14, 0, 0, 0);
+    sDate.setHours(0, 0, 0, 0);
     const eDate = new Date(new Date().setDate(sDate.getDate() + 1));
     eDate.setHours(12, 0, 0, 0);
     date.value = [sDate, eDate];
@@ -211,4 +254,24 @@ const fillterselectedStatus = computed(() => {
     if (selectedStatus.value === '') return filteredBookings.value
     return filteredBookings.value.filter(b => b.bookingStatus === selectedStatus.value)
 })
+
+// Mở Menu context
+const menu = reactive({
+    x: 0,
+    y: 0,
+    isOpen: false,
+    data: {} as Booking,
+});
+
+const openContextMenu = (e: MouseEvent, i: Booking) => {
+    const pageRect = document.body.getBoundingClientRect();
+    menu.x = e.clientX - pageRect.left;
+    menu.y = e.clientY - pageRect.top;
+    e.preventDefault();
+    menu.isOpen = true;
+    menu.data = i;
+};
+window.addEventListener("click", () => {
+    menu.isOpen = false;
+});
 </script>

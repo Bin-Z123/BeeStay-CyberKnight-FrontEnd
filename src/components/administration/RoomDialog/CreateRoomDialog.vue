@@ -39,7 +39,7 @@
               <select v-model="roomRequest.roomStatus" name="" id=""
                 class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 text-center">
                 <option value="CLEANUP" selected>Đang dọn dẹp</option>
-                <option value="ACTIVE">Đang sử dụng</option>
+                <option value="INACTIVE">Đang sử dụng</option>
               </select>
               <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                 <ChevronDown class="w-5 h-5 text-gray-400" />
