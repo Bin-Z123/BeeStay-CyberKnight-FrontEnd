@@ -99,7 +99,7 @@ export const User = defineStore('user', () => {
 
     const getAllUser = async (): Promise<User[]> => {
         try {
-            const response = await axios.get(`${baseUrl}/users`);
+            const response = await axios.get(`${baseUrl}/admin/users`);
             if (Array.isArray(response.data)) {
             users.value = response.data;
             } else if (Array.isArray(response.data.data)) {
@@ -117,7 +117,7 @@ export const User = defineStore('user', () => {
 
     const createReceptionist = async (user: CreateUserRequest): Promise<User> => {
         try {
-            const response = await axios.post(`${baseUrl}/users`, user, {
+            const response = await axios.post(`${baseUrl}/admin/users`, user, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -132,7 +132,7 @@ export const User = defineStore('user', () => {
 
     const updataReceptionist = async (user: UpdateUserRequest): Promise<User> => {
         try {
-            const response = await axios.put(`${baseUrl}/updateUser/${user.id}`, user);
+            const response = await axios.put(`${baseUrl}/admin/updateUser/${user.id}`, user);
             toast.success("Cập nhật người dùng thành công!");
             return response.data;
         } catch (error) {

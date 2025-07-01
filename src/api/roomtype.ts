@@ -32,7 +32,7 @@ export const RoomType = defineStore('roomtype', () => {
     });
     const getAllRoomType = async (): Promise<RoomTypeResponse> => {
         try {
-            const response = await axios.get<RoomTypeResponse>(`${baseUrl}/roomTypes`);
+            const response = await axios.get<RoomTypeResponse>(`${baseUrl}/admin/roomTypes`);
             roomtypes.value = response.data.data;
 
             return response.data;
@@ -44,7 +44,7 @@ export const RoomType = defineStore('roomtype', () => {
     const createRoomType = async (roomtype: RoomType): Promise<RoomType> => {
         isLoading.value = true;
         try {
-            const response = await axios.post<RoomType>(`${baseUrl}/roomTypes`, roomtype);
+            const response = await axios.post<RoomType>(`${baseUrl}/admin/roomTypes`, roomtype);
             toast.success("Thông báo", {
                 description: "Tạo loại phòng thành công!",
                 action: { label: "Thoát" }
@@ -63,7 +63,7 @@ export const RoomType = defineStore('roomtype', () => {
     const updateRoomType = async (roomtype: RoomType): Promise<RoomType> => {
         isLoading.value = true;
         try {
-            const response = await axios.put<RoomType>(`${baseUrl}/roomTypes/${roomtype.id}`, roomtype);
+            const response = await axios.put<RoomType>(`${baseUrl}/admin/roomTypes/${roomtype.id}`, roomtype);
             toast.success("Thông báo", {
                 description: "Cập nhật loại phòng thành công!",
                 action: { label: "Thoát" }
@@ -82,7 +82,7 @@ export const RoomType = defineStore('roomtype', () => {
     const deleteRoomType = async (roomtypeId: number): Promise<void> => {
         isLoading.value = true;
         try {
-            await axios.delete(`${baseUrl}/roomTypes/${roomtypeId}`);
+            await axios.delete(`${baseUrl}/admin/roomTypes/${roomtypeId}`);
             toast.success("Thông báo", {
                 description: "Xóa loại phòng thành công!",
                 action: { label: "Thoát" }

@@ -70,7 +70,7 @@ export const Bookings = defineStore("booking", () => {
 
   const getBookings = async () => {
     try {
-      const response = await axios.get<BookingResponse>(`${baseUrl}/booking/list`);
+      const response = await axios.get<BookingResponse>(`${baseUrl}/admin/booking/list`);
       bookings.value = response.data.data;
       return response.data;
     } catch (error: any) {
@@ -82,7 +82,7 @@ export const Bookings = defineStore("booking", () => {
   const createBooking = async (booking: CreateBookingRequest) => {
     try {
       isloading.value = true
-      const response = await axios.post(`${baseUrl}/booking/order`, booking)
+      const response = await axios.post(`${baseUrl}/admin/booking/order`, booking)
       toast.success("Tạo booking thành công!");
       return response.data
     } catch (error: unknown) {
@@ -105,7 +105,7 @@ export const Bookings = defineStore("booking", () => {
       const checkinDate = formatDateWitCheckInCheckOutAvailable(checkinDateF, 14, 0, 0)
       const checkoutDate = formatDateWitCheckInCheckOutAvailable(checkoutDateF, 12, 0, 0)
       console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate);
-      const response = await axios.get<AvalableResponse>(`${baseUrl}/booking/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`);
+      const response = await axios.get<AvalableResponse>(`${baseUrl}/admin/booking/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`);
       listRoomsAvailable.value = response.data.data;
       return response.data
     } catch (error: unknown) {
