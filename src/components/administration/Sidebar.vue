@@ -158,8 +158,7 @@
                 class="block text-sm px-3 py-1 rounded hover:bg-muesli-50 hover:text-muesli-800"
                 exact-active-class="text-muesli-800 font-semibold bg-muesli-100"
               >
-                <ClipboardList class="inline-block h-4 w-4" /> Đơn Đặt Phòng Hôm
-                Nay
+                <ClipboardList class="inline-block h-4 w-4" /> Các Đơn Đặt Phòng 
               </RouterLink>
             </div>
           </div>

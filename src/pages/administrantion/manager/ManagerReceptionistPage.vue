@@ -34,13 +34,13 @@
                         <td class="py-2">{{ user.email }}</td>
                         <td class="py-2">{{ user.joinDate.split('T')[0] }}</td>
                         <td class="py-2 flex justify-center items-center gap-2 h-full">
-                            <button @click="handleUpdateBlock(user)" v-if="user.eblacklist === 1"
+                            <button @click="handleUpdateBlock(user)" v-if="user.eblacklist === 0"
                                 class=" hover:text-green-700 m-1.5"
-                                :class="user.eblacklist === 1 ? ' text-green-500 ' : ''">
+                                :class="user.eblacklist === 0 ? ' text-green-500 ' : ''">
                                 <LockKeyholeOpen class="w-5.5 h-5.5" />
                             </button>
                             <button @click="handleUpdateBlock(user)" v-else class="hover:text-red-700 m-1.5"
-                                :class="user.eblacklist === 3 ? ' text-red-500' : ''">
+                                :class="user.eblacklist === 2 ? ' text-red-500' : ''">
                                 <LockKeyhole class="w-5.5 h-5.5" />
                             </button>
                             <button @click="openUpdateReceptionist(user)" class="text-blue-400 hover:text-blue-700">
@@ -109,10 +109,10 @@ const openUpdateReceptionist = async (user: any) => {
 
 const handleUpdateBlock = async (user: any) => {
     const block = ref(0);
-    if (user.eblacklist === 1) {
-        block.value = 3;
-    } else if (user.eblacklist === 3) {
-        block.value = 1;
+    if (user.eblacklist === 0) {
+        block.value = 2;
+    } else if (user.eblacklist === 2) {
+        block.value = 0;
     }
     const payLoad = {
         id: user.id,
@@ -126,7 +126,7 @@ const handleUpdateBlock = async (user: any) => {
         cccd: String(user.cccd),
         point: user.point,
         eblacklist: block.value,
-        roleId: 1,
+        roleId: user.role.id,
         rankId: user.rank.id
     };
     console.log(JSON.stringify(payLoad, null, 2));

@@ -83,7 +83,7 @@ const totalYear = computed(() => {
 })
 
 const sortedUsers = computed(() => {
-    return [...user.users].filter(user => user.role.id === 2).sort((a, b) => b.point - a.point).slice(0, 10);
+    return [...user.users].filter(user => user.role.id === 1).sort((a, b) => b.point - a.point).slice(0, 10);
 })
 
 onMounted( async () => {

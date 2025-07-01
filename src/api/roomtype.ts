@@ -2,6 +2,7 @@ import axios from "axios";
 import { ref } from "vue";
 import { toast } from 'vue-sonner'
 import { defineStore } from "pinia";
+import { RoomTypeResponse2 } from "@/types";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const isLoading = ref(false);
@@ -11,17 +12,17 @@ interface RoomType {
     name: string,
     size: number,
     price: number,
-    peopleAbout: number
+    peopleAbout: number,
 }
 
 interface RoomTypeResponse {
     code: number,
     message: string,
-    data: RoomType[]
+    data: RoomTypeResponse2[]
 }
 
 export const RoomType = defineStore('roomtype', () => {
-    const roomtypes = ref<RoomType[]>([]);
+    const roomtypes = ref<RoomTypeResponse2[]>([]);
     const roomtype = ref<RoomType>({
         id: 0,
         name: '',
@@ -29,12 +30,12 @@ export const RoomType = defineStore('roomtype', () => {
         price: 0,
         peopleAbout: 1
     });
-    const getAllRoomType = async (): Promise<RoomType[]> => {
+    const getAllRoomType = async (): Promise<RoomTypeResponse> => {
         try {
-            const response = await axios.get<RoomTypeResponse>(`${baseUrl}/roomTypes`);
+            const response = await axios.get<RoomTypeResponse>(`${baseUrl}/admin/roomTypes`);
             roomtypes.value = response.data.data;
 
-            return response.data.data;
+            return response.data;
         } catch (error) {
             throw error;
         }
@@ -43,7 +44,7 @@ export const RoomType = defineStore('roomtype', () => {
     const createRoomType = async (roomtype: RoomType): Promise<RoomType> => {
         isLoading.value = true;
         try {
-            const response = await axios.post<RoomType>(`${baseUrl}/roomTypes`, roomtype);
+            const response = await axios.post<RoomType>(`${baseUrl}/admin/roomTypes`, roomtype);
             toast.success("Thông báo", {
                 description: "Tạo loại phòng thành công!",
                 action: { label: "Thoát" }
@@ -62,7 +63,7 @@ export const RoomType = defineStore('roomtype', () => {
     const updateRoomType = async (roomtype: RoomType): Promise<RoomType> => {
         isLoading.value = true;
         try {
-            const response = await axios.put<RoomType>(`${baseUrl}/roomTypes/${roomtype.id}`, roomtype);
+            const response = await axios.put<RoomType>(`${baseUrl}/admin/roomTypes/${roomtype.id}`, roomtype);
             toast.success("Thông báo", {
                 description: "Cập nhật loại phòng thành công!",
                 action: { label: "Thoát" }
@@ -81,7 +82,7 @@ export const RoomType = defineStore('roomtype', () => {
     const deleteRoomType = async (roomtypeId: number): Promise<void> => {
         isLoading.value = true;
         try {
-            await axios.delete(`${baseUrl}/roomTypes/${roomtypeId}`);
+            await axios.delete(`${baseUrl}/admin/roomTypes/${roomtypeId}`);
             toast.success("Thông báo", {
                 description: "Xóa loại phòng thành công!",
                 action: { label: "Thoát" }

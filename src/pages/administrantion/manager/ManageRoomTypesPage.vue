@@ -11,7 +11,8 @@
               <select v-model="searchQuery"
                 class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center">
                 <option value="">Tất cả</option>
-                <option :value="roomtype.name" v-for="roomtype in roomTypes.roomtypes" :key="roomtype.id">{{ roomtype.name }}</option>
+                <option :value="roomtype.name" v-for="roomtype in roomTypes.roomtypes" :key="roomtype.id">{{
+                  roomtype.name }}</option>
               </select>
               <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                 <ChevronDown class="w-5 h-5 text-gray-400" />
@@ -38,6 +39,7 @@
               <th class="px-4 py-2 border">Diện Tích</th>
               <th class="px-4 py-2 border">Giá</th>
               <th class="px-4 py-2 border">Lượng Người Ở</th>
+              <th class="px-4 py-2 border">Số lượng phòng</th>
               <th class="px-4 py-2 border">Tùy Chọn</th>
             </tr>
           </thead>
@@ -48,13 +50,12 @@
               <td class="py-2">{{ roomtype.size }}m²</td>
               <td class="py-2">{{ roomtype.price }}</td>
               <td class="py-2">{{ roomtype.peopleAbout }}</td>
+              <td class="py-2">{{ roomtype.rooms?.length ?? 0 }}</td>
               <td class="py-2 flex justify-center items-center gap-5 h-full">
-                <button @click.prevent="handleDeleteRoomType(roomtype)"
-                  class="hover:text-red-700 m-1.5 text-red-500">
+                <button @click.prevent="handleDeleteRoomType(roomtype)" class="hover:text-red-700 m-1.5 text-red-500">
                   <Trash2 />
                 </button>
-                <button @click="openUpdateRoomType(roomtype)"
-                  class="text-blue-400 hover:text-blue-700">
+                <button @click="openUpdateRoomType(roomtype)" class="text-blue-400 hover:text-blue-700">
                   <SquarePen />
                 </button>
               </td>
@@ -82,7 +83,7 @@
 import {
   ChevronDown,
   SquarePen,
-  Trash2 ,
+  Trash2,
   ChevronLeft,
   ChevronRight,
 } from "lucide-vue-next";
@@ -120,7 +121,7 @@ const paginatedRoomTypes = computed(() => {
 
 const selectedRoomType = ref(null);
 const openUpdateRoomType = async (roomtype: any) => {
-  selectedRoomType.value = {...roomtype};
+  selectedRoomType.value = { ...roomtype };
   isOpenUpdate.value = true;
 }
 
@@ -131,5 +132,6 @@ const handleDeleteRoomType = async (roomtype: any) => {
 
 onMounted(async () => {
   await roomTypes.getAllRoomType();
+
 });
 </script>

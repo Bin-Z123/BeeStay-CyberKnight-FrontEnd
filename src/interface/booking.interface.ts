@@ -5,8 +5,8 @@ export interface BookingResponse {
 
 export interface Booking {
   id: number;
-  checkInDate: string;
-  checkOutDate: string;
+  checkInDate: Date;
+  checkOutDate: Date;
   totalAmount: number;
   isDeposit: boolean;
   bookingStatus: BookingStatus;

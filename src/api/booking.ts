@@ -2,22 +2,26 @@ import axios from "axios";
 import { defineStore } from "pinia";
 import { toast } from "vue-sonner";
 import { ref } from "vue";
-import { 
+import { formatDateWitCheckInCheckOutAvailable, } from "@/utils";
+import {
   Booking,
   BookingResponse,
   BookingStatus,
   BlacklistStatus
 } from "@/interface/booking.interface";
+import { CreateBookingRequest, RoomAvailabilityResponse } from "@/types";
+import { format } from "date-fns";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export const Bookings = defineStore("booking", () => {
+  const isloading = ref(false);
   const bookings = ref<Booking[]>([]);
 
   const booking = ref<Booking>({
     id: 0,
-    checkInDate: "",
-    checkOutDate: "",
+    checkInDate: new Date(),
+    checkOutDate: new Date(),
     totalAmount: 0,
     isDeposit: false,
     bookingStatus: "CONFIRMED",
@@ -66,7 +70,7 @@ export const Bookings = defineStore("booking", () => {
 
   const getBookings = async () => {
     try {
-      const response = await axios.get<BookingResponse>(`${baseUrl}/booking/list`);
+      const response = await axios.get<BookingResponse>(`${baseUrl}/admin/booking/list`);
       bookings.value = response.data.data;
       return response.data;
     } catch (error: any) {
@@ -75,9 +79,51 @@ export const Bookings = defineStore("booking", () => {
     }
   };
 
+  const createBooking = async (booking: CreateBookingRequest) => {
+    try {
+      isloading.value = true
+      const response = await axios.post(`${baseUrl}/admin/booking/order`, booking)
+      toast.success("Tạo booking thành công!");
+      return response.data
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error("Lỗi khi tạo booking");
+      }
+    } finally {
+      isloading.value = false
+    }
+  }
+
+  interface AvalableResponse {
+    code: number
+    message: string
+    data: RoomAvailabilityResponse[]
+  }
+  const listRoomsAvailable = ref<RoomAvailabilityResponse[]>([]);
+  const getAvailableRooms = async (checkinDateF: Date, checkoutDateF: Date): Promise<AvalableResponse> => {
+    try {
+      const checkinDate = formatDateWitCheckInCheckOutAvailable(checkinDateF, 14, 0, 0)
+      const checkoutDate = formatDateWitCheckInCheckOutAvailable(checkoutDateF, 12, 0, 0)
+      console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate);
+      const response = await axios.get<AvalableResponse>(`${baseUrl}/admin/booking/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`);
+      listRoomsAvailable.value = response.data.data;
+      return response.data
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error("Lỗi khi tải danh sách phòng trống")
+        throw error
+      }
+      throw error
+    }
+  }
+
   return {
     bookings,
     booking,
     getBookings,
+    getAvailableRooms,
+    createBooking,
+    listRoomsAvailable,
+    isloading,
   };
 });

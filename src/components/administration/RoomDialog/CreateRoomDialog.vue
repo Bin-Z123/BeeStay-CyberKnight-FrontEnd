@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="emit('update:open', $event)">
-    <DialogContent class="sm:max-w-[1400px]" @pointer-down-outside.prevent @escape-key-down.prevent>
+    <DialogContent class="sm:max-w-[1400px]" @pointer-down-outside.prevent>
       <div class="grid grid-cols-4 gap-4">
         <form action="" class="flex flex-col gap-3">
           <DialogHeader>
@@ -36,12 +36,8 @@
           <div>
             <label class="text-muesli-400">Trạng Thái</label><br />
             <div class="relative">
-              <select
-                v-model="roomRequest.roomStatus"
-                name=""
-                id=""
-                class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 text-center"
-              >
+              <select v-model="roomRequest.roomStatus" name="" id=""
+                class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 text-center">
                 <option value="CLEANUP" selected>Đang dọn dẹp</option>
                 <option value="ACTIVE">Đang sử dụng</option>
               </select>
@@ -75,15 +71,10 @@
             class="rounded-sm w-60 h-60 flex flex-col items-center justify-center focus:bg-muesli-200 group shadow-sm"
             tabindex="0">
             <div class="relative overflow-hidden w-56 h-56 rounded-sm group">
-              <img
-                :src="fileImg.src"
-                alt=""
-                class="object-center object-cover h-full w-full rounded-sm hover:scale-110 transition-all duration-300"
-              />
-              <button
-                @click="onDeleteImage(index)"
-                class="absolute top-2 right-3 bg-gray-100 rounded-sm px-1 py-1 hidden group-hover:block group-focus:block"
-              >
+              <img :src="fileImg.src" alt=""
+                class="object-center object-cover h-full w-full rounded-sm hover:scale-110 transition-all duration-300" />
+              <button @click="onDeleteImage(index)"
+                class="absolute top-2 right-3 bg-gray-100 rounded-sm px-1 py-1 hidden group-hover:block group-focus:block">
                 <Trash2 class="w-5 h-5 text-red-500" />
               </button>
             </div>

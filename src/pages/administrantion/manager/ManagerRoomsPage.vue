@@ -11,7 +11,8 @@
               <select v-model="selectedRoom"
                 class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center">
                 <option value="">Tất Cả</option>
-                <option :value="roomtype.name" v-for="roomtype in roomTypeStore.roomtypes" :key="roomtype.id">{{ roomtype.name }}</option>
+                <option :value="roomtype.name" v-for="roomtype in roomTypeStore.roomtypes" :key="roomtype.id">{{
+                  roomtype.name }}</option>
               </select>
               <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                 <ChevronDown class="w-5 h-5 text-gray-400" />
@@ -46,7 +47,8 @@
               <td class="py-2">{{ room.roomNumber }}</td>
               <td class="py-2">{{ room.roomType.name }}</td>
               <td class="py-2">{{ room.floor }}</td>
-              <td class="py-2" :class="room.roomStatus == 'INACTIVE' ? 'text-red-500' : 'text-green-500'">{{ room.roomStatus }}</td>
+              <td class="py-2" :class="room.roomStatus == 'INACTIVE' ? 'text-red-500' : 'text-green-500'">{{
+                room.roomStatus }}</td>
               <td class="py-2 flex justify-center items-center gap-5 h-full">
                 <button
                   class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
@@ -94,7 +96,7 @@ import { Rooms } from "@/components/administration/RoomDialog/Room";
 import { Room } from "@/api/room";
 import { RoomType } from "@/api/roomtype";
 const { rooms } = Rooms();
-const { getAllRooms, isLoading, listRooms } = Room();
+const roomStore = Room();
 const roomTypeStore = RoomType();
 // import { Input } from '@/components/ui/input'
 // import { Label } from '@/components/ui/label'
@@ -123,6 +125,8 @@ const openDialog = async (room: any) => {
 // Search
 const selectedRoom = ref('');
 const selectedRoomByNumber = ref('');
+const listRooms = computed(() => roomStore.listRooms || []);
+
 const filteredRooms = computed(() => {
   return listRooms.value.filter((room) => {
     const matchType = selectedRoom.value === '' || room.roomType.name.toLowerCase().includes(selectedRoom.value.toLowerCase());
@@ -144,7 +148,7 @@ const paginatedRooms = computed(() => {
 
 // Lấy danh sách phòng
 onMounted(async () => {
-  await getAllRooms();
+  await roomStore.getAllRooms();
   await roomTypeStore.getAllRoomType();
   console.log("Danh sách loại phòng:", roomTypeStore.roomtypes);
 });
