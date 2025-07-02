@@ -29,6 +29,28 @@ const userRouter: RouteRecordRaw = {
             path: "contact",
             name: "contact",
             component: () => import("../../pages/user/contact/ConTact.vue"),
+        },
+        {
+            path: "setting",
+            name: "setting",
+            component: () => import("../../layouts/user/UserLayoutSetting.vue"),
+            children: [
+                {
+                    path: "profile",
+                    name: "profile",
+                    component: () => import("../../pages/user/usersetting/Profile.vue"),
+                },
+                {
+                    path: "historybooking",
+                    name: "historybooking",
+                    component: () => import("../../pages/user/usersetting/HistoryBooking.vue"),
+                },
+                {
+                    path: "point",
+                    name: "point",
+                    component: () => import("../../pages/user/usersetting/Point.vue"),
+                }
+            ]
         }
     ],
 };

@@ -11,6 +11,7 @@ import {
 } from "@/interface/booking.interface";
 import { CreateBookingRequest, RoomAvailabilityResponse } from "@/types";
 import { format } from "date-fns";
+import { ro } from "date-fns/locale";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -100,11 +101,15 @@ export const Bookings = defineStore("booking", () => {
     data: RoomAvailabilityResponse[]
   }
   const listRoomsAvailable = ref<RoomAvailabilityResponse[]>([]);
-  const getAvailableRooms = async (checkinDateF: Date, checkoutDateF: Date): Promise<AvalableResponse> => {
+  const roomTypeId = ref<number>(0);
+  const numberOfPeople = ref<number>(0);
+  const getAvailableRooms = async (checkinDateF: Date, checkoutDateF: Date, roomtypeid: number, numberofpeople: number): Promise<AvalableResponse> => {
     try {
       const checkinDate = formatDateWitCheckInCheckOutAvailable(checkinDateF, 14, 0, 0)
       const checkoutDate = formatDateWitCheckInCheckOutAvailable(checkoutDateF, 12, 0, 0)
-      console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate);
+      roomTypeId.value = roomtypeid;
+      numberOfPeople.value = numberofpeople;
+      console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate , "roomtypeid: ", roomtypeid);
       const response = await axios.get<AvalableResponse>(`${baseUrl}/admin/booking/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`);
       listRoomsAvailable.value = response.data.data;
       return response.data
@@ -120,6 +125,8 @@ export const Bookings = defineStore("booking", () => {
   return {
     bookings,
     booking,
+    roomTypeId,
+    numberOfPeople,
     getBookings,
     getAvailableRooms,
     createBooking,

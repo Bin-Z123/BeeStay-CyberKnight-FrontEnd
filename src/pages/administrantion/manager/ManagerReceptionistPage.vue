@@ -93,7 +93,7 @@ const searchText = ref('');
 
 const filteredUsers = computed(() => {
   return Users.users.filter(user => {
-    const matchRole = user.role?.id === 1;
+    const matchRole = user.role?.id === 2;
     const matchSearch =
       user.fullname?.toLowerCase().includes(searchText.value.toLowerCase()) ||
       user.email?.toLowerCase().includes(searchText.value.toLowerCase());

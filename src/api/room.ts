@@ -73,9 +73,6 @@ export const Room = defineStore('room', () => {
             const response = await axios.get<ResponseRoom>(`${baseUrl}/admin/rooms`);
             listRooms.value = response.data.data;
             console.log("Danh sach phong: ", listRooms.value);
-            toast.success("Lấy danh sách phòng thành công", {
-                description: "Số lượng phòng: " + response.data.data.length,
-            });
             return response.data;
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {

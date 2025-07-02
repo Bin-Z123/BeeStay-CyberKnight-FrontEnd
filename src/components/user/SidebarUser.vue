@@ -127,6 +127,37 @@
               <LayoutDashboard class="inline-block h-5 w-5" /> Kết Nối
             </RouterLink>
           </div>
+          <div class="mx-5 pt-1">
+            <button @click="isUserInfoOpen = !isUserInfoOpen"
+              class="w-full px-4 py-2 rounded-md transition-all duration-300 ease-in-out hover:text-muesli-800 hover:bg-muesli-50 font-bold flex items-center gap-2"
+              :class="[
+                '/user/setting/profile',
+                '/user/setting/point',
+              ].some((link) => route.path.startsWith(link))
+                ? 'text-muesli-800 bg-muesli-100'
+                : ''
+                ">
+              <img src="@/assets/images/bin.png" alt="" class="w-6 h-6 rounded-full">
+              Võ Thanh Bin
+              <span class="ml-auto">
+                <ChevronUp v-if="isUserInfoOpen" class="w-4 h-4" />
+                <ChevronDown v-else class="w-4 h-4" />
+              </span>
+            </button>
+
+            <div v-if="isUserInfoOpen" class="px-4 mt-2 space-y-1">
+              <RouterLink to="/user/setting/profile"
+                class="flex items-center gap-1 text-sm px-3 py-1 rounded hover:bg-muesli-50 hover:text-muesli-800"
+                exact-active-class="text-muesli-800 font-semibold bg-muesli-100">
+                <LayoutGrid class="inline-block h-4 w-4" /> Chỉnh Sửa Hồ Sơ
+              </RouterLink>
+              <RouterLink to="/user/setting/point"
+                class="flex items-center gap-1 text-sm px-3 py-1 rounded hover:bg-muesli-50 hover:text-muesli-800"
+                exact-active-class="text-muesli-800 font-semibold bg-muesli-100">
+                <CircleDollarSign class="w-4 h-4 inline-block"/> 0 Điểm
+              </RouterLink>
+            </div>
+          </div>
         </div>
       </SidebarContent>
     </Sidebar>
@@ -139,6 +170,7 @@ import {
   LayoutGrid,
   LayoutDashboard,
   FolderKanban,
+  CircleDollarSign,
   BedDouble,
   ClipboardList,
   FileChartColumn,
@@ -155,6 +187,7 @@ import { useRoute } from "vue-router";
 const isManagerOpen = ref(false);
 const isReceptionistOpen = ref(false);
 const route = useRoute();
+const isUserInfoOpen = ref(false);
 
 // if (route.path.startsWith('/administration')) {
 //   isOpen.value = true
