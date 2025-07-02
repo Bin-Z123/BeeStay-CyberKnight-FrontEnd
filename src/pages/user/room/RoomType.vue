@@ -8,9 +8,9 @@
             <div class="relative z-10">
                 <div
                     class="px-4 lg:mx-0 mx-auto xl:container absolute lg:left-1/2 lg:transform lg:-translate-x-1/2 w-full">
-                    <h1 v-if="filteredRooms.length && filteredRooms[0]?.roomType"
+                    <h1 v-if="selectedRoomType?.availableRoomDTO.length"
                         class="lg:text-7xl md:text-6xl sm:text-5xl text-4xl text-white absolute -mt-160 lg:-mt-120 left-1/2 transform -translate-x-1/2">
-                        {{ filteredRooms[0].roomType.name }}
+                        {{ selectedRoomType?.nameRoomType }}
                     </h1>
                     <form action="" class="bg-white rounded-2xl shadow-xl -mt-130 lg:-mt-80 text-[20px]">
                         <div
@@ -57,46 +57,34 @@
     <section>
         <div class="bg-white">
             <div class="py-25 container mx-auto flex flex-col gap-18">
-                <div v-for="(room, index) in filteredRooms" :key="room.id" :class="['flex flex-col lg:flex-row items-center gap-10', index % 2 === 0 ? '' : 'lg:flex-row-reverse']">
-                    <div class="lg:w-1/2 px-4 lg:px-0">
-                        <img src="@/assets/images/room1.png" alt="" class="rounded-2xl">
-                    </div>
-                    <div class="lg:w-1/2 flex flex-col gap-5 justify-center lg:px-0 px-4">
-                        <h1 class="font-bold text-4xl">{{ room.roomType.name }}</h1>
-                        <div class="flex items-center gap-4 text-gray-500">
-                            <span class="flex items-center gap-1">
-                                <Square class="inline-block w-5 h-5" />{{ room.roomType.size }} m²
-                            </span>
-                            <span class="flex items-center gap-1">
-                                <User class="inline-block w-5 h-5" />{{ room.roomType.peopleAbout }} người
-                            </span>
+                <div v-if="bookings.listRoomsAvailable.length">
+                    <div v-for="roomType in bookings.listRoomsAvailable" :key="roomType.roomTypeId">
+                        <div v-if="roomType.roomTypeId === bookings.roomTypeId && roomType.peopleAbout === bookings.numberOfPeople">
+                            <div v-for="(room, index) in roomType.availableRoomDTO" :key="room.id"
+                                :class="['flex flex-col lg:flex-row items-center gap-10', index % 2 === 0 ? '' : 'lg:flex-row-reverse']">
+                                <div class="lg:w-1/2 px-4 lg:px-0">
+                                    <img src="@/assets/images/room1.png" alt="" class="rounded-2xl">
+                                </div>
+                                <div class="lg:w-1/2 flex flex-col gap-5 justify-center lg:px-0 px-4">
+                                    <h1 class="font-bold text-4xl">{{ roomType.nameRoomType }}</h1>
+                                    <div class="flex items-center gap-4 text-gray-500">
+                                        <span class="flex items-center gap-1">
+                                            <Square class="inline-block w-5 h-5" />{{ roomType.size }} m²
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <User class="inline-block w-5 h-5" />{{ roomType.peopleAbout }} người
+                                        </span>
+                                    </div>
+                                    <p class="text-gray-500">Our rooms offer a harmonious blend of comfort and elegance,
+                                        designed to
+                                        provide an exceptional stay for every guest.</p>
+                                    <p class="text-muesli-400 text-3xl">{{ roomType.price }} VNĐ</p>
+                                    <RouterLink to="/" class="text-muesli-400 underline">Xem Chi Tiết</RouterLink>
+                                </div>
+                            </div>
                         </div>
-                        <p class="text-gray-500">Our rooms offer a harmonious blend of comfort and elegance, designed to
-                            provide an exceptional stay for every guest.</p>
-                        <p class="text-muesli-400 text-3xl">{{ room.roomType.price }} VNĐ</p>
-                        <RouterLink to="/" class="text-muesli-400 underline">Xem Chi Tiết</RouterLink>
                     </div>
                 </div>
-                <!-- <div class="grid lg:grid-cols-2 grid-cols-1 gap-10 lg:gap-0">
-                    <div class="flex flex-col gap-5 justify-center lg:px-20 px-4 order-2 lg:order-1">
-                        <h1 class="font-bold text-4xl">Phòng Thượng Hạng</h1>
-                        <div class="flex items-center gap-4 text-gray-500">
-                            <span class="flex items-center gap-1">
-                                <Square class="inline-block w-5 h-5" />30 m²
-                            </span>
-                            <span class="flex items-center gap-1">
-                                <User class="inline-block w-5 h-5" />30 m²
-                            </span>
-                        </div>
-                        <p class="text-gray-500">Our rooms offer a harmonious blend of comfort and elegance, designed to
-                            provide an exceptional stay for every guest.</p>
-                        <p class="text-muesli-400 text-3xl">120.000 VNĐ</p>
-                        <RouterLink to="/" class="text-muesli-400 underline">Xem Chi Tiết</RouterLink>
-                    </div>
-                    <div class="px-4 lg:px-0 lg:order-2 order-1">
-                        <img src="@/assets/images/room1.png" alt="" class="rounded-2xl">
-                    </div>
-                </div> -->
             </div>
             <div class="flex justify-center pb-20">
                 <button class="px-5 py-3 border-1 border-gray-500 text-gray-500 rounded-md">Xem Thêm</button>
@@ -198,9 +186,9 @@ import { ref, onMounted, watch, computed } from "vue";
 import { vi } from "date-fns/locale";
 import { addDays, format } from "date-fns";
 import { useKeenSlider } from 'keen-slider/vue'
-import { Room } from '@/api/room';
+import { Bookings } from '@/api/booking';
 
-const rooms = Room();
+const bookings = Bookings();
 
 const toggleDarkMode = () => {
     const htmlElement = document.documentElement;
@@ -214,15 +202,14 @@ const checkin = ref();
 const formatDate = (date) => {
     return date ? format(date, "dd/MM/yyyy") : "";
 };
-const filteredRooms = computed(() => {
-    return rooms.listRooms.filter(
-        (room) => room.roomType.name === "Double Room" && room.roomStatus === "INACTIVE"
-    );
-});
-onMounted( async () => {
+
+const selectedRoomType = computed(() =>
+    bookings.listRoomsAvailable.find(r => r.roomTypeId === bookings.roomTypeId)
+);
+
+
+onMounted(async () => {
     checkin.value = new Date();
-    await rooms.getAllRooms();
-    console.log("Thông TIn nè",filteredRooms.value);
 });
 
 const numberOfNights = ref(null);

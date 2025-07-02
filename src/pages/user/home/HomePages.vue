@@ -48,18 +48,18 @@
             </p> -->
                     </div>
                     <div class="space-y-2 flex flex-col sm:border-r-1 border-gray-200 lg:w-4/18">
-                        <label>Loại Phòng</label> <select type="text"
+                        <label>Loại Phòng</label> <select type="text" v-model="roomTypeId"
                             class="lg:me-5  px-3 py-[4px] rounded-[4px] text-gray-400 text-[17px]">
-                            <option value="all">Tất Cả Loại Phòng</option>
+                            <option v-for="roomtype in roomTypes.roomtypes" :key="roomtype.id" :value="roomtype.id">{{ roomtype.name }}</option>
                         </select>
                     </div>
                     <div class="space-y-2 flex flex-col sm:border-r-1 border-gray-200 lg:w-4/18">
-                        <label>Số Người</label><input type="text"
+                        <label>Số Người</label><input type="text" v-model="numberOfPeople"
                             class="lg:me-5  px-3 py-[4px] rounded-[4px] text-gray-400 text-[17px]"
                             placeholder="Nhập số người" />
                     </div>
                     <div class="flex items-center justify-end border-gray-400 lg:w-2/18">
-                        <button class="w-full px-4 py-3 bg-muesli-400 text-white rounded-xl">
+                        <button class="w-full px-4 py-3 bg-muesli-400 text-white rounded-xl" @click.prevent="handleSearch">
                             Kiểm Tra
                         </button>
                     </div>
@@ -332,6 +332,17 @@ import { ref, onMounted, watch, computed } from "vue";
 import { vi } from "date-fns/locale";
 import { addDays, format } from "date-fns";
 import { useKeenSlider } from 'keen-slider/vue'
+import { useRouter } from "vue-router";
+import { RoomType } from "@/api/roomtype";
+import { Bookings } from "@/api/booking";
+import path from "path";
+
+const roomTypes = RoomType();
+const bookings = Bookings();
+const router = useRouter();
+
+console.log("Loại Phòng Đây Nè", roomTypes.roomtypes);
+
 const toggleDarkMode = () => {
     const htmlElement = document.documentElement;
     htmlElement.classList.toggle("dark");
@@ -344,8 +355,9 @@ const checkin = ref();
 const formatDate = (date) => {
     return date ? format(date, "dd/MM/yyyy") : "";
 };
-onMounted(() => {
+onMounted( async () => {
     checkin.value = new Date();
+    await roomTypes.getAllRoomType();
 });
 
 const numberOfNights = ref(null);
@@ -402,6 +414,16 @@ const [post] = useKeenSlider({
         },
     }
 })
+
+// Tìm Loại phòng trống theo thời gian
+const roomTypeId = ref(0);
+const numberOfPeople = ref(0);
+const handleSearch = async () => {
+  await bookings.getAvailableRooms(checkin.value, checkOutDate.value, roomTypeId.value, numberOfPeople.value);
+  bookings.roomTypeId = Number(roomTypeId.value);
+  bookings.numberOfPeople = Number(numberOfPeople.value);
+  router.push("/user/roomtype");
+};
 
 </script>
 <style scoped>
