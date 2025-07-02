@@ -425,7 +425,7 @@ interface Room {
 }
 // Tính lại số phòng (Stay)
 const listRoomNumber = computed(() => {
-    const selectedRomTypeIds = newBooking.value.bookingDetailRequest
+    const selectedRomTypeIds = bookingDetails.value
         .filter(detail => detail.roomTypeId !== 0)
         .map(detail => detail.roomTypeId);
 

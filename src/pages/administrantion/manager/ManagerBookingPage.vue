@@ -234,7 +234,7 @@ const selectToday = () => {
     const sDate = new Date();
     sDate.setHours(0, 0, 0, 0);
     const eDate = new Date(new Date().setDate(sDate.getDate() + 1));
-    eDate.setHours(12, 0, 0, 0);
+    eDate.setHours(23, 59, 59, 0);
     date.value = [sDate, eDate];
 }
 
