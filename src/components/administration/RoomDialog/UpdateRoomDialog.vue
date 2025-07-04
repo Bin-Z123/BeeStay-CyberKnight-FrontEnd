@@ -12,7 +12,7 @@
             <label class="text-muesli-400">Số Phòng</label><br />
             <input type="text"
               class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm disabled:bg-gray-100 disabled:shadow-gray-300 shadow-muesli-300 px-5 text-center"
-              placeholder="Nhập số phòng" disabled v-model="roomData.roomNumber" />
+              placeholder="Nhập số phòng" v-model="roomData.roomNumber" />
           </div>
           <div>
             <label class="text-muesli-400">Tầng</label><br />

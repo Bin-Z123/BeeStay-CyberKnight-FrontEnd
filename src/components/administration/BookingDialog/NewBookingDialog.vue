@@ -253,7 +253,7 @@ const formatPrice = (price: number) => formatVND(price);
 
 onMounted(async () => {
     await roomTypes.getAllRoomType();
-    await bookingStore.getAvailableRooms(dateCheckin.value, dateCheckout.value);
+    await bookingStore.getAvailableRoomsByDate(dateCheckin.value, dateCheckout.value);
 
     console.log("Danh sách phòng trống:", bookingStore.listRoomsAvailable);
 })
@@ -282,7 +282,7 @@ watch([dateCheckin, dateCheckout], ([checkin, checkout]) => {
         stay.actualCheckIn = formatDateWithTime(checkin, 14, 0, 0);
         stay.actualCheckOut = formatDateWithTime(checkout, 12, 0, 0);
     })
-    bookingStore.getAvailableRooms(dateCheckin.value, dateCheckout.value);
+    bookingStore.getAvailableRoomsByDate(dateCheckin.value, dateCheckout.value);
     toast.success("Thêm ngày check-in, check-out");
 })
 

@@ -24,7 +24,7 @@
                             <option value="STAY">Đặt tại khách sạn</option>
                             <option value="COMPLETED">Đã trả phòng</option>
                             <option value="CANCEL">Đã Hủy</option>
-                            <option value="NOSHOW">Quá giờ giữ phòng</option>
+                            <option value="LATE">Giữ phòng</option>
                         </select>
                         <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                             <ChevronDown class="w-5 h-5 text-gray-400" />
@@ -88,8 +88,8 @@
                                             ? 'Đặt tại khách sạn'
                                             : booking.bookingStatus === 'COMPLETED'
                                                 ? 'Đã Trả Phòng'
-                                                : booking.bookingStatus === 'NOSHOW'
-                                                    ? 'Quá giờ giữ phòng'
+                                                : booking.bookingStatus === 'LATE'
+                                                    ? 'Giữ phòng'
                                                     : 'Chưa Nhận Phòng' }}</td>
                         <td class="py-2 flex justify-center items-center gap-5 h-full">
                             <button
@@ -194,9 +194,9 @@ onMounted(async () => {
         .filter(b => b.bookingStatus !== 'X')
         .sort((a, b) => new Date(b.bookingDate).getTime() - new Date(a.bookingDate).getTime());
 
-    const startDate = new Date();
-    const endDate = new Date(new Date().setDate(startDate.getDate() + 30));
-    date.value = [startDate, endDate];
+    // const startDate = new Date();
+    // const endDate = new Date(new Date().setDate(startDate.getDate() + 30));
+    // date.value = [startDate, endDate];
 });
 
 //Search booking

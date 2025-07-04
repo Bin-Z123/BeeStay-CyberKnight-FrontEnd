@@ -69,20 +69,32 @@
 
                         <label class="col-span-2 text-center"><b>Loại phòng đã đặt</b></label>
                         <div class="col-span-2 flex items-center gap-4 mb-2 text-start">
-                            <label class="w-2/3 input-booking border-0!">Loại phòng</label>
+                            <label class="w-2/3 input-booking border-0!">Loại phòng đã đặt</label>
                             <label class="w-1/3 input-booking border-0!">Số lượng phòng</label>
+                            <button
+                                class="btn btn-add-booking border-0! text-white! hover:bg-white! hover:text-white!">Xóa</button>
                         </div>
-                        <div class="col-span-2 flex items-center gap-4 mb-2 -mt-5" v-for="detail in bookingDetails"
-                            :key="detail.id">
+                        <div class="col-span-2 flex items-center gap-4 mb-2 -mt-5"
+                            v-for="detail in bookingDetailsUpdate" :key="detail.id">
                             <select class="input-booking w-2/3" :disabled="!checkBoxInfo">
-                                <option>{{ detail.id }}</option>
+                                <option v-for="(roomType, index) in bookingStore.listRoomsAvailable" :key="index">{{
+                                    roomType.nameRoomType }}</option>
                             </select>
                             <select class="input-booking w-1/3" :disabled="!checkBoxInfo">
                                 <option value="">{{ detail.quantity }}</option>
                             </select>
+                            <button class="btn btn-del-booking">
+                                Xóa
+                            </button>
+                        </div>
+                        <div class="col-span-2 flex items-center gap-4 mb-2 text-start -mt-5">
+                            <label class="w-2/3 input-booking border-0!">Loại phòng mới</label>
+                            <label class="w-1/3 input-booking border-0!">Số lượng phòng</label>
+                            <button
+                                class="btn btn-add-booking border-0! text-white! hover:bg-white! hover:text-white!">Xóa</button>
                         </div>
                         <div class="col-span-2 flex items-center gap-4 mb-2 -mt-5"
-                            v-for="detail in bookingData.bookingDetails" :key="detail.id">
+                            v-for="(detail, index) in bookingData.bookingDetails" :key="detail.id">
                             <select class="input-booking w-2/3" :disabled="!checkBoxInfo">
                                 <option v-for="(roomType, index) in bookingStore.listRoomsAvailable" :key="index">{{
                                     roomType.nameRoomType
@@ -91,6 +103,8 @@
                             <select class="input-booking w-1/3" :disabled="!checkBoxInfo">
                                 <option value="">{{ detail.quantity }}</option>
                             </select>
+                            <button class="btn btn-del-booking"
+                                @click="bookingData.bookingDetails.splice(index, 1)">Xóa</button>
                         </div>
 
                     </div>
@@ -136,6 +150,11 @@ const bookingData = ref<Booking>(props.Booking)
 
 watch(() => props.Booking, (newVal) => {
     bookingData.value = { ...newVal }
+    bookingDetailsUpdate.value = bookingData.value.bookingDetails.map(detail => ({
+        id: detail.id,
+        roomTypeId: detail.roomType?.id,
+        quantity: detail.quantity
+    }))
 })
 
 interface BookingDetailUpdate {
@@ -143,7 +162,7 @@ interface BookingDetailUpdate {
     roomTypeId: number
     quantity: number
 }
-const bookingDetails = ref<BookingDetailUpdate[]>([
+const bookingDetailsUpdate = ref<BookingDetailUpdate[]>([
     {
         id: 0,
         roomTypeId: 0,
@@ -160,7 +179,7 @@ interface Room {
 }
 // Tính lại số phòng (Stay)
 const listRoomNumber = computed(() => {
-    const selectedRomTypeIds = bookingDetails.value
+    const selectedRomTypeIds = bookingDetailsUpdate.value
         .filter(detail => detail.roomTypeId !== 0)
         .map(detail => detail.roomTypeId);
 
@@ -175,15 +194,11 @@ const listRoomNumber = computed(() => {
     return rooms;
 })
 
-watchEffect(() => {
-    if (bookingData.value.bookingDetails?.length) {
-        bookingDetails.value = bookingData.value.bookingDetails.map(detail => ({
-            id: detail.id,
-            roomTypeId: detail.roomType.id,
-            quantity: detail.quantity
-        }))
-    }
-})
+// watchEffect(() => {
+//     if (bookingData.value.bookingDetails?.length) {
+
+//     }
+// })
 // Chỉnh sửa thông tin đăng ký
 const checkBoxInfo = ref(false)
 
@@ -193,9 +208,10 @@ onMounted(async () => {
     //     roomTypeId: detail.roomType.id,
     //     quantity: detail.quantity
     // }))
-
-    await bookingStore.getAvailableRooms(bookingData.value.checkInDate, bookingData.value.checkOutDate)
-    console.log("Danh sách phòng trống:", bookingStore.listRoomsAvailable);
+    if (bookingData.value.checkInDate && bookingData.value.checkOutDate) {
+        await bookingStore.getAvailableRoomsByDate(bookingData.value.checkInDate, bookingData.value.checkOutDate)
+        console.log("Danh sách phòng trống:", bookingStore.listRoomsAvailable);
+    }
 
 
 })

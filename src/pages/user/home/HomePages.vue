@@ -50,7 +50,8 @@
                     <div class="space-y-2 flex flex-col sm:border-r-1 border-gray-200 lg:w-4/18">
                         <label>Loại Phòng</label> <select type="text" v-model="roomTypeId"
                             class="lg:me-5  px-3 py-[4px] rounded-[4px] text-gray-400 text-[17px]">
-                            <option v-for="roomtype in roomTypes.roomtypes" :key="roomtype.id" :value="roomtype.id">{{ roomtype.name }}</option>
+                            <option v-for="roomtype in roomTypes.roomtypes" :key="roomtype.id" :value="roomtype.id">{{
+                                roomtype.name }} - {{ roomtype.peopleAbout }} - người</option>
                         </select>
                     </div>
                     <div class="space-y-2 flex flex-col sm:border-r-1 border-gray-200 lg:w-4/18">
@@ -59,7 +60,8 @@
                             placeholder="Nhập số người" />
                     </div>
                     <div class="flex items-center justify-end border-gray-400 lg:w-2/18">
-                        <button class="w-full px-4 py-3 bg-muesli-400 text-white rounded-xl" @click.prevent="handleSearch">
+                        <button class="w-full px-4 py-3 bg-muesli-400 text-white rounded-xl"
+                            @click.prevent="handleSearch">
                             Kiểm Tra
                         </button>
                     </div>
@@ -82,7 +84,7 @@
                         class="absolute w-60 h-30 bottom-8 lg:-left-14 bg-white shadow-2xl rounded-2xl z-20 flex items-center justify-center">
                         <div class="w-1/2 flex items-center justify-center">
                             <div class="bg-gray-200/60 w-20 h-20 rounded-2xl">
-                                <Users class="w-full h-full p-4 text-muesli-400"/>
+                                <Users class="w-full h-full p-4 text-muesli-400" />
                             </div>
                         </div>
                         <div class="w-1/2 flex flex-col gap-1">
@@ -355,7 +357,7 @@ const checkin = ref();
 const formatDate = (date) => {
     return date ? format(date, "dd/MM/yyyy") : "";
 };
-onMounted( async () => {
+onMounted(async () => {
     checkin.value = new Date();
     await roomTypes.getAllRoomType();
 });
@@ -419,10 +421,10 @@ const [post] = useKeenSlider({
 const roomTypeId = ref(0);
 const numberOfPeople = ref(0);
 const handleSearch = async () => {
-  await bookings.getAvailableRooms(checkin.value, checkOutDate.value, roomTypeId.value, numberOfPeople.value);
-  bookings.roomTypeId = Number(roomTypeId.value);
-  bookings.numberOfPeople = Number(numberOfPeople.value);
-  router.push("/user/roomtype");
+    await bookings.getAvailableRooms(checkin.value, checkOutDate.value, roomTypeId.value, numberOfPeople.value);
+    bookings.roomTypeId = Number(roomTypeId.value);
+    bookings.numberOfPeople = Number(numberOfPeople.value);
+    router.push("/user/roomtype");
 };
 
 </script>
