@@ -20,5 +20,6 @@ export interface RoomTypeResponse2 {
     size: number;
     price: number;
     peopleAbout: number;
+    description: string;
     rooms: RoomResponse[];
 }

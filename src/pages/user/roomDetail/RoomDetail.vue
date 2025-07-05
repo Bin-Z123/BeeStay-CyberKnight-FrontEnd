@@ -5,70 +5,71 @@
                 <div class="bg-[url('@/assets/images/header__bg.webp')] bg-cover bg-center h-full w-full"></div>
                 <div class="absolute inset-0 bg-blue-900/40"></div>
             </div>
-            <div class="container mx-auto pt-25">
+            <div class="container mx-auto pt-20">
                 <div class="flex lg:flex-row flex-col">
-                    <div class="lg:w-2/3 flex flex-col gap-4 md:pe-5 px-4 md:px-0">
-                        <div class="flex flex-col gap-2">
-                            <h1 class="text-4xl font-bold">Phòng Thượng Hạng</h1>
-                            <p class="text-2xl text-muesli-400">120.000 VNĐ</p>
-                            <div class="flex items-center gap-4 text-gray-500">
-                                <span class="flex items-center gap-1">
-                                    <Square class="inline-block w-5 h-5" />30 m²
-                                </span>
-                                <span class="flex items-center gap-1">
-                                    <User class="inline-block w-5 h-5" />30 m²
-                                </span>
-                            </div>
-                        </div>
-                        <div>
-                            <p>Our elegantly appointed rooms and suites are designed to offer the utmost in comfort and
-                                style. Each room features modern amenities, plush furnishings, and thoughtful touches to
-                                ensure a relaxing stay.
-                                Indulge in a culinary journey at our on-site restaurants, where our talented chefs
-                                create mouthwatering dishes using the freshest local ingredients. Start your day with a
-                                sumptuous breakfast, enjoy a leisurely lunch, and savor a gourmet dinner in an elegant
-                                setting.</p>
-                        </div>
-                        <div class="flex flex-col gap-5">
-                            <h1 class="text-2xl font-bold">Tiện Nghi</h1>
-                            <div class="text-lg flex">
-                                <span class="w-full">
-                                    <Wifi class="inline-block text-muesli-400 w-8 h-8" /> Miễn Phí Wifi
-                                </span>
-                                <span class="w-full">
-                                    <Bath class="inline-block text-muesli-400 w-8 h-8" /> Bồn Tắm
-                                </span>
-                                <span class="w-full">
-                                    <Refrigerator class="inline-block text-muesli-400 w-8 h-8" /> Tủ Lạnh
-                                </span>
-                            </div>
-                            <div class="text-lg flex border-t border-b py-5 border-gray-300">
-                                <span class="w-full">
-                                    <Monitor class="inline-block text-muesli-400 w-8 h-8" /> TV
-                                </span>
-                                <span class="w-full">
-                                    <UtensilsCrossed class="inline-block text-muesli-400 w-8 h-8" /> Ăn Uống
-                                </span>
-                                <span class="w-full">
-                                    <ShowerHead class="inline-block text-muesli-400 w-8 h-8" /> Vòi Sen
-                                </span>
-                            </div>
-                            <div class="text-lg flex">
-                                <span class="w-full">
-                                    <Telescope class="inline-block text-muesli-400 w-8 h-8" /> Cảnh Đẹp
-                                </span>
-                                <span class="w-full">
-                                    <HeartPlus class="inline-block text-muesli-400 w-8 h-8" /> Hổ Trợ 24/7
-                                </span>
-                                <span class="w-full">
-                                    <Wifi class="inline-block text-muesli-400 w-8 h-8" /> Miễn Phí Wifi
-                                </span>
-                            </div>
-                        </div>
-                        <div class="flex flex-col gap-5">
-                            <h1 class="text-2xl font-bold">Ảnh</h1>
-                            <div>
-                                <img src="@/assets/images/room1.png" alt="" class="w-full rounded-2xl" />
+                    <div v-if="bookings.listRoomsAvailable.length"
+                        class="lg:w-2/3 flex flex-col gap-4 md:pe-5 px-4 md:px-0">
+                        <div v-for="roomType in bookings.listRoomsAvailable" :key="roomType.id">
+                            <div class="flex flex-col gap-5" v-if="roomType.roomTypeId == roomtypeid">
+                                <div class="flex flex-col gap-2">
+                                    <h1 class="text-4xl font-bold">{{ roomType.nameRoomType }}</h1>
+                                    <p class="text-2xl text-muesli-400">{{ roomType.price }} VNĐ</p>
+                                    <div class="flex items-center gap-4 text-gray-500">
+                                        <span class="flex items-center gap-1">
+                                            <Square class="inline-block w-5 h-5" />{{ roomType.size }} m²
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <User class="inline-block w-5 h-5" />{{ roomType.peopleAbout }} m²
+                                        </span>
+                                    </div>
+                                </div>
+                                <div v-if="roomtypes.roomtype">
+                                    <p>{{ roomtypes.roomtype.description }}</p>
+                                </div>
+                                <div class="flex flex-col gap-5">
+                                    <h1 class="text-2xl font-bold">Tiện Nghi</h1>
+                                    <div class="text-lg flex">
+                                        <span class="w-full">
+                                            <Wifi class="inline-block text-muesli-400 w-8 h-8" /> Miễn Phí Wifi
+                                        </span>
+                                        <span class="w-full">
+                                            <Bath class="inline-block text-muesli-400 w-8 h-8" /> Bồn Tắm
+                                        </span>
+                                        <span class="w-full">
+                                            <Refrigerator class="inline-block text-muesli-400 w-8 h-8" /> Tủ Lạnh
+                                        </span>
+                                    </div>
+                                    <div class="text-lg flex border-t border-b py-5 border-gray-300">
+                                        <span class="w-full">
+                                            <Monitor class="inline-block text-muesli-400 w-8 h-8" /> TV
+                                        </span>
+                                        <span class="w-full">
+                                            <UtensilsCrossed class="inline-block text-muesli-400 w-8 h-8" /> Ăn Uống
+                                        </span>
+                                        <span class="w-full">
+                                            <ShowerHead class="inline-block text-muesli-400 w-8 h-8" /> Vòi Sen
+                                        </span>
+                                    </div>
+                                    <div class="text-lg flex">
+                                        <span class="w-full">
+                                            <Telescope class="inline-block text-muesli-400 w-8 h-8" /> Cảnh Đẹp
+                                        </span>
+                                        <span class="w-full">
+                                            <HeartPlus class="inline-block text-muesli-400 w-8 h-8" /> Hổ Trợ 24/7
+                                        </span>
+                                        <span class="w-full">
+                                            <Wifi class="inline-block text-muesli-400 w-8 h-8" /> Miễn Phí Wifi
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-5">
+                                    <h1 class="text-2xl font-bold">Ảnh</h1>
+                                    <div>
+                                        <img v-if="roomType.availableRoomDTO[0]?.roomImage[0]?.url"
+                                            :src="getImageUrl(roomType.availableRoomDTO[0].roomImage[0].url)"
+                                            alt="Ảnh Phòng" class="w-full rounded-2xl" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -116,53 +117,26 @@
                 <div class="flex flex-col items-center mt-20 gap-3 mx-4 lg:mx-0 pb-25 ">
                     <p class="text-2xl text-muesli-400">Một Số Loại Phòng Khác</p>
                     <h1 class="text-4xl font-bold">Một Số Loại Phòng Khác</h1>
-                    <div ref="roomtype" class="keen-slider rounded-2xl mt-10">
-                        <div class="keen-slider__slide rounded-2xl border-1">
-                            <img src="@/assets/images/room1.png" alt="" class="h-85 w-full">
+                    <div ref="roomtype" class="keen-slider rounded-2xl mt-10" v-if="bookings.listRoomsAvailable.length">
+                        <div class="keen-slider__slide rounded-2xl border-1"
+                            v-for="roomType in bookings.listRoomsAvailable" :key="roomType.roomTypeId">
+                            <img v-if="roomType.availableRoomDTO[0]?.roomImage[0]?.url"
+                                :src="getImageUrl(roomType.availableRoomDTO[0].roomImage[0].url)" alt="Ảnh Phòng"
+                                class="h-85 w-full">
                             <div class="flex flex-col gap-4 p-6">
-                                <h1 class="font-bold text-2xl">Phòng Thượng Hạng</h1>
+                                <h1 class="font-bold text-2xl">{{ roomType.nameRoomType }}</h1>
                                 <div class="flex items-center gap-4 text-gray-500">
                                     <span class="flex items-center gap-1">
-                                        <Square class="inline-block w-5 h-5" />30 m²
+                                        <Square class="inline-block w-5 h-5" />{{ roomType.size }} m²
                                     </span>
                                     <span class="flex items-center gap-1">
-                                        <User class="inline-block w-5 h-5" />30 m²
+                                        <User class="inline-block w-5 h-5" />{{ roomType.peopleAbout }} người
                                     </span>
                                 </div>
-                                <p class="text-muesli-400 text-xl">120.000 VNĐ</p>
-                                <RouterLink to="/" class="text-muesli-400 underline">Xem Chi Tiết</RouterLink>
-                            </div>
-                        </div>
-                        <div class="keen-slider__slide rounded-2xl border-1">
-                            <img src="@/assets/images/room2.png" alt="" class="h-85 w-full">
-                            <div class="flex flex-col gap-4 p-6">
-                                <h1 class="font-bold text-2xl">Phòng Thường</h1>
-                                <div class="flex items-center gap-4 text-gray-500">
-                                    <span class="flex items-center gap-1">
-                                        <Square class="inline-block w-5 h-5" />30 m²
-                                    </span>
-                                    <span class="flex items-center gap-1">
-                                        <User class="inline-block w-5 h-5" />30 m²
-                                    </span>
-                                </div>
-                                <p class="text-muesli-400 text-xl">120.000 VNĐ</p>
-                                <RouterLink to="/" class="text-muesli-400 underline">Xem Chi Tiết</RouterLink>
-                            </div>
-                        </div>
-                        <div class="keen-slider__slide rounded-2xl border-1">
-                            <img src="@/assets/images/room3.png" alt="" class="h-85 w-full">
-                            <div class="flex flex-col gap-4 p-6">
-                                <h1 class="font-bold text-2xl">Phòng Cùi</h1>
-                                <div class="flex items-center gap-4 text-gray-500">
-                                    <span class="flex items-center gap-1">
-                                        <Square class="inline-block w-5 h-5" />30 m²
-                                    </span>
-                                    <span class="flex items-center gap-1">
-                                        <User class="inline-block w-5 h-5" />30 m²
-                                    </span>
-                                </div>
-                                <p class="text-muesli-400 text-xl">120.000 VNĐ</p>
-                                <RouterLink to="/" class="text-muesli-400 underline">Xem Chi Tiết</RouterLink>
+                                <p class="text-muesli-400 text-xl">{{ roomType.price }} VNĐ</p>
+                                <RouterLink
+                                    :to="{ path: '/user/roomdetail', query: { roomTypeId: roomType.roomTypeId } }"
+                                    class="text-muesli-400 underline">Xem Chi Tiết</RouterLink>
                             </div>
                         </div>
                     </div>
@@ -177,7 +151,20 @@ import { ref, onMounted, watch, computed } from "vue";
 import { vi } from "date-fns/locale";
 import { addDays, format } from "date-fns";
 import { useKeenSlider } from 'keen-slider/vue'
+import { Bookings } from '@/api/booking';
+import { RoomType } from '@/api/roomtype';
+import { useRoute } from "vue-router";
+const bookings = Bookings();
+const roomtypes = RoomType();
 
+const router = useRoute();
+
+const roomtypeid = ref(router.query.roomTypeId);
+
+watch(() => router.query.roomTypeId, (newRoomTypeId) => {
+    roomtypeid.value = newRoomTypeId
+}
+)
 const toggleDarkMode = () => {
     const htmlElement = document.documentElement;
     htmlElement.classList.toggle("dark");
@@ -190,8 +177,13 @@ const checkin = ref();
 const formatDate = (date) => {
     return date ? format(date, "dd/MM/yyyy") : "";
 };
-onMounted(() => {
+
+onMounted(async () => {
     checkin.value = new Date();
+    await bookings.getAvailableRooms(bookings.checkin, bookings.checkout, bookings.numberOfPeople);
+    await roomtypes.getRoomTypeById(roomtypeid.value);
+    console.log(JSON.stringify(roomtypes.roomtype, null, 2));
+    console.log("📦 Mô tả:", roomtypes.roomtype.description);
 });
 
 const numberOfNights = ref(null);
@@ -221,4 +213,11 @@ const [roomtype] = useKeenSlider({
         },
     },
 })
+
+// Load Ảnh
+const baseUrl = import.meta.env.VITE_CLOUDINARY_IMG_URL;
+
+const getImageUrl = (image) => {
+    return `${baseUrl}/${image}`;
+};
 </script>

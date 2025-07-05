@@ -17,6 +17,16 @@
           <p v-if="errors.name" class="text-red-500 text-sm mt-1">{{ errors.name }}</p>
         </div>
         <div>
+          <label class="text-muesli-400">Mô Tả</label>
+          <textarea type="text" v-model="localRoomType.description" :class="[
+            'w-full h-20 py-2 rounded-lg focus:outline-none px-5 text-center shadow-sm',
+            errors.description
+              ? 'border-red-500 ring-2 ring-red-300 shadow-red-200'
+              : 'border-gray-300 focus:ring-2 focus:ring-muesli-200 shadow-muesli-300'
+          ]" placeholder="Mô tả về loại phòng"></textarea>
+          <p v-if="errors.description" class="text-red-500 text-sm mt-1">{{ errors.description }}</p>
+        </div>
+        <div>
           <label class="text-muesli-400">Diện Tích(m2)</label>
           <input type="text" v-model="localRoomType.size" :class="[
             'w-full h-10 rounded-lg focus:outline-none px-5 text-center shadow-sm',
@@ -91,6 +101,7 @@ const errors = ref({
   size: "",
   price: "",
   peopleAbout: "",
+  description: "",
 });
 
 const validateForm = () => {
@@ -100,6 +111,7 @@ const validateForm = () => {
     size: "",
     price: "",
     peopleAbout: "",
+    description: "",
   };
   const r = localRoomType.value;
   if (!r.name || r.name.trim() === "") {
@@ -116,6 +128,10 @@ const validateForm = () => {
   }
   if (r.peopleAbout == null || r.peopleAbout < 1) {
     errors.value.peopleAbout = "Vui lòng nhập số lượng người ở hợp lệ";
+    isValid = false;
+  }
+  if (!r.description || r.description.trim() === "") {
+    errors.value.description = "Vui nhập mô tả hợp lệ";
     isValid = false;
   }
   return isValid;

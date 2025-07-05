@@ -13,6 +13,7 @@ interface RoomType {
     size: number,
     price: number,
     peopleAbout: number,
+    description: string
 }
 
 interface RoomTypeResponse {
@@ -28,13 +29,13 @@ export const RoomType = defineStore('roomtype', () => {
         name: '',
         size: 1,
         price: 0,
-        peopleAbout: 1
+        peopleAbout: 1,
+        description: ''
     });
     const getAllRoomType = async (): Promise<RoomTypeResponse> => {
         try {
             const response = await axios.get<RoomTypeResponse>(`${baseUrl}/admin/roomTypes`);
             roomtypes.value = response.data.data;
-
             return response.data;
         } catch (error) {
             throw error;
@@ -97,5 +98,15 @@ export const RoomType = defineStore('roomtype', () => {
         }
     }
 
-    return { roomtype, roomtypes, getAllRoomType, createRoomType, updateRoomType, deleteRoomType, isLoading };
+    const getRoomTypeById = async (roomtypeId: number): Promise<RoomType> => {
+        try {
+            const response = await axios.get<{code: number, data: RoomType}>(`${baseUrl}/admin/roomTypes/${roomtypeId}`);
+            roomtype.value = response.data.data;
+            return response.data.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    return { roomtype, roomtypes, getAllRoomType, createRoomType, updateRoomType, deleteRoomType, getRoomTypeById, isLoading };
 });
