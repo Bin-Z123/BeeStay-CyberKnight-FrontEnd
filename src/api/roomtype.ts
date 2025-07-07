@@ -34,7 +34,9 @@ export const RoomType = defineStore('roomtype', () => {
     });
     const getAllRoomType = async (): Promise<RoomTypeResponse> => {
         try {
-            const response = await axios.get<RoomTypeResponse>(`${baseUrl}/admin/roomTypes`);
+            const response = await axios.get<RoomTypeResponse>(`${baseUrl}/admin/roomTypes`,{
+                withCredentials: true
+            });
             roomtypes.value = response.data.data;
             return response.data;
         } catch (error) {

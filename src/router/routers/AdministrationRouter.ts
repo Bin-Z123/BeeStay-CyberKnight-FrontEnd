@@ -4,6 +4,9 @@ const administrationRouter: RouteRecordRaw = {
     path: "/administration",
     name: "administration",
     component: () => import("../../layouts/administration/AdministrationLayout.vue"),
+    meta: {
+        requiredRole: "ADMIN"
+    },
     children: [
         {
             path: "dashboard",

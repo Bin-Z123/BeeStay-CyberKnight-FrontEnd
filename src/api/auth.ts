@@ -1,6 +1,8 @@
 import axios from "axios";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
+import { useAuthStore } from "@/stores/auth/login";
+import { useRouter } from "vue-router";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -36,7 +38,17 @@ export interface Rank {
   discount_percent: number;
 }
 
+export interface registerResponse {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
 export const Auth = () => {
+  const authStore = useAuthStore();
+  const router = useRouter();
   const isLoading = ref(false);
 
   const getUserInfoByToken = async (): Promise<User> => {
@@ -58,22 +70,26 @@ export const Auth = () => {
       const response = await axios.post<LoginResponse>(`${baseUrl}/login`, {
         username,
         password,
+      },{
+        withCredentials: true
       });
-      const token = response.data.accessToken;
-
-      // Gửi token qua cookie vì BE đọc từ cookie "jwt"
-      document.cookie = `jwt=${token}; path=/`;
       //Lấy thông tin sau khi login
       const user = await getUserInfoByToken();
-      localStorage.setItem("userInfo", JSON.stringify(user));
+      authStore.user = user;
+      authStore.isAuthenticated = true;
+
       toast.success("Thông báo", {
         description: "Đăng nhập thành công!",
         action: { label: "Thoát" },
       });
 
-      setTimeout(() => {
-        window.location.href = "/administration/dashboard";
-      }, 1000);
+      const role = user.role.roleName.toUpperCase();
+      console.log("role: "+role);
+      if (role === "ADMIN") {
+      router.push("/administration/dashboard");
+    } else {
+      router.push("/user/home");
+    }
 
       return response.data;
     } catch (error: any) {
@@ -89,8 +105,28 @@ export const Auth = () => {
     }
   };
 
+  const register = async (user: registerResponse): Promise<registerResponse> => {
+    isLoading.value = true;
+    try {
+      const response = await axios.post<registerResponse>(`${baseUrl}/register`, user);
+      toast.success("Thông báo", {
+        description: "Tạo tài khoản thành công!",
+        action: { label: "Thoát" },
+      })
+      return response.data;
+    } catch (error) {
+      console.error("Lỗi tạo tài khoản", error);
+      throw error;
+    } finally {
+      setTimeout(() => {
+        isLoading.value = false;
+      }, 1000);
+    }
+  };
+
   return {
     login,
     isLoading,
+    register
   };
 };

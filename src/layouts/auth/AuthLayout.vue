@@ -8,7 +8,7 @@
       class="absolute w-60 h-100 bg-muesli-400 rotate-[55deg] -mt-60 rounded-br-[100px] ml-25"
     ></div>
     <div class="absolute w-45 ml-17 mt-3">
-      <RouterLink to="/administration/dashboard"
+      <RouterLink to="/user/home"
         ><img
           src="/src/assets/images/LogoBeeStay.svg"
           alt=""
