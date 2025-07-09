@@ -1,5 +1,5 @@
 <template>
-    <Dialog>
+    <Dialog v-model:open="dialogVisible">
         <DialogContent class="sm:max-w-[900px] grid-rows-[auto_minmax(0,1fr)_auto] p-0 max-h-[90dvh]"
             @pointer-down-outside.prevent>
             <DialogHeader class="p-6 pb-0">
@@ -75,38 +75,41 @@
                                 class="btn btn-add-booking border-0! text-white! hover:bg-white! hover:text-white!">Xóa</button>
                         </div>
                         <div class="col-span-2 flex items-center gap-4 mb-2 -mt-5"
-                            v-for="detail in bookingDetailsUpdate" :key="detail.id">
-                            <select class="input-booking w-2/3" :disabled="!checkBoxInfo">
-                                <option v-for="(roomType, index) in bookingStore.listRoomsAvailable" :key="index">{{
-                                    roomType.nameRoomType }}</option>
+                            v-for="(detail, index) in bookingData.bookingDetails" :key="index">
+                            <select class="input-booking w-2/3" :disabled="!checkBoxInfo" v-model="detail.roomType.id">
+                                <option disabled :value="0">-- Chọn loại phòng --</option>
+                                <option v-for="type in getAvailableRoomTypeOptions(index).value" :key="type.roomTypeId"
+                                    :value="type.roomTypeId">{{
+                                        type.nameRoomType }} - {{ type.availableRooms }} Phòng trống</option>
                             </select>
-                            <select class="input-booking w-1/3" :disabled="!checkBoxInfo">
-                                <option value="">{{ detail.quantity }}</option>
+                            <select class="input-booking w-1/3" :disabled="!checkBoxInfo" v-model="detail.quantity">
+                                <option :value="0" disabled selected>--Chọn số lượng phòng --</option>
+                                <option v-for="qty in getAvailableQuantities(detail.roomType.id ?? 0)" :key="qty"
+                                    :value="qty">
+                                    {{ qty }}
+                                </option>
                             </select>
-                            <button class="btn btn-del-booking">
+                            <button class="btn btn-del-booking disabled:opacity-50" @click="deleteRoomType(index)"
+                                :disabled="!checkBoxInfo">
                                 Xóa
                             </button>
                         </div>
-                        <div class="col-span-2 flex items-center gap-4 mb-2 text-start -mt-5">
-                            <label class="w-2/3 input-booking border-0!">Loại phòng mới</label>
-                            <label class="w-1/3 input-booking border-0!">Số lượng phòng</label>
-                            <button
-                                class="btn btn-add-booking border-0! text-white! hover:bg-white! hover:text-white!">Xóa</button>
+                        <div class="flex flex-row space-x-1 col-span-2 justify-between">
+                            <div class="w-full space-x-1.5">
+                                <button class="disabled-btn btn-add-booking w-1/4" :disabled="!checkBoxInfo"
+                                    @click="addRoomType">Thêm
+                                    loại phòng</button>
+                                <span class="">Tổng số phòng: {{ totalBookedRoom }}</span>
+                            </div>
+                            <button @click="reloadDataRoomType"
+                                class=" disabled:opacity-50 bg-muesli-400 hover:bg-muesli-600 text-white px-2 py-1 rounded-xs justify-center"
+                                :disabled="!checkBoxInfo">
+                                <RefreshCcw />
+                            </button>
+                            <button :disabled="!checkBoxInfo" @click="handleUpdateQuantityRoom"
+                                class="disabled-btn bg-muesli-400 hover:bg-muesli-600 text-white px-2 py-1 rounded-xs w-1/2">Cập
+                                nhật số lượng phòng</button>
                         </div>
-                        <div class="col-span-2 flex items-center gap-4 mb-2 -mt-5"
-                            v-for="(detail, index) in bookingData.bookingDetails" :key="detail.id">
-                            <select class="input-booking w-2/3" :disabled="!checkBoxInfo">
-                                <option v-for="(roomType, index) in bookingStore.listRoomsAvailable" :key="index">{{
-                                    roomType.nameRoomType
-                                }}</option>
-                            </select>
-                            <select class="input-booking w-1/3" :disabled="!checkBoxInfo">
-                                <option value="">{{ detail.quantity }}</option>
-                            </select>
-                            <button class="btn btn-del-booking"
-                                @click="bookingData.bookingDetails.splice(index, 1)">Xóa</button>
-                        </div>
-
                     </div>
 
                     <!-- Xếp phòng -->
@@ -114,14 +117,77 @@
                         <div class="absolute -top-4 left-3 bg-muesli-300 text-white px-2 py-0.5 rounded-xs">Xếp
                             Phòng
                         </div>
+                        <div v-for="(stay, sIndex) in stayList" :key="sIndex"
+                            class="col-span-2 border p-2 rounded-xl space-y-2">
+                            <div class="font-semibold">Lượt ở: {{ sIndex + 1 }}</div>
+                            <hr>
+                            <div class="grid grid-cols-2 gap-4">
+                                <select v-model="stay.roomNumber" class="input-booking">
+                                    <option value="0" disabled selected>-- Chọn số phòng --</option>
+                                    <option :value="room.roomNumber" v-for="room in getAvailableRoomsForStay(sIndex)"
+                                        :key="room.id">{{
+                                            room.roomNumber }} -
+                                        Trống | Lầu {{ room.floor }} | Loại {{ room.nameRoomType }}
+                                    </option>
+                                </select>
+                                <!-- <input v-model="stay.roomNumber" class="input" placeholder="Số phòng" /> -->
+                                <select v-model="stay.stayStatus" class="input-booking">
+                                    <option value="PENDING">Chờ</option>
+                                    <option value="NOW" selected>Ở ngay</option>
+                                    <!-- <option value="DONE">Đã xong</option> -->
+                                </select>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="datetime-local" disabled v-model="stay.actualCheckIn"
+                                    class="input-booking" />
+                                <input type="datetime-local" disabled v-model="stay.actualCheckOut"
+                                    class="input-booking" />
+                            </div>
+                            <textarea v-model="stay.note"
+                                class="px-1 rounded-xs focus:outline-none focus:ring-2 focus:ring-muesli-200  shadow-muesli-300  w-full border border-muesli-300 resize-y overflow-auto max-h-[200px] "
+                                placeholder="Ghi chú thêm..."></textarea>
+
+                            <div>
+                                <div class="font-semibold mb-1"> Thông tin khách ở:</div>
+                                <div v-for="(guest, gIndex) in newBooking.stayRequest[sIndex].infoGuests" :key="gIndex"
+                                    class="grid grid-cols-2 gap-4 mb-2">
+                                    <input v-model="guest.name" class="input-booking" placeholder="Tên khách" />
+                                    <input v-model="guest.phone" class="input-booking" placeholder="Số điện thoại" />
+
+                                    <input v-model="guest.cccd" class="input-booking" placeholder="CCCD" />
+                                    <select v-model="guest.occupantType" class="input-booking">
+                                        <option value="" selected disabled>Chọn loại khách ở</option>
+                                        <option value="INFANT">Người đặt</option>
+                                        <option value="ADULT">Người lớn</option>
+                                        <option value="CHILD">Trẻ em</option>
+                                    </select>
+                                    <div class="col-2  justify-self-end"><button class="btn btn-del-booking "
+                                            @click=" handleDeleteGuest(sIndex, gIndex)">Xóa</button>
+                                    </div>
+
+                                </div>
+                                <div class="flex justify-end">
+                                    <button class="btn btn-add-booking" @click="addGuestToStay(sIndex)">Thêm
+                                        khách ở</button>
+                                </div>
+
+                            </div>
+                            <button class="btn btn-del-booking  justify-self-end"
+                                @click="stayList.splice(sIndex, 1)">Xóa
+                                lượt
+                                ở</button>
+                        </div>
+                        <div class="flex justify-start"><button class="btn btn-add-booking " @click="addStay">Thêm lượt
+                                ở</button></div>
                     </div>
                 </div>
             </div>
 
             <DialogFooter class="p-6 pt-0 flex justify-between">
                 <Button class="justify-self-start">Tổng tiền phải trả: <b>{{ formatVND(bookingData.totalAmount)
-                }}</b></Button>
-                <Button class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm">
+                        }}</b></Button>
+                <Button @click="handleConfirm" :disabled="isDirty"
+                    class="bg-muesli-400 hover:bg-muesli-600 disabled:opacity-50 text-white px-3 py-2 rounded-sm">
                     Xác nhận
                 </Button>
             </DialogFooter>
@@ -129,6 +195,7 @@
     </Dialog>
 </template>
 <script setup lang="ts">
+import { RefreshCcw } from 'lucide-vue-next';
 import {
     Dialog,
     DialogContent,
@@ -141,34 +208,92 @@ import {
     Booking,
 } from "@/interface/booking.interface";
 import { onMounted, ref, watch, computed, watchEffect } from "vue";
-import { formatDateWithTimeToUI, formatVND } from "@/utils";
+import { formatDateWithTimeToUI, formatVND, formatDateWithTime } from "@/utils";
 import { Bookings } from "@/api/booking";
+import { toast } from "vue-sonner";
+import cloneDeep from 'lodash/cloneDeep'
+import { UpdateBookingRequest } from '@/types';
 
 const bookingStore = Bookings()
-const props = defineProps<{ Booking: Booking }>()
-const bookingData = ref<Booking>(props.Booking)
+const props = defineProps<{ Booking: Booking, open: boolean }>()
+const emit = defineEmits(['update:open'])
+const isDirty = ref(false)
 
-watch(() => props.Booking, (newVal) => {
-    bookingData.value = { ...newVal }
-    bookingDetailsUpdate.value = bookingData.value.bookingDetails.map(detail => ({
-        id: detail.id,
-        roomTypeId: detail.roomType?.id,
-        quantity: detail.quantity
-    }))
+const dialogVisible = computed({
+    get: () => props.open,
+    set: (val: boolean) => emit('update:open', val)
+})
+const bookingData = ref<Booking>(props.Booking)
+const originalBookingData = ref<Booking>(props.Booking)
+
+watch(() => props.open, (isOpen) => {
+    if (isOpen) {
+        const data = cloneDeep(props.Booking)
+        originalBookingData.value = data
+        isDirty.value = false
+    }
 })
 
+watch(() => props.Booking, (newVal) => {
+    if (newVal) {
+        bookingData.value = cloneDeep(newVal)
+        updateBooking.value.bookingDetailRequest = newVal.bookingDetails.map(detail => ({
+            id: detail.id,
+            roomTypeId: detail.roomType?.id,
+            quantity: detail.quantity
+        }))
+    }
+})
+
+watch(() => bookingData.value.bookingDetails, (newVal, oldVal) => {
+    if (oldVal) {
+        isDirty.value = true
+    }
+}, { deep: true })
+
+// watch(() => bookingData.value?.bookingDetails, (newVal) => {
+//     if (!newVal) return
+//     bookingDetailsUpdate.value = newVal.map(detail => ({
+//         id: detail.id,
+//         roomTypeId: detail.roomType?.id,
+//         quantity: detail.quantity
+//     }))
+//     toast.success('Cap nhat thanh cong', {
+//         description: bookingDetailsUpdate.value
+//     })
+// }, { deep: true })
+// watch(() => props.open, (isOpen) => {
+//     if (isOpen) {
+//         originalBookingData.value = cloneDeep(props.Booking)
+//         bookingData.value = cloneDeep(props.Booking)
+//     }
+// })
+const updateBooking = ref<UpdateBookingRequest>({
+    guestBookingRequest: {
+        fullname: '',
+        phone: '',
+        email: '',
+        cccd: ''
+    },
+    bookingRequest: {
+        checkInDate: formatDateWithTime(bookingData.value.checkInDate, 14, 0, 0),
+        checkOutDate: formatDateWithTime(bookingData.value.checkOutDate, 12, 0, 0),
+        isDeposit: false,
+        bookingStatus: 'STAY',
+        numGuest: 1,
+        userId: bookingData.value.user?.id,
+        // numberOfNights: numberOfNights.value
+    },
+    bookingDetailRequest: [],
+    bookingFacilityRequest: [],
+    stayRequest: []
+})
 interface BookingDetailUpdate {
     id: number
     roomTypeId: number
     quantity: number
 }
-const bookingDetailsUpdate = ref<BookingDetailUpdate[]>([
-    {
-        id: 0,
-        roomTypeId: 0,
-        quantity: 0
-    }
-])
+// const bookingDetailsUpdate = ref(updateBooking.value.bookingDetailRequest)
 interface Room {
     nameRoomType: string;
     id: number;
@@ -177,9 +302,9 @@ interface Room {
     roomStatus: string;
     floor: number;
 }
-// Tính lại số phòng (Stay)
+// Tính lại số lượt đặt phòng và phòng trống
 const listRoomNumber = computed(() => {
-    const selectedRomTypeIds = bookingDetailsUpdate.value
+    const selectedRomTypeIds = updateBooking.value.bookingDetailRequest
         .filter(detail => detail.roomTypeId !== 0)
         .map(detail => detail.roomTypeId);
 
@@ -194,20 +319,61 @@ const listRoomNumber = computed(() => {
     return rooms;
 })
 
-// watchEffect(() => {
-//     if (bookingData.value.bookingDetails?.length) {
+// Trả ra danh sách loại phòng đã đặt
+const getAvailableRoomTypeOptions = (index: number) => {
+    return computed(() => {
+        const selectedIds = bookingData.value.bookingDetails
+            .map((d, i) => (i !== index ? d.roomType.id : ''))
+            .filter(id => id !== '')
+        return bookingStore.listRoomsAvailable.filter(rt => !selectedIds.includes(rt.roomTypeId))
+    })
+}
+// Trả về danh sách số lượng đặt phòng ứng cới loại phòng đã chọn
+const getAvailableQuantities = (roomTypeId: number): number[] => {
+    const selectedType = bookingStore.listRoomsAvailable.find(type => type.roomTypeId === roomTypeId);
+    if (!selectedType) return [];
+    const quantity = selectedType.availableRooms;
+    return Array.from({ length: quantity }, (_, i) => i + 1);
+}
 
-//     }
-// })
-// Chỉnh sửa thông tin đăng ký
+// Ràng buộc không cho xóa loại phòng cuối cùng
+const deleteRoomType = (index: number) => {
+    let result = 0
+    bookingData.value.bookingDetails.forEach((detail, i) => {
+        result += i
+    })
+    console.log(result);
+    if (result == 0) {
+        toast.error("Không được xóa loại phòng cuối cùng")
+        return
+    }
+    bookingData.value.bookingDetails.splice(index, 1);
+
+}
+
+// Thêm loại phòng mới 
+const addRoomType = () => {
+    bookingData.value.bookingDetails.push({
+        roomType: {
+            id: 0
+        },
+        quantity: 0
+    })
+}
+
+// Tính số lượng phòng
+const totalBookedRoom = computed(() => {
+    return bookingData.value.bookingDetails.reduce((sum, detail) => {
+        return sum + (detail.quantity ?? 0);
+    }, 0)
+})
+
+
+// Bật chỉnh sửa thông tin đăng ký
 const checkBoxInfo = ref(false)
 
 onMounted(async () => {
-    // bookingDetails.value = bookingData.value.bookingDetails.map(detail => ({
-    //     id: detail.id,
-    //     roomTypeId: detail.roomType.id,
-    //     quantity: detail.quantity
-    // }))
+
     if (bookingData.value.checkInDate && bookingData.value.checkOutDate) {
         await bookingStore.getAvailableRoomsByDate(bookingData.value.checkInDate, bookingData.value.checkOutDate)
         console.log("Danh sách phòng trống:", bookingStore.listRoomsAvailable);
@@ -215,4 +381,27 @@ onMounted(async () => {
 
 
 })
+
+// Reload lại danh sách loại phòng
+const reloadDataRoomType = () => {
+    bookingData.value.bookingDetails = []
+
+    bookingData.value.bookingDetails = cloneDeep(originalBookingData.value?.bookingDetails)
+}
+
+
+const handleUpdateQuantityRoom = () => {
+
+    updateBooking.value.bookingDetailRequest = bookingData.value.bookingDetails.map(detail => ({
+        id: detail.id,
+        roomTypeId: detail.roomType?.id,
+        quantity: detail.quantity
+    }))
+    console.log("Cap nhat thanh cong", updateBooking.value.bookingDetailRequest)
+    isDirty.value = false
+}
+
+const handleConfirm = () => {
+    console.log("BoookingUpdate: ", updateBooking.value.bookingDetailRequest)
+}
 </script>

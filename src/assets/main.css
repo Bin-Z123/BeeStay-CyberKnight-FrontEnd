@@ -57,6 +57,9 @@ body {
 .btn-add-booking{
   @apply text-black border border-muesli-400 px-1 py-0.5 text-sm rounded-xs hover:bg-muesli-400 transition-all duration-200 hover:text-white
 }
+.disabled-btn{
+  @apply disabled:border-gray-300  disabled:opacity-50
+}
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
