@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { toast } from "vue-sonner";
 import { useAuthStore } from "@/stores/auth/login";
 import { useRouter } from "vue-router";
+import { defineStore } from "pinia";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -38,12 +39,16 @@ export interface Rank {
   discount_percent: number;
 }
 
-export interface registerResponse {
+interface RegisterRequest {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
   confirmPassword: string;
+}
+
+interface RegisterResponse {
+  message: string;
 }
 
 export const Auth = () => {
@@ -53,10 +58,10 @@ export const Auth = () => {
 
   const getUserInfoByToken = async (): Promise<User> => {
     try {
-      const response = await axios.get<User>(`${baseUrl}/me`, {
+      const response = await axios.get<{data: User}>(`${baseUrl}/me`, {
         withCredentials: true,
       });
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error("Lỗi lấy thông tin người dùng", error);
       throw error;
@@ -105,28 +110,43 @@ export const Auth = () => {
     }
   };
 
-  const register = async (user: registerResponse): Promise<registerResponse> => {
-    isLoading.value = true;
-    try {
-      const response = await axios.post<registerResponse>(`${baseUrl}/register`, user);
-      toast.success("Thông báo", {
-        description: "Tạo tài khoản thành công!",
-        action: { label: "Thoát" },
-      })
-      return response.data;
-    } catch (error) {
-      console.error("Lỗi tạo tài khoản", error);
-      throw error;
-    } finally {
-      setTimeout(() => {
-        isLoading.value = false;
-      }, 1000);
+  const register = async (user: RegisterRequest): Promise<RegisterResponse> => {
+  isLoading.value = true;
+
+  try {
+    const response = await axios.post(`${baseUrl}/register/send-otp`, user);
+    if (response.data.code === 400) {
+      toast.error(response.data.message || "Email đã được sử dụng");
+      throw new Error("Đăng ký thất bại");
     }
-  };
+    toast.success("OTP đã được gửi!", {
+      description: "Vui lòng kiểm tra email.",
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const verifyOTP = async (email: string, otp: string): Promise<RegisterResponse> => {
+  isLoading.value = true;
+
+  try {
+    const response = await axios.post(`${baseUrl}/register/verify-otp`, { email, otp });
+    return response.data;
+  } catch (error) {
+    throw error;
+  } finally {
+    isLoading.value = false;
+  }
+};
 
   return {
     login,
     isLoading,
-    register
+    register,
+    verifyOTP
   };
 };

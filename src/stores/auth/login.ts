@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import axios from "axios";
+import { toast } from "vue-sonner";
+import router from "@/router";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 export interface User {
@@ -37,10 +39,10 @@ export const useAuthStore = defineStore("auth", () => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get<User>(`${baseUrl}/me`, {
+      const response = await axios.get<{ data: User }>(`${baseUrl}/me`, {
         withCredentials: true,
       });
-      user.value = response.data;
+      user.value = response.data.data;
       isAuthenticated.value = true;
     } catch (error) {
       console.error(error);
@@ -52,8 +54,10 @@ export const useAuthStore = defineStore("auth", () => {
 const logout = async () => {
   try {
     await axios.post(`${baseUrl}/logout`, {}, { withCredentials: true });
+    toast.success("Đăng xuất thành công!");
+    router.push("/auth/login");
   } catch (e) {
-    console.warn("Lỗi khi logout, nhưng vẫn tiếp tục xoá user local.");
+    toast.error("Đăng xuất thất bại!");
   } finally {
     user.value = null;
     isAuthenticated.value = false;

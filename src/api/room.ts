@@ -70,7 +70,7 @@ export const Room = defineStore('room', () => {
 
         isLoading.value = true;
         try {
-            const response = await axios.get<ResponseRoom>(`${baseUrl}/admin/rooms`);
+            const response = await axios.get<ResponseRoom>(`${baseUrl}/admin/rooms`, { withCredentials: true });
             listRooms.value = response.data.data;
             console.log("Danh sach phong: ", listRooms.value);
             return response.data;
@@ -103,7 +103,7 @@ export const Room = defineStore('room', () => {
                 formData.append("file", file);
             })
             console.log("Form Data:", formData.getAll("rooms"));
-            const response = await axios.post<RoomResponse>(`${baseUrl}/admin/rooms`, formData)
+            const response = await axios.post<RoomResponse>(`${baseUrl}/admin/rooms`, formData, { withCredentials: true });
             toast.success("Thông báo", {
                 description: "Tạo phòng " + response.data.roomNumber + " thành công!",
             });
@@ -133,7 +133,7 @@ export const Room = defineStore('room', () => {
                 formData.append("file", file);
             });
 
-            const response = await axios.put<RoomResponse>(`${baseUrl}/admin/rooms/${room.id}`, formData);
+            const response = await axios.put<RoomResponse>(`${baseUrl}/admin/rooms/${room.id}`, formData, { withCredentials: true });
             toast.success("Thông báo", {
                 description: "Cập nhật phòng " + response.data.roomNumber + " thành công!",
             });

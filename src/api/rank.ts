@@ -26,7 +26,7 @@ export const Rank = () =>{
     });
     const getAllRank = async (): Promise<RankResponse> => {
         try{
-            const response = await axios.get<RankResponse>(`${baseUrl}/admin/rank/list`);
+            const response = await axios.get<RankResponse>(`${baseUrl}/admin/rank/list`,{withCredentials: true});
             console.log("status: "+response.status)
             ranks.value = response.data.data;
             return response.data
