@@ -1,5 +1,5 @@
 <template>
-    <Dialog v-model:open="dialogVisible">
+    <Dialog v-model:open="dialogVisible" @update:open="$emit('update:open', $event)">
         <DialogContent class="sm:max-w-[900px] grid-rows-[auto_minmax(0,1fr)_auto] p-0 max-h-[90dvh]"
             @pointer-down-outside.prevent>
             <DialogHeader class="p-6 pb-0">
@@ -103,13 +103,25 @@
                             </div>
                             <button @click="reloadDataRoomType"
                                 class=" disabled:opacity-50 bg-muesli-400 hover:bg-muesli-600 text-white px-2 py-1 rounded-xs justify-center"
-                                :disabled="!checkBoxInfo">
+                                :disabled="!checkBoxInfo || !isDirty">
                                 <RefreshCcw />
                             </button>
-                            <button :disabled="!checkBoxInfo" @click="handleUpdateQuantityRoom"
-                                class="disabled-btn bg-muesli-400 hover:bg-muesli-600 text-white px-2 py-1 rounded-xs w-1/2">Cập
-                                nhật số lượng phòng</button>
+                            <button :disabled="!checkBoxInfo || !isDirty || bookingDetailStore.isLoading"
+                                @click="handleUpdateQuantityRoom"
+                                class="disabled-btn bg-muesli-400 hover:bg-muesli-600 text-white px-2 py-1 rounded-xs w-1/2">
+                                <span v-if="bookingDetailStore.isLoading">
+                                    <LoaderCircle />
+                                </span>
+                                <span v-else> Cập
+                                    nhật số lượng phòng</span>
+                            </button>
                         </div>
+                        <span v-if="isDirty" class="col-span-2 text-red-500 text-sm justify-self-end -mt-2">Hãy cập nhật
+                            số lượng phòng
+                            trước
+                            khi xếp phòng
+                        </span>
+
                     </div>
 
                     <!-- Xếp phòng -->
@@ -122,16 +134,16 @@
                             <div class="font-semibold">Lượt ở: {{ sIndex + 1 }}</div>
                             <hr>
                             <div class="grid grid-cols-2 gap-4">
-                                <select v-model="stay.roomNumber" class="input-booking">
+                                <select v-model="stay.roomId" class="input-booking">
                                     <option value="0" disabled selected>-- Chọn số phòng --</option>
-                                    <option :value="room.roomNumber" v-for="room in getAvailableRoomsForStay(sIndex)"
+                                    <option :value="room.id" v-for="room in getAvailableRoomsForStay(sIndex)"
                                         :key="room.id">{{
                                             room.roomNumber }} -
-                                        Trống | Lầu {{ room.floor }} | Loại {{ room.nameRoomType }}
+                                        Trống | Lầu {{ room.floor }} | Loại {{ room.nameRoomType }} - ID:{{ room.id }}
                                     </option>
                                 </select>
                                 <!-- <input v-model="stay.roomNumber" class="input" placeholder="Số phòng" /> -->
-                                <select v-model="stay.stayStatus" class="input-booking">
+                                <select v-model="stay.stayStatus" disabled class="input-booking">
                                     <option value="PENDING">Chờ</option>
                                     <option value="NOW" selected>Ở ngay</option>
                                     <!-- <option value="DONE">Đã xong</option> -->
@@ -149,8 +161,8 @@
 
                             <div>
                                 <div class="font-semibold mb-1"> Thông tin khách ở:</div>
-                                <div v-for="(guest, gIndex) in newBooking.stayRequest[sIndex].infoGuests" :key="gIndex"
-                                    class="grid grid-cols-2 gap-4 mb-2">
+                                <div v-for="(guest, gIndex) in updateBooking.stayRequest[sIndex].infoGuests"
+                                    :key="gIndex" class="grid grid-cols-2 gap-4 mb-2">
                                     <input v-model="guest.name" class="input-booking" placeholder="Tên khách" />
                                     <input v-model="guest.phone" class="input-booking" placeholder="Số điện thoại" />
 
@@ -186,7 +198,7 @@
             <DialogFooter class="p-6 pt-0 flex justify-between">
                 <Button class="justify-self-start">Tổng tiền phải trả: <b>{{ formatVND(bookingData.totalAmount)
                         }}</b></Button>
-                <Button @click="handleConfirm" :disabled="isDirty"
+                <Button @click="handleConfirm(bookingData.id)" :disabled="isDirty"
                     class="bg-muesli-400 hover:bg-muesli-600 disabled:opacity-50 text-white px-3 py-2 rounded-sm">
                     Xác nhận
                 </Button>
@@ -195,7 +207,7 @@
     </Dialog>
 </template>
 <script setup lang="ts">
-import { RefreshCcw } from 'lucide-vue-next';
+import { RefreshCcw, LoaderCircle } from 'lucide-vue-next';
 import {
     Dialog,
     DialogContent,
@@ -212,8 +224,14 @@ import { formatDateWithTimeToUI, formatVND, formatDateWithTime } from "@/utils";
 import { Bookings } from "@/api/booking";
 import { toast } from "vue-sonner";
 import cloneDeep from 'lodash/cloneDeep'
-import { UpdateBookingRequest } from '@/types';
+import { UpdateBookingRequest, StayCreateRequest } from '@/types';
+import { BookingDetails } from '@/api/bookingdetail';
+import { Stay } from '@/api/stay';
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
+const StayStore = Stay()
+const bookingDetailStore = BookingDetails()
 const bookingStore = Bookings()
 const props = defineProps<{ Booking: Booking, open: boolean }>()
 const emit = defineEmits(['update:open'])
@@ -228,9 +246,11 @@ const originalBookingData = ref<Booking>(props.Booking)
 
 watch(() => props.open, (isOpen) => {
     if (isOpen) {
+
         const data = cloneDeep(props.Booking)
         originalBookingData.value = data
         isDirty.value = false
+        toast.success("Đã mở Dialog")
     }
 })
 
@@ -268,6 +288,9 @@ watch(() => bookingData.value.bookingDetails, (newVal, oldVal) => {
 //         bookingData.value = cloneDeep(props.Booking)
 //     }
 // })
+
+
+
 const updateBooking = ref<UpdateBookingRequest>({
     guestBookingRequest: {
         fullname: '',
@@ -318,6 +341,41 @@ const listRoomNumber = computed(() => {
     }
     return rooms;
 })
+//  Tính lại phòng đã chọn
+const flattenedBookingDetails = computed(() => {
+    const result: number[] = [];
+    updateBooking.value.bookingDetailRequest.forEach(detail => {
+        for (let i = 0; i < detail.quantity; i++) {
+            result.push(detail.roomTypeId);
+        }
+    })
+    return result;
+})
+const getRoomTypeIdForStay = (sIndex: number): number => {
+    return flattenedBookingDetails.value[sIndex] ?? 0;
+}
+const getAvailableRoomsForStay = (sIndex: number) => {
+    const currentRoomTypeId = getRoomTypeIdForStay(sIndex);
+    // Tập hợp các phòng đã được chọn trước đó (stay trước)
+    const usedRoomNumbers = stayList.value
+        .filter((stay, index) => index !== sIndex) // Loại trừ chính nó
+        .map((stay) => stay.roomNumber)
+        .filter(Boolean); // Loại undefined/null
+    return listRoomNumber.value.filter(
+        (room) =>
+            room.roomTypeId === currentRoomTypeId &&
+            !usedRoomNumbers.includes(room.roomNumber)
+    );
+
+};
+// Validate Khách ở
+const handleDeleteGuest = (stayIndex: number, guestIndex: number) => {
+    if (guestIndex <= 0) {
+        toast.error("Phải có ít nhất 1 người lớn")
+        return;
+    }
+    stayList.value[stayIndex].infoGuests.splice(guestIndex, 1)
+}
 
 // Trả ra danh sách loại phòng đã đặt
 const getAvailableRoomTypeOptions = (index: number) => {
@@ -363,45 +421,148 @@ const addRoomType = () => {
 
 // Tính số lượng phòng
 const totalBookedRoom = computed(() => {
-    return bookingData.value.bookingDetails.reduce((sum, detail) => {
+    return originalBookingData.value.bookingDetails.reduce((sum, detail) => {
         return sum + (detail.quantity ?? 0);
     }, 0)
 })
-
+// Tính stay
+const totalStay = computed(() => stayList.value.length)
 
 // Bật chỉnh sửa thông tin đăng ký
 const checkBoxInfo = ref(false)
 
 onMounted(async () => {
-
+    updateBooking.value.bookingDetailRequest = bookingData.value.bookingDetails.map(detail => ({
+        id: detail.id,
+        roomTypeId: detail.roomType?.id,
+        quantity: detail.quantity
+    }))
     if (bookingData.value.checkInDate && bookingData.value.checkOutDate) {
         await bookingStore.getAvailableRoomsByDate(bookingData.value.checkInDate, bookingData.value.checkOutDate)
         console.log("Danh sách phòng trống:", bookingStore.listRoomsAvailable);
+
     }
+    const data = cloneDeep(props.Booking)
+    originalBookingData.value = data
 
-
+    isDirty.value = false
 })
 
 // Reload lại danh sách loại phòng
-const reloadDataRoomType = () => {
+const reloadDataRoomType = async () => {
     bookingData.value.bookingDetails = []
-
     bookingData.value.bookingDetails = cloneDeep(originalBookingData.value?.bookingDetails)
+    setTimeout(() => {
+        isDirty.value = false
+    }, 50)
 }
 
+defineExpose({
+    reloadDataRoomType
+})
+// Cập nhật STAY
+const stayList = ref(updateBooking.value.stayRequest)
+const addStay = () => {
+    if (totalBookedRoom.value <= totalStay.value) {
+        toast.error("Số lượt ở vượt quá số lượng phòng đã đặt!", {
+            description: "Vui lòng cập nhật số lượng phòng trước khi xếp phòng."
+        })
+        return;
+    }
+    updateBooking.value.stayRequest.push({
+        roomId: 0,
+        roomNumber: '0',
+        stayStatus: 'NOW',
+        note: '',
+        actualCheckIn: formatDateWithTime(new Date(), new Date().getHours(), new Date().getMinutes(), 0),
+        actualCheckOut: formatDateWithTime(bookingData.value.checkOutDate),
+        infoGuests: [{
+            name: '',
+            phone: '',
+            cccd: '',
+            occupantType: ''
+        }]
+    })
+}
+// Thêm khách vào lượt ở
+const addGuestToStay = (stayIndex: number) => {
+    stayList.value[stayIndex].infoGuests.push({
+        name: '',
+        phone: '',
+        cccd: '',
+        occupantType: ''
+    })
+}
 
-const handleUpdateQuantityRoom = () => {
+// Cập nhật lại số lượng phòng
+const handleUpdateQuantityRoom = async () => {
 
     updateBooking.value.bookingDetailRequest = bookingData.value.bookingDetails.map(detail => ({
         id: detail.id,
         roomTypeId: detail.roomType?.id,
         quantity: detail.quantity
     }))
-    console.log("Cap nhat thanh cong", updateBooking.value.bookingDetailRequest)
+    originalBookingData.value.bookingDetails = cloneDeep(bookingData.value.bookingDetails)
     isDirty.value = false
+    await bookingDetailStore.updateBookingDetail(updateBooking.value.bookingDetailRequest, bookingData.value.id)
+    await bookingStore.getBookings
+}
+// Validate và xác nhận đặt phòng
+const validateStayBeforeSubmit = (): boolean => {
+    if (totalBookedRoom.value === 0 && totalStay.value === 0) {
+        toast.error("Vui lòng chọn số lượng phòng và số lượt ở!")
+        return false;
+    }
+    if (totalBookedRoom.value < totalStay.value) {
+        toast.error("Số lượt ở vượt quá số lượng phòng đã đặt!")
+        return false;
+    }
+    if (totalBookedRoom.value > totalStay.value) {
+        toast.error("Chưa đủ số lượt ở, Vui lòng thêm đủ số lượng phòng!")
+        return false;
+    }
+    stayList.value.forEach((stay, index) => {
+        if (stay.roomNumber === '') {
+            toast.error(`Vui lòng chọn số phòng: Lượt ở ${index + 1}`)
+            return false;
+        }
+    })
+    stayList.value.forEach((stay, index) => {
+        stay.infoGuests.forEach((guest, guestIndex) => {
+            if (guest.name === '' || guest.occupantType === '') {
+                toast.error(`Vui lòng nhập đủ thông tin người ở gồm 'tên' và 'loại người ở'`)
+                return false;
+            }
+        })
+    })
+    return true
 }
 
-const handleConfirm = () => {
-    console.log("BoookingUpdate: ", updateBooking.value.bookingDetailRequest)
+const handleConfirm = async (bookingID: number) => {
+    const routerData = router.resolve({
+        name: 'booking-detail',
+        params: { id: bookingID }
+    })
+    window.open(routerData.href, '_blank')
+    if (!validateStayBeforeSubmit()) {
+        return;
+    }
+    const newStay: StayCreateRequest[] = updateBooking.value.stayRequest.map(stay => {
+        return {
+            roomId: stay.roomId,
+            bookingId: bookingData.value.id,
+            note: stay.note,
+            actualCheckIn: stay.actualCheckIn,
+            actualCheckOut: stay.actualCheckOut,
+            infoGuests: stay.infoGuests
+        }
+    })
+
+    await StayStore.createStay(newStay)
+
+
+
+    // console.log("BookingDataJSON: ", JSON.stringify(updateBooking.value, null, 2));
+    // console.log("StayJSON: ", JSON.stringify(newStay, null, 2));
 }
 </script>

@@ -1,3 +1,4 @@
+import { title } from "process";
 import { RouteRecordRaw } from "vue-router";
 
 const administrationRouter: RouteRecordRaw = {
@@ -32,7 +33,19 @@ const administrationRouter: RouteRecordRaw = {
         {
             path: "bookingmanager",
             name: "bookingmanager",
-            component: () => import("../../pages/administrantion/manager/ManagerBookingPage.vue")
+            component: () => import("../../pages/administrantion/manager/ManagerBookingPage.vue"),
+            meta: {
+                title: "Quản lý đặt phòng"
+            }
+        },
+        {
+            path: "bookingmanager/:id",
+            name: "booking-detail",
+            component: () => import("../../pages/administrantion/manager/BookingDetailPage.vue"),
+            props: true,
+            meta: {
+                title: "Chi tiết đặt phòng"
+            }
         },
         {
             path: "statistics",

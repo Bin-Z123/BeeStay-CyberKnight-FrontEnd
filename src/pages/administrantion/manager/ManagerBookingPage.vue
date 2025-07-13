@@ -85,7 +85,7 @@
                                     : booking.bookingStatus === 'CANCEL'
                                         ? 'Đã Hủy'
                                         : booking.bookingStatus === 'STAY'
-                                            ? 'Đặt tại khách sạn'
+                                            ? 'Đang ở'
                                             : booking.bookingStatus === 'COMPLETED'
                                                 ? 'Đã Trả Phòng'
                                                 : booking.bookingStatus === 'LATE'
@@ -136,7 +136,8 @@
                 </button>
             </div>
             <div v-if="menu.data.bookingStatus == 'STAY'">
-                <button class="w-full text-left px-4 py-2 hover:bg-gray-100">Trả phòng</button>
+                <button class="w-full text-left px-4 py-2 hover:bg-gray-100" @click="openTabBooking(menu.data.id)">Trả
+                    phòng</button>
             </div>
             <div v-if="menu.data.bookingStatus == 'NOSHOW'">
                 <button class="w-full text-left px-4 py-2 hover:bg-gray-100">Gia hạn ngày đến</button>
@@ -146,9 +147,12 @@
                 </button>
             </div>
         </div>
+
     </section>
+    <AsyncConfirmBookingDialog v-if="isOpenConfirmBooking" v-model:open="isOpenConfirmBooking" :Booking="menu.data"
+        @update:open="handleDialogUpdate" ref="editDialogRef">
+    </AsyncConfirmBookingDialog>
     <NewBookingDialog v-model:open="isOpenBooking"></NewBookingDialog>
-    <ConfirmBookingDialog v-model:open="isOpenConfirmBooking" :Booking="menu.data"></ConfirmBookingDialog>
 </template>
 <script setup lang="ts">
 import {
@@ -158,19 +162,52 @@ import {
     ChevronLeft,
     ChevronRight,
 } from "lucide-vue-next";
-import { ref, onMounted, computed, reactive } from "vue";
+import { ref, onMounted, computed, reactive, defineAsyncComponent, Component, Ref } from "vue";
 import { Button } from "@/components/ui/button";
 import { Bookings } from "@/api/booking";
 import { formatDateWithTimeToUI, customFormatDatePicker } from "@/utils";
 import { vi } from 'date-fns/locale';
+import { useRouter } from "vue-router";
 import NewBookingDialog from "@/components/administration/BookingDialog/NewBookingDialog.vue";
 import ConfirmBookingDialog from "@/components/administration/BookingDialog/ConfirmBookingDialog.vue";
+import LoadingSpinner from "@/components/common/LoadingSpinner.vue";
+import ErrorDisplay from "@/components/common/ErrorDisplay.vue";
 import {
     Booking,
     BookingResponse,
     BookingStatus,
     BlacklistStatus
 } from "@/interface/booking.interface";
+import { resolve } from "path";
+import { set } from "lodash";
+
+const router = useRouter();
+const AsyncConfirmBookingDialog = defineAsyncComponent({
+    loader: () => import("@/components/administration/BookingDialog/ConfirmBookingDialog.vue"),
+})
+const AsyncNewBookingDialog = defineAsyncComponent({
+    loader: () => import("@/components/administration/BookingDialog/NewBookingDialog.vue"),
+    //  loader: (): Promise<Component> => {
+    //     return new Promise(resolve => {
+    //         setTimeout(() => {
+    //             resolve(import("@/components/administration/BookingDialog/NewBookingDialog.vue"));
+    //         }, 4000)
+    //     })
+    // },
+    // loadingComponent: LoadingSpinner,
+    // delay: 200,
+    // errorComponent: ErrorDisplay,
+    // timeout: 3000
+})
+const editDialogRef: Ref<any> = ref(null);
+const handleDialogUpdate = () => {
+    if (editDialogRef.value) {
+        editDialogRef.value?.reloadDataRoomType();
+        console.log("Dialog closed, data reloaded");
+    }
+
+}
+
 
 const bookings = Bookings();
 const isOpenBooking = ref(false);
@@ -274,4 +311,12 @@ const openContextMenu = (e: MouseEvent, i: Booking) => {
 window.addEventListener("click", () => {
     menu.isOpen = false;
 });
+
+const openTabBooking = (id: number) => {
+    const routerData = router.resolve({
+        name: 'booking-detail',
+        params: { id: id }
+    })
+    window.open(routerData.href, '_blank');
+}
 </script>

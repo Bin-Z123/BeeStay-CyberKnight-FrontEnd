@@ -3,10 +3,12 @@ import authRouter from "../router/routers/AuthRouter";
 import administrationRouter from "../router/routers/AdministrationRouter";
 import userRouter from "../router/routers/UserRouter";
 const routes: RouteRecordRaw[] = [authRouter, administrationRouter, userRouter];
- 
+
 const router = createRouter({
     history: createWebHistory(),
     routes,
 })
-
+router.afterEach((to, from) => {
+    document.title = (to.meta.title as string) || "BeeStay - CyberKnights";
+})
 export default router;
