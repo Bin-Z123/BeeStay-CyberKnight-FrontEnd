@@ -113,7 +113,9 @@ export const Bookings = defineStore("booking", () => {
       checkout.value = checkoutDateF;
       numberOfPeople.value = numberofpeople;
       console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate);
-      const response = await axios.get<AvalableResponse>(`${baseUrl}/admin/booking/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`);
+      const response = await axios.get<AvalableResponse>(`${baseUrl}/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`, {
+        withCredentials: true
+      });
       listRoomsAvailable.value = response.data.data;
       return response.data
     } catch (error: unknown) {
@@ -130,7 +132,9 @@ export const Bookings = defineStore("booking", () => {
       const checkinDate = formatDateWitCheckInCheckOutAvailable(checkinDateF, 14, 0, 0)
       const checkoutDate = formatDateWitCheckInCheckOutAvailable(checkoutDateF, 12, 0, 0)
       console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate, "roomtypeid: ");
-      const response = await axios.get<AvalableResponse>(`${baseUrl}/admin/booking/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`);
+      const response = await axios.get<AvalableResponse>(`${baseUrl}/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`, {
+        withCredentials: true
+      });
       listRoomsAvailable.value = response.data.data;
       return response.data
     } catch (error: unknown) {
