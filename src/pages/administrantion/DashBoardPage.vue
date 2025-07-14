@@ -59,14 +59,14 @@
         </div>
       </div>
     </div>
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mx-4">
-      <div class="rounded-2xl overflow-hidden shadow border-15 h-[460px] border-white">
+    <div class="flex flex-col lg:flex-row gap-4 mx-4">
+      <div class="rounded-2xl overflow-hidden shadow border-15 h-[460px] border-white lg:w-1/3 w-full">
         <iframe class="w-full h-full"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d21301.168989155052!2d106.6171142580535!3d10.840257303855612!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752a35d7ac0871%3A0x3e3049f42134f17d!2zMUYgMTYsIELDoCDEkGnhu4NtLCBIw7NjIE3DtG4sIEjhu5MgQ2jDrCBNaW5oLCBWaeG7h3QgTmFt!5e1!3m2!1svi!2s!4v1749474727461!5m2!1svi!2s"
           style="border:0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
 
-      <div class="bg-white rounded-2xl p-5 shadow h-[460px] overflow-hidden">
+      <div class="bg-white rounded-2xl p-5 shadow h-[460px] overflow-hidden lg:w-2/3 w-full">
         <RouterLink to="/administration/statistics">
           <BarChart v-if="chartData.length" :data="chartData" class="w-full h-full" />
         </RouterLink>
@@ -113,7 +113,7 @@ onMounted(async () => {
     statistic.getStatisticCheckout(),
     statistic.getStatisticRoomActive(),
     statistic.getStatisticRoomInactive(),
-    statistic.getChartData("2025"),
+    statistic.getChartData(new Date().getFullYear().toString()),
   ]);
   rawChartData.value = statistic.statisticChart?.data || [];
   console.log("Chart Data:", rawChartData.value);

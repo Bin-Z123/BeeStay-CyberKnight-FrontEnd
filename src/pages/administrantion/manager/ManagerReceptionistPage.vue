@@ -2,9 +2,9 @@
     <section>
         <div class="flex">
             <div class="w-2/3">
-                <input type="text"
+                <input type="text" v-model="searchText"
                     class="mx-4 my-3 h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
-                    placeholder="Tìm kiếm">
+                    placeholder="Tìm kiếm nhân viên ...">
             </div>
             <div class="w-1/3 flex justify-end">
                 <Button @click="openCreateUserDialog = true"
@@ -34,13 +34,13 @@
                         <td class="py-2">{{ user.email }}</td>
                         <td class="py-2">{{ user.joinDate.split('T')[0] }}</td>
                         <td class="py-2 flex justify-center items-center gap-2 h-full">
-                            <button @click="handleUpdateBlock(user)" v-if="user.eblacklist === 1"
+                            <button @click="handleUpdateBlock(user)" v-if="user.eblacklist === 0"
                                 class=" hover:text-green-700 m-1.5"
-                                :class="user.eblacklist === 1 ? ' text-green-500 ' : ''">
+                                :class="user.eblacklist === 0 ? ' text-green-500 ' : ''">
                                 <LockKeyholeOpen class="w-5.5 h-5.5" />
                             </button>
                             <button @click="handleUpdateBlock(user)" v-else class="hover:text-red-700 m-1.5"
-                                :class="user.eblacklist === 3 ? ' text-red-500' : ''">
+                                :class="user.eblacklist === 2 ? ' text-red-500' : ''">
                                 <LockKeyhole class="w-5.5 h-5.5" />
                             </button>
                             <button @click="openUpdateReceptionist(user)" class="text-blue-400 hover:text-blue-700">
@@ -88,9 +88,18 @@ const Users = User();
 const openCreateUserDialog = ref(false);
 const openUpdateUserDialog = ref(false);
 
-const filteredUsers = computed(() =>
-    Users.users.filter(user => user.role?.id === 1)
-);
+// Tìm kiếm
+const searchText = ref('');
+
+const filteredUsers = computed(() => {
+  return Users.users.filter(user => {
+    const matchRole = user.role?.id === 2;
+    const matchSearch =
+      user.fullname?.toLowerCase().includes(searchText.value.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchText.value.toLowerCase());
+    return matchRole && matchSearch;
+  });
+});
 
 const selectedReceptionist = ref(null);
 const openUpdateReceptionist = async (user: any) => {
@@ -100,10 +109,10 @@ const openUpdateReceptionist = async (user: any) => {
 
 const handleUpdateBlock = async (user: any) => {
     const block = ref(0);
-    if (user.eblacklist === 1) {
-        block.value = 3;
-    } else if (user.eblacklist === 3) {
-        block.value = 1;
+    if (user.eblacklist === 0) {
+        block.value = 2;
+    } else if (user.eblacklist === 2) {
+        block.value = 0;
     }
     const payLoad = {
         id: user.id,
@@ -117,7 +126,7 @@ const handleUpdateBlock = async (user: any) => {
         cccd: String(user.cccd),
         point: user.point,
         eblacklist: block.value,
-        roleId: 1,
+        roleId: user.role.id,
         rankId: user.rank.id
     };
     console.log(JSON.stringify(payLoad, null, 2));

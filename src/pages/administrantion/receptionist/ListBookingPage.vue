@@ -3,11 +3,10 @@
         <div class="flex">
             <div class="w-2/3">
                 <div class="flex gap-2 items-center">
-                    <input type="date"
-                        class="w-2/8 h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 ms-4 text-center">
-                    <label class="text-muesli-400 mx-4 font-medium">Đến</label>
-                    <input type="date"
-                        class="w-2/8 h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center">
+                    <VueDatePicker :format-locale="vi" v-model="dateS" :format="'dd-MM-yyyy'" :select-text="'Chọn'"
+                        range multi-calendars :min-date="new Date()" :cancel-text="'Hủy'"
+                        class="w-2/6 h-10  border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3  my-3 ms-4 text-center" />
+
                     <div class="relative w-2/8">
                         <select name="" id=""
                             class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center">
@@ -92,8 +91,16 @@ import {
     ChevronLeft,
     ChevronRight,
 } from "lucide-vue-next";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { Button } from "@/components/ui/button";
-
+import { vi } from "date-fns/locale";
 const isOpenBooking = ref(false);
+const dateS = ref([] as Date[]);
+
+onMounted(() => {
+    const startDate = new Date();
+    const endDate = new Date(new Date().setDate(startDate.getDate() + 30));
+    dateS.value = [startDate, endDate];
+    console.log("dateS: ", dateS.value[0]);
+})
 </script>

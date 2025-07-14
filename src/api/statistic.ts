@@ -62,7 +62,7 @@ export const statistics = defineStore('statistic', () => {
 
     const getStatisticActive = async (): Promise<Statistic> => {
         try {
-            const response = await axios.get<Statistic>(`${baseUrl}/statistics/active-room-percentage`);
+            const response = await axios.get<Statistic>(`${baseUrl}/admin/statistics/active-room-percentage`, {withCredentials: true});
             statisticActive.value = response.data;
             return response.data;
         } catch (error) {
@@ -75,7 +75,7 @@ export const statistics = defineStore('statistic', () => {
 
     const getStatisticCancel = async (): Promise<Statistic> => {
         try {
-            const response = await axios.get<Statistic>(`${baseUrl}/statistics/cancel-booking-percentage`);
+            const response = await axios.get<Statistic>(`${baseUrl}/admin/statistics/cancel-booking-percentage`, {withCredentials: true});
             statisticCancel.value = response.data;
             return response.data;
         } catch (error) {
@@ -88,7 +88,7 @@ export const statistics = defineStore('statistic', () => {
 
     const getStatisticCheckin = async (): Promise<Statistic> => {
         try {
-            const response = await axios.get<Statistic>(`${baseUrl}/statistics/check-in-today-bookings`);
+            const response = await axios.get<Statistic>(`${baseUrl}/admin/statistics/check-in-today-bookings`, {withCredentials: true});
             statisticCheckin.value = response.data;
             return response.data;
         } catch (error) {
@@ -101,7 +101,7 @@ export const statistics = defineStore('statistic', () => {
 
     const getStatisticCheckout = async (): Promise<Statistic> => {
         try {
-            const response = await axios.get<Statistic>(`${baseUrl}/statistics/check-out-today-bookings`);
+            const response = await axios.get<Statistic>(`${baseUrl}/admin/statistics/check-out-today-bookings`, {withCredentials: true});
             statisticCheckout.value = response.data;
             return response.data;
         } catch (error) {
@@ -114,7 +114,7 @@ export const statistics = defineStore('statistic', () => {
 
     const getStatisticRoomActive = async (): Promise<Statistic> => {
         try {
-            const response = await axios.get<Statistic>(`${baseUrl}/statistics/count-active-rooms`);
+            const response = await axios.get<Statistic>(`${baseUrl}/admin/statistics/count-active-rooms`, {withCredentials: true});
             statisticRoomActive.value = response.data;
             return response.data;
         } catch (error) {
@@ -127,7 +127,7 @@ export const statistics = defineStore('statistic', () => {
 
     const getStatisticRoomInactive = async (): Promise<Statistic> => {
         try {
-            const response = await axios.get<Statistic>(`${baseUrl}/statistics/count-inactive-rooms`);
+            const response = await axios.get<Statistic>(`${baseUrl}/admin/statistics/count-inactive-rooms`, {withCredentials: true});
             statisticRoomInactive.value = response.data;
             return response.data;
         } catch (error) {
@@ -140,7 +140,7 @@ export const statistics = defineStore('statistic', () => {
 
     const getChartData = async (year: string): Promise<ChartResponse> => {
         try {
-            const response = await axios.get<ChartResponse>(`${baseUrl}/statistics/revenue-by-year-and-month/${year}`);
+            const response = await axios.get<ChartResponse>(`${baseUrl}/admin/statistics/revenue-by-year-and-month/${year}`, {withCredentials: true});
             statisticChart.value = response.data;
             return response.data;
         } catch (error) {

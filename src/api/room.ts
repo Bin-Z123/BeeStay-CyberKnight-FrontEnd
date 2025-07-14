@@ -2,10 +2,11 @@ import { Rooms } from "@/components/administration/RoomDialog/Room";
 import axios from "axios";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
+import { defineStore } from "pinia";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const isLoading = ref(false);
-const listRooms = ref<RoomResponse[]>([]);
+
 interface RoomResponse {
     id: number;
     roomNumber: string;
@@ -57,17 +58,21 @@ interface RoomUpdateRequest {
     }[];
     deletedRoomImageIds?: string[]; // Mảng chứa ID của các ảnh đã xóa
 }
-export const Room = () => {
+interface ResponseRoom {
+    code: number;
+    message: string;
+    data: RoomResponse[];
+}
+export const Room = defineStore('room', () => {
+    const listRooms = ref<RoomResponse[]>([]);
     //GET ALL ROOMS
-    const getAllRooms = async (): Promise<RoomResponse[]> => {
+    const getAllRooms = async (): Promise<ResponseRoom> => {
 
         isLoading.value = true;
         try {
-            const response = await axios.get<RoomResponse[]>(`${baseUrl}/rooms`);
-            listRooms.value = response.data;
-            toast.success("Lấy danh sách phòng thành công", {
-                description: "Số lượng phòng: " + response.data.length,
-            });
+            const response = await axios.get<ResponseRoom>(`${baseUrl}/admin/rooms`, { withCredentials: true });
+            listRooms.value = response.data.data;
+            console.log("Danh sach phong: ", listRooms.value);
             return response.data;
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
@@ -75,7 +80,11 @@ export const Room = () => {
                     description: error.message,
                 });
             }
-            return [];
+            return {
+                code: -1,
+                message: axios.isAxiosError(error) ? error.message : "Unknown error",
+                data: [],
+            };
         } finally {
             isLoading.value = false;
         }
@@ -94,7 +103,7 @@ export const Room = () => {
                 formData.append("file", file);
             })
             console.log("Form Data:", formData.getAll("rooms"));
-            const response = await axios.post<RoomResponse>(`${baseUrl}/rooms`, formData)
+            const response = await axios.post<RoomResponse>(`${baseUrl}/admin/rooms`, formData, { withCredentials: true });
             toast.success("Thông báo", {
                 description: "Tạo phòng " + response.data.roomNumber + " thành công!",
             });
@@ -124,7 +133,7 @@ export const Room = () => {
                 formData.append("file", file);
             });
 
-            const response = await axios.put<RoomResponse>(`${baseUrl}/rooms/${room.id}`, formData);
+            const response = await axios.put<RoomResponse>(`${baseUrl}/admin/rooms/${room.id}`, formData, { withCredentials: true });
             toast.success("Thông báo", {
                 description: "Cập nhật phòng " + response.data.roomNumber + " thành công!",
             });
@@ -149,4 +158,4 @@ export const Room = () => {
         listRooms,
         isLoading,
     };
-};
+});

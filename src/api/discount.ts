@@ -42,7 +42,9 @@ export const Discount = () => {
 
   const getAllDiscount = async (): Promise<DiscountResponse> => {
     try {
-      const response = await axios.get<DiscountResponse>(`${baseUrl}/discount/list`);
+      const response = await axios.get<DiscountResponse>(`${baseUrl}/admin/discount/list`, {
+        withCredentials: true
+      });
       discounts.value = response.data.data;
       return response.data;
     } catch (error) {
@@ -60,7 +62,9 @@ export const Discount = () => {
         endDate: new Date(discount.endDate).toISOString(),
         roomTypeIds: discount.roomTypes.map((rt) => rt.id)
       };
-      const response = await axios.post<DiscountResponse>(`${baseUrl}/discount/create`, payload);
+      const response = await axios.post<DiscountResponse>(`${baseUrl}/admin/discount/create`, payload, {
+        withCredentials: true
+      });
       toast.success("Thông báo", {
         description: "Tạo discount thành công!",
         action: { label: "Thoát" }
@@ -86,7 +90,9 @@ export const Discount = () => {
         endDate: new Date(discount.endDate).toISOString(),
         roomTypeIds: discount.roomTypes.map((rt) => rt.id)
       };
-      const response = await axios.put<DiscountResponse>(`${baseUrl}/discount/${discount.id}`, payload);
+      const response = await axios.put<DiscountResponse>(`${baseUrl}/admin/discount/${discount.id}`, payload, {
+        withCredentials: true
+      });
       toast.success("Thông báo", {
         description: "Cập nhật discount thành công!",
         action: { label: "Thoát" }
@@ -105,7 +111,9 @@ export const Discount = () => {
   const deleteDiscount = async (id: number): Promise<DiscountResponse> => {
     isLoading.value = true;
     try {
-      const response = await axios.delete<DiscountResponse>(`${baseUrl}/discount/${id}`);
+      const response = await axios.delete<DiscountResponse>(`${baseUrl}/admin/discount/${id}`, {
+        withCredentials: true
+      });
       if(response.status === 200) {
         toast.success("Thông báo", {
           description: "Xóa discount thành công!",

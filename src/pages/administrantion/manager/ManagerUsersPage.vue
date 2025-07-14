@@ -47,8 +47,8 @@
                                 <td class="py-2">{{ user.gender == true ? 'Nam' : 'Nữ' }}</td>
                                 <td class="py-2">{{ user.birthday }}</td>
                                 <td class="py-2">{{ user.email }}</td>
-                                <td class="py-2" :class="getBlacklistClass(user.eblacklist)">{{ user.eblacklist }}</td>
-                                <td class="py-2">Đồng</td>
+                                <td class="py-2" :class="getBlacklistClass(user.eblacklist)">{{ user.eblacklist == 0 ? 'Normal' : 'Blacklist' }}</td>
+                                <td class="py-2">{{ user.rank && user.rank.nameRank ? user.rank.nameRank : 'Không có' }}</td>
                                 <td class="py-2">{{ user.point }}</td>
                                 <td class="py-2 flex justify-center items-center gap-5 h-full">
                                     <button @click.prevent="handleUpdateEblacklist(user)"
@@ -147,8 +147,7 @@
                                 <td class="py-2">{{ blacklist.gender == true ? 'Nam' : 'Nữ' }}</td>
                                 <td class="py-2">{{ blacklist.birthday }}</td>
                                 <td class="py-2">{{ blacklist.email }}</td>
-                                <td class="py-2" :class="getBlacklistClass(blacklist.eblacklist)">{{
-                                    blacklist.eblacklist }}</td>
+                                <td class="py-2" :class="getBlacklistClass(blacklist.eblacklist)">{{ blacklist.eblacklist == 0 ? 'Normal' : 'Blacklist' }}</td>
                                 <td class="py-2">{{ blacklist.rank && blacklist.rank.nameRank ? blacklist.rank.nameRank : 'Không có' }}</td>
                                 <td class="py-2">{{ blacklist.point }}</td>
                                 <td class="py-2 flex justify-center items-center gap-5 h-full">
@@ -156,7 +155,7 @@
                                         class="hover:text-red-700 m-1.5 text-red-500">
                                         <LockKeyhole class="w-5.5 h-5.5" />
                                     </button>
-                                    <button
+                                    <button @click.prevent="openUpdateUser(blacklist)"
                                         class="text-blue-400 hover:text-blue-700">
                                         <SquarePen class="w-5.5 h-5.5"/>
                                     </button>
@@ -203,20 +202,20 @@ const Users = User();
 const openUpdateUserDialog = ref(false);
 
 const filteredUsers = computed(() =>
-    Users.users.filter(user => user.role?.id === 2 && user.eblacklist !== 3)
+    Users.users.filter(user => user.role?.id === 1 && user.eblacklist !== 2)
 );
 
 const filteredBlackList = computed(() =>
-    Users.users.filter(user => user.eblacklist == 3 && user.role?.id === 2)
+    Users.users.filter(user => user.eblacklist == 2 && user.role?.id === 1)
 );
 
 const getBlacklistClass = (blacklist: number) => {
     switch (blacklist) {
-        case 1:
+        case 0:
             return 'text-green-400';
-        case 3:
-            return 'text-red-500';
         case 2:
+            return 'text-red-500';
+        case 1:
             return 'text-yellow-500';
         default:
             return '';
@@ -241,8 +240,8 @@ const handleUpdateEblacklist = async (user: any) => {
         fullname: user.fullname,
         cccd: String(user.cccd),
         point: user.point,
-        eblacklist: 3,
-        roleId: 2,
+        eblacklist: 2,
+        roleId: user.role.id,
         rankId: user.rank.id
     };
     console.log(JSON.stringify(payLoad, null, 2));
@@ -263,8 +262,8 @@ const handleUpdateEblacklistAgain = async (blacklist: any) => {
         fullname: blacklist.fullname,
         cccd: String(blacklist.cccd),
         point: blacklist.point,
-        eblacklist: 1,
-        roleId: 2,
+        eblacklist: 0,
+        roleId: blacklist.role.id,
         rankId: blacklist.rank.id
     };
     console.log(JSON.stringify(payLoad, null, 2));

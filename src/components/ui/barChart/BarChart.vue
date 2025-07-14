@@ -30,7 +30,6 @@ const chartData = {
       label: 'Doanh thu',
       backgroundColor: '#4f46e5',
       data: props.data.map((d) => d.total),
-      barPercentage: 0.5, // nhỏ lại để tránh dính nhau
       categoryPercentage: 0.5, // căn giữa tốt hơn
     },
   ],

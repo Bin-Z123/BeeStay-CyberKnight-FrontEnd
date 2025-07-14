@@ -29,7 +29,9 @@ export const Facilities = defineStore('facilities', () => {
     });
     const getAllFacilities = async (): Promise<FacilityResponse> => {
         try {
-            const response = await axios.get<FacilityResponse>(`${baseUrl}/facility/list`);
+            const response = await axios.get<FacilityResponse>(`${baseUrl}/admin/facility/list`, {
+                withCredentials: true
+            });
             facilities.value = response.data.data;
             return response.data;
         } catch (error) {
@@ -40,7 +42,9 @@ export const Facilities = defineStore('facilities', () => {
 
     const createFacility = async (facility: Facility): Promise<Facility> => {
         try {
-            const response = await axios.post<Facility>(`${baseUrl}/facility/create`, facility);
+            const response = await axios.post<Facility>(`${baseUrl}/admin/facility/create`, facility, {
+                withCredentials: true
+            });
             toast.success("Tạo dịch vụ thành công!");
             return response.data;
         } catch (error) {
@@ -51,7 +55,9 @@ export const Facilities = defineStore('facilities', () => {
 
     const updateFacility = async (facility: Facility): Promise<Facility> => {
         try {
-            const response = await axios.put<Facility>(`${baseUrl}/facility/${facility.id}`, facility);
+            const response = await axios.put<Facility>(`${baseUrl}/admin/facility/${facility.id}`, facility, {
+                withCredentials: true
+            });
             toast.success("Cập nhật dịch vụ thành công!");
             return response.data;
         } catch (error) {
@@ -62,7 +68,9 @@ export const Facilities = defineStore('facilities', () => {
 
     const deleteFacility = async (facilityId: number): Promise<void> => {
         try {
-            await axios.delete(`${baseUrl}/facility/${facilityId}`);
+            await axios.delete(`${baseUrl}/admin/facility/${facilityId}`, {
+                withCredentials: true
+            });
             toast.success("Xóa dịch vụ thành công!");
         } catch (error) {
             toast.error("Lỗi khi xóa dịch");
