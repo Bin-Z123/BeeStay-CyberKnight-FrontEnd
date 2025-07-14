@@ -1,4 +1,9 @@
-<script setup>
+<script setup lang="ts">
+import { RouterView } from "vue-router";
+import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
+import "vue-sonner/style.css";
+import { toast } from "vue-sonner";
 const toggleDarkMode = () => {
   const htmlElement = document.documentElement;
   htmlElement.classList.toggle("dark");
@@ -10,10 +15,8 @@ const toggleDarkMode = () => {
 </script>
 
 <template>
-  <h1 class="dark:text-white">Hello</h1>
-  <button class="px-3 py-2 bg-amber-900" @click="toggleDarkMode()">
-    Click
-  </button>
+  <Toaster richColors position="top-right"></Toaster>
+  <RouterView />
 </template>
 
 <style scoped></style>
