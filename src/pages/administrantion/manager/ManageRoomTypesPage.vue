@@ -36,6 +36,7 @@
           <thead class="bg-gradient-to-r from-muesli-200 to-muesli-400 text-white">
             <tr>
               <th class="px-4 py-2 border">Loại Phòng</th>
+              <th class="px-4 py-2 border">Mô Tả</th>
               <th class="px-4 py-2 border">Diện Tích</th>
               <th class="px-4 py-2 border">Giá</th>
               <th class="px-4 py-2 border">Lượng Người Ở</th>
@@ -47,6 +48,7 @@
             <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
               v-for="roomtype in paginatedRoomTypes" :key="roomtype.id">
               <td class="py-2">{{ roomtype.name }}</td>
+              <td class="py-2">{{ roomtype.description == null ? "Không Có Mô Tả Nào" : roomtype.description }}</td>
               <td class="py-2">{{ roomtype.size }}m²</td>
               <td class="py-2">{{ roomtype.price }}</td>
               <td class="py-2">{{ roomtype.peopleAbout }}</td>
@@ -132,6 +134,6 @@ const handleDeleteRoomType = async (roomtype: any) => {
 
 onMounted(async () => {
   await roomTypes.getAllRoomType();
-
+  console.log(JSON.stringify(roomTypes.roomtypes, null, 2));
 });
 </script>

@@ -13,6 +13,7 @@ interface RoomType {
     size: number,
     price: number,
     peopleAbout: number,
+    description: string
 }
 
 interface RoomTypeResponse {
@@ -28,13 +29,15 @@ export const RoomType = defineStore('roomtype', () => {
         name: '',
         size: 1,
         price: 0,
-        peopleAbout: 1
+        peopleAbout: 1,
+        description: ''
     });
     const getAllRoomType = async (): Promise<RoomTypeResponse> => {
         try {
-            const response = await axios.get<RoomTypeResponse>(`${baseUrl}/admin/roomTypes`);
+            const response = await axios.get<RoomTypeResponse>(`${baseUrl}/admin/roomTypes`,{
+                withCredentials: true
+            });
             roomtypes.value = response.data.data;
-
             return response.data;
         } catch (error) {
             throw error;
@@ -44,7 +47,9 @@ export const RoomType = defineStore('roomtype', () => {
     const createRoomType = async (roomtype: RoomType): Promise<RoomType> => {
         isLoading.value = true;
         try {
-            const response = await axios.post<RoomType>(`${baseUrl}/admin/roomTypes`, roomtype);
+            const response = await axios.post<RoomType>(`${baseUrl}/admin/roomTypes`, roomtype, {
+                withCredentials: true
+            });
             toast.success("Thông báo", {
                 description: "Tạo loại phòng thành công!",
                 action: { label: "Thoát" }
@@ -63,7 +68,9 @@ export const RoomType = defineStore('roomtype', () => {
     const updateRoomType = async (roomtype: RoomType): Promise<RoomType> => {
         isLoading.value = true;
         try {
-            const response = await axios.put<RoomType>(`${baseUrl}/admin/roomTypes/${roomtype.id}`, roomtype);
+            const response = await axios.put<RoomType>(`${baseUrl}/admin/roomTypes/${roomtype.id}`, roomtype, {
+                withCredentials: true
+            });
             toast.success("Thông báo", {
                 description: "Cập nhật loại phòng thành công!",
                 action: { label: "Thoát" }
@@ -82,7 +89,9 @@ export const RoomType = defineStore('roomtype', () => {
     const deleteRoomType = async (roomtypeId: number): Promise<void> => {
         isLoading.value = true;
         try {
-            await axios.delete(`${baseUrl}/admin/roomTypes/${roomtypeId}`);
+            await axios.delete(`${baseUrl}/admin/roomTypes/${roomtypeId}`, {
+                withCredentials: true
+            });
             toast.success("Thông báo", {
                 description: "Xóa loại phòng thành công!",
                 action: { label: "Thoát" }
@@ -97,5 +106,15 @@ export const RoomType = defineStore('roomtype', () => {
         }
     }
 
-    return { roomtype, roomtypes, getAllRoomType, createRoomType, updateRoomType, deleteRoomType, isLoading };
+    const getRoomTypeById = async (roomtypeId: number): Promise<RoomType> => {
+        try {
+            const response = await axios.get<{code: number, data: RoomType}>(`${baseUrl}/admin/roomTypes/${roomtypeId}`, {withCredentials: true});
+            roomtype.value = response.data.data;
+            return response.data.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    return { roomtype, roomtypes, getAllRoomType, createRoomType, updateRoomType, deleteRoomType, getRoomTypeById, isLoading };
 });

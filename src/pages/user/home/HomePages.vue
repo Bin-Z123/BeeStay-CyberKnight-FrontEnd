@@ -28,12 +28,12 @@
             <form action="" class="bg-white lg:rounded-2xl rounded-b-2xl shadow-xl lg:-mt-14 text-[20px]">
                 <div
                     class="lg:flex justify-between items-center md:grid md:grid-cols-3 sm:grid sm:grid-cols-2 gap-5 grid grid-cols-1 py-4 px-6">
-                    <div class="space-y-2 flex flex-col border-gray-200 sm:border-r-1 lg:w-4/18">
+                    <div class="space-y-2 flex flex-col border-gray-200 sm:border-r-1 lg:w-4/14">
                         <label>Ngày Đến</label>
                         <VueDatePicker v-model="checkin" :format-locale="vi" :format="'dd/MM/yyyy'"
                             :min-date="new Date()" multi-calendars class="lg:pe-5" />
                     </div>
-                    <div class="relative space-y-2 flex flex-col sm:border-r-1 border-gray-200 lg:w-4/18 lg:pe-5">
+                    <div class="relative space-y-2 flex flex-col sm:border-r-1 border-gray-200 lg:w-4/14 lg:pe-5">
                         <label>Ngày Đi</label><select
                             class="block w-full rounded-[4px]  bg-white px-3 py-[4px] text-gray-400 text-[17px]" name=""
                             id="" :disabled="!checkin" v-model="numberOfNights">
@@ -47,19 +47,24 @@
               Bạn sẽ trả phòng vào {{ formatDate(checkOutDate) }}
             </p> -->
                     </div>
-                    <div class="space-y-2 flex flex-col sm:border-r-1 border-gray-200 lg:w-4/18">
+                    <!-- <div class="space-y-2 flex flex-col sm:border-r-1 border-gray-200 lg:w-4/18">
                         <label>Loại Phòng</label> <select type="text" v-model="roomTypeId"
                             class="lg:me-5  px-3 py-[4px] rounded-[4px] text-gray-400 text-[17px]">
-                            <option v-for="roomtype in roomTypes.roomtypes" :key="roomtype.id" :value="roomtype.id">{{
-                                roomtype.name }} - {{ roomtype.peopleAbout }} - người</option>
+                            <option v-for="roomtype in roomTypes.roomtypes" :key="roomtype.id" :value="roomtype.id">{{ roomtype.name }}</option>
+                        </select>
+                    </div> -->
+                    <div class="space-y-2 flex flex-col sm:border-r-1 border-gray-200 lg:w-4/14">
+                        <label>Số Người</label>
+                        <select type="text" v-model="numberOfPeople"
+                            class="lg:me-5  px-3 py-[4px] rounded-[4px] text-gray-400 text-[17px]">
+                            <option value="1">1 người</option>
+                            <option value="2">2 người</option>
+                            <option value="3">3 người</option>
+                            <option value="4">4 người</option>
+                            <option value="5">5 người</option>
                         </select>
                     </div>
-                    <div class="space-y-2 flex flex-col sm:border-r-1 border-gray-200 lg:w-4/18">
-                        <label>Số Người</label><input type="text" v-model="numberOfPeople"
-                            class="lg:me-5  px-3 py-[4px] rounded-[4px] text-gray-400 text-[17px]"
-                            placeholder="Nhập số người" />
-                    </div>
-                    <div class="flex items-center justify-end border-gray-400 lg:w-2/18">
+                    <div class="flex items-center justify-end border-gray-400 lg:w-2/14">
                         <button class="w-full px-4 py-3 bg-muesli-400 text-white rounded-xl"
                             @click.prevent="handleSearch">
                             Kiểm Tra
@@ -418,13 +423,12 @@ const [post] = useKeenSlider({
 })
 
 // Tìm Loại phòng trống theo thời gian
-const roomTypeId = ref(0);
-const numberOfPeople = ref(0);
+const numberOfPeople = ref(1);
 const handleSearch = async () => {
-    await bookings.getAvailableRooms(checkin.value, checkOutDate.value, roomTypeId.value, numberOfPeople.value);
-    bookings.roomTypeId = Number(roomTypeId.value);
     bookings.numberOfPeople = Number(numberOfPeople.value);
-    router.push("/user/roomtype");
+    await bookings.getAvailableRooms(checkin.value, checkOutDate.value, numberOfPeople.value);
+    console.log(JSON.stringify(bookings.listRoomsAvailable, null, 2))
+    router.push({ path: "/user/roomtype", query: { checkins: checkin.value, checkouts: checkOutDate.value, numberOfPeoples: numberOfPeople.value } });
 };
 
 </script>

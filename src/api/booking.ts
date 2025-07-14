@@ -71,7 +71,7 @@ export const Bookings = defineStore("booking", () => {
 
   const getBookings = async () => {
     try {
-      const response = await axios.get<BookingResponse>(`${baseUrl}/admin/booking/list`);
+      const response = await axios.get<BookingResponse>(`${baseUrl}/admin/booking/list`, { withCredentials: true });
       bookings.value = response.data.data;
       return response.data;
     } catch (error: any) {
@@ -83,7 +83,7 @@ export const Bookings = defineStore("booking", () => {
   const createBooking = async (booking: CreateBookingRequest) => {
     try {
       isloading.value = true
-      const response = await axios.post(`${baseUrl}/admin/booking/order`, booking)
+      const response = await axios.post(`${baseUrl}/admin/booking/order`, booking, { withCredentials: true });
       toast.success("Tạo booking thành công!");
       return response.data
     } catch (error: unknown) {
@@ -103,13 +103,16 @@ export const Bookings = defineStore("booking", () => {
   const listRoomsAvailable = ref<RoomAvailabilityResponse[]>([]);
   const roomTypeId = ref<number>(0);
   const numberOfPeople = ref<number>(0);
-  const getAvailableRooms = async (checkinDateF: Date, checkoutDateF: Date, roomtypeid: number, numberofpeople: number): Promise<AvalableResponse> => {
+  const checkin = ref<Date>(new Date());
+  const checkout = ref<Date>(new Date());
+  const getAvailableRooms = async (checkinDateF: Date, checkoutDateF: Date, numberofpeople: number): Promise<AvalableResponse> => {
     try {
       const checkinDate = formatDateWitCheckInCheckOutAvailable(checkinDateF, 14, 0, 0)
       const checkoutDate = formatDateWitCheckInCheckOutAvailable(checkoutDateF, 12, 0, 0)
-      roomTypeId.value = roomtypeid;
+      checkin.value = checkinDateF;
+      checkout.value = checkoutDateF;
       numberOfPeople.value = numberofpeople;
-      console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate, "roomtypeid: ", roomtypeid);
+      console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate);
       const response = await axios.get<AvalableResponse>(`${baseUrl}/admin/booking/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`);
       listRoomsAvailable.value = response.data.data;
       return response.data
@@ -140,9 +143,10 @@ export const Bookings = defineStore("booking", () => {
   }
 
   return {
+    checkin,
+    checkout,
     bookings,
     booking,
-    roomTypeId,
     numberOfPeople,
     getBookings,
     getAvailableRooms,

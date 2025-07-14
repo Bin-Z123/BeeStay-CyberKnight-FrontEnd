@@ -28,7 +28,7 @@ export const Vouchers = () => {
     });
     const getAllVouchers = async (): Promise<Vouchers[]> => {
         try {
-        const response = await axios.get<VouchersResponse>(`${baseUrl}/admin/voucher/list`);
+        const response = await axios.get<VouchersResponse>(`${baseUrl}/admin/voucher/list`, {withCredentials: true});
         vouchers.value = response.data.data;
         return response.data.data;
         } catch (error) {
@@ -38,7 +38,7 @@ export const Vouchers = () => {
     const createVoucher = async (voucher: Vouchers): Promise<Vouchers> => {
         isLoading.value = true;
         try {
-            const response = await axios.post<Vouchers>(`${baseUrl}/admin/voucher/create`, voucher);
+            const response = await axios.post<Vouchers>(`${baseUrl}/admin/voucher/create`, voucher, {withCredentials: true});
             isLoading.value = false;
             toast.success('Tạo voucher thành công');
             return response.data;
@@ -51,7 +51,7 @@ export const Vouchers = () => {
     const updateVoucher = async (voucher: Vouchers): Promise<Vouchers> => {
         isLoading.value = true;
         try {
-            const response = await axios.put<Vouchers>(`${baseUrl}/admin/voucher/${voucher.id}`, voucher);
+            const response = await axios.put<Vouchers>(`${baseUrl}/admin/voucher/${voucher.id}`, voucher, {withCredentials: true});
             isLoading.value = false;
             toast.success('Cập nhật voucher thành công');
             return response.data;
@@ -64,7 +64,7 @@ export const Vouchers = () => {
     const deleteVoucher = async (id: number): Promise<void> => {
         isLoading.value = true;
         try {
-            await axios.delete(`${baseUrl}/admin/voucher/${id}`);
+            await axios.delete(`${baseUrl}/admin/voucher/${id}`, {withCredentials: true});
             isLoading.value = false;
             toast.success('Xóa voucher thành công');
         } catch (error) {

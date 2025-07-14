@@ -8,20 +8,20 @@
             <div class="relative z-10">
                 <div
                     class="px-4 lg:mx-0 mx-auto xl:container absolute lg:left-1/2 lg:transform lg:-translate-x-1/2 w-full">
-                    <h1 v-if="selectedRoomType?.availableRoomDTO.length"
+                    <h1
                         class="lg:text-7xl md:text-6xl sm:text-5xl text-4xl text-white absolute -mt-160 lg:-mt-120 left-1/2 transform -translate-x-1/2">
-                        {{ selectedRoomType?.nameRoomType }}
+                        Loại Phòng
                     </h1>
                     <form action="" class="bg-white rounded-2xl shadow-xl -mt-130 lg:-mt-80 text-[20px]">
                         <div
                             class="lg:flex justify-between items-center md:grid md:grid-cols-3 sm:grid sm:grid-cols-2 gap-5 grid grid-cols-1 py-4 px-6">
-                            <div class="space-y-2 flex flex-col border-gray-200 sm:border-r-1 lg:w-4/18">
+                            <div class="space-y-2 flex flex-col border-gray-200 sm:border-r-1 lg:w-4/14">
                                 <label>Ngày Đến</label>
                                 <VueDatePicker v-model="checkin" :format-locale="vi" :format="'dd/MM/yyyy'"
                                     :min-date="new Date()" multi-calendars class="lg:pe-5" />
                             </div>
                             <div
-                                class="relative space-y-2 flex flex-col sm:border-r-1 border-gray-200 lg:w-4/18 lg:pe-5">
+                                class="relative space-y-2 flex flex-col sm:border-r-1 border-gray-200 lg:w-4/14 lg:pe-5">
                                 <label>Ngày Đi</label><select
                                     class="block w-full rounded-[4px]  bg-white px-3 py-[4px] text-gray-400 text-[17px]"
                                     name="" id="" :disabled="!checkin" v-model="numberOfNights">
@@ -31,19 +31,20 @@
                                     </option>
                                 </select>
                             </div>
-                            <div class="space-y-2 flex flex-col sm:border-r-1 border-gray-200 lg:w-4/18">
-                                <label>Loại Phòng</label> <select type="text"
+                            <div class="space-y-2 flex flex-col sm:border-r-1 border-gray-200 lg:w-4/14">
+                                <label>Số Người</label>
+                                <select type="text" v-model="numberOfPeople"
                                     class="lg:me-5  px-3 py-[4px] rounded-[4px] text-gray-400 text-[17px]">
-                                    <option value="all">Tất Cả Loại Phòng</option>
+                                    <option value="1">1 người</option>
+                                    <option value="2">2 người</option>
+                                    <option value="3">3 người</option>
+                                    <option value="4">4 người</option>
+                                    <option value="5">5 người</option>
                                 </select>
                             </div>
-                            <div class="space-y-2 flex flex-col sm:border-r-1 border-gray-200 lg:w-4/18">
-                                <label>Số Người</label><input type="text"
-                                    class="lg:me-5  px-3 py-[4px] rounded-[4px] text-gray-400 text-[17px]"
-                                    placeholder="Nhập số người" />
-                            </div>
-                            <div class="flex items-center justify-end border-gray-400 lg:w-2/18">
-                                <button class="w-full px-4 py-3 bg-muesli-400 text-white rounded-xl">
+                            <div class="flex items-center justify-end border-gray-400 lg:w-2/14">
+                                <button class="w-full px-4 py-3 bg-muesli-400 text-white rounded-xl"
+                                    @click.prevent="handleSearch">
                                     Kiểm Tra
                                 </button>
                             </div>
@@ -57,37 +58,47 @@
     <section>
         <div class="bg-white">
             <div class="py-25 container mx-auto flex flex-col gap-18">
-                <div v-if="bookings.listRoomsAvailable.length">
-                    <div v-for="roomType in bookings.listRoomsAvailable" :key="roomType.roomTypeId">
-                        <div v-if="roomType.roomTypeId === bookings.roomTypeId && roomType.peopleAbout === bookings.numberOfPeople">
-                            <div v-for="(room, index) in roomType.availableRoomDTO" :key="room.id"
-                                :class="['flex flex-col lg:flex-row items-center gap-10', index % 2 === 0 ? '' : 'lg:flex-row-reverse']">
-                                <div class="lg:w-1/2 px-4 lg:px-0">
-                                    <img src="@/assets/images/room1.png" alt="" class="rounded-2xl">
-                                </div>
-                                <div class="lg:w-1/2 flex flex-col gap-5 justify-center lg:px-0 px-4">
-                                    <h1 class="font-bold text-4xl">{{ roomType.nameRoomType }}</h1>
-                                    <div class="flex items-center gap-4 text-gray-500">
-                                        <span class="flex items-center gap-1">
-                                            <Square class="inline-block w-5 h-5" />{{ roomType.size }} m²
-                                        </span>
-                                        <span class="flex items-center gap-1">
-                                            <User class="inline-block w-5 h-5" />{{ roomType.peopleAbout }} người
-                                        </span>
-                                    </div>
-                                    <p class="text-gray-500">Our rooms offer a harmonious blend of comfort and elegance,
-                                        designed to
-                                        provide an exceptional stay for every guest.</p>
-                                    <p class="text-muesli-400 text-3xl">{{ roomType.price }} VNĐ</p>
-                                    <RouterLink to="/" class="text-muesli-400 underline">Xem Chi Tiết</RouterLink>
-                                </div>
+                <div v-for="roomType in roomsFullMatched" :key="roomType.roomTypeId"
+                    class="text-center border-2 rounded-xl p-6 mb-10 bg-muesli-50 border-muesli-200">
+                    <h2 class="text-2xl font-bold mb-2">
+                        Loại phòng "{{ roomType.nameRoomType }}" đã hết chỗ
+                    </h2>
+                    <p>Dưới đây là một số loại phòng khác mà bạn có thể quan tâm:</p>
+                </div>
+
+                <div v-if="roomsWithAvailable.length">
+                    <div v-for="(roomType, index) in roomsWithAvailable" :key="roomType.roomTypeId" :class="[
+                        'flex flex-col lg:flex-row items-center gap-10 mb-10',
+                        index % 2 === 0 ? '' : 'lg:flex-row-reverse'
+                    ]">
+                        <div class="lg:w-1/2 px-4 lg:px-0">
+                            <img v-if="roomType.availableRoomDTO?.[0]?.roomImage?.[0]?.url"
+                                :src="getImageUrl(roomType.availableRoomDTO[0].roomImage[0].url)" alt="Ảnh phòng"
+                                class="rounded-2xl w-full h-85" />
+                        </div>
+                        <div class="lg:w-1/2 flex flex-col gap-5 justify-center lg:px-0 px-4">
+                            <h1 class="font-bold text-4xl">
+                                {{ roomType.nameRoomType }}
+                                <span class="text-gray-500 text-[20px]">
+                                    (Còn {{ roomType.availableRooms }} phòng trống)
+                                </span>
+                            </h1>
+                            <div class="flex items-center gap-4 text-gray-500">
+                                <span class="flex items-center gap-1">
+                                    <Square class="inline-block w-5 h-5" />{{ roomType.size }} m²
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <User class="inline-block w-5 h-5" />{{ roomType.peopleAbout }} người
+                                </span>
                             </div>
+                            <p class="text-muesli-400 text-3xl">{{ roomType.price }} VNĐ</p>
+                            <RouterLink :to="{ path: '/user/roomdetail', query: { roomTypeId: roomType.roomTypeId } }"
+                                class="text-muesli-400 underline">
+                                Xem Chi Tiết
+                            </RouterLink>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="flex justify-center pb-20">
-                <button class="px-5 py-3 border-1 border-gray-500 text-gray-500 rounded-md">Xem Thêm</button>
             </div>
         </div>
     </section>
@@ -181,14 +192,33 @@
     </section>
 </template>
 <script setup>
-import { Square, User, Wifi, Bath, Refrigerator, Monitor, UtensilsCrossed, ShowerHead, Telescope, HeartPlus } from 'lucide-vue-next';
+import {
+    Square,
+    User,
+    Wifi,
+    Bath,
+    Refrigerator,
+    Monitor,
+    UtensilsCrossed,
+    ShowerHead,
+    Telescope,
+    HeartPlus
+} from 'lucide-vue-next';
 import { ref, onMounted, watch, computed } from "vue";
 import { vi } from "date-fns/locale";
 import { addDays, format } from "date-fns";
-import { useKeenSlider } from 'keen-slider/vue'
+import { useKeenSlider } from 'keen-slider/vue';
 import { Bookings } from '@/api/booking';
+import { useRoute } from "vue-router";
+import { parseISO } from 'date-fns';
 
+const baseUrl = import.meta.env.VITE_CLOUDINARY_IMG_URL;
 const bookings = Bookings();
+const route = useRoute();
+
+const checkin1 = ref();
+const checkout1 = ref();
+const numberOfPeople1 = ref(0);
 
 const toggleDarkMode = () => {
     const htmlElement = document.documentElement;
@@ -198,6 +228,7 @@ const toggleDarkMode = () => {
         htmlElement.classList.contains("dark") ? "enabled" : "disabled"
     );
 };
+
 const checkin = ref();
 const formatDate = (date) => {
     return date ? format(date, "dd/MM/yyyy") : "";
@@ -207,17 +238,13 @@ const selectedRoomType = computed(() =>
     bookings.listRoomsAvailable.find(r => r.roomTypeId === bookings.roomTypeId)
 );
 
-
-onMounted(async () => {
-    checkin.value = new Date();
-});
-
 const numberOfNights = ref(null);
 const checkOutDateText = (night) => {
     if (!checkin.value) return "";
     const date = addDays(checkin.value, night);
     return format(date, "dd/MM/yyyy");
 };
+
 const checkOutDate = computed(() => {
     return checkin.value && numberOfNights.value
         ? addDays(checkin.value, numberOfNights.value)
@@ -231,5 +258,66 @@ const [reviews] = useKeenSlider({
         perView: 1,
         spacing: 15,
     },
-})
+});
+
+// Lọc phòng và sắp xếp
+const filterAndSortRooms = computed(() => {
+    const matched = bookings.listRoomsAvailable.filter(
+        room => room.peopleAbout === bookings.numberOfPeople
+    );
+    const others = bookings.listRoomsAvailable.filter(
+        room => room.peopleAbout !== bookings.numberOfPeople
+    );
+
+    return [...matched, ...others];
+});
+
+// ➕ Tách rõ phòng còn và phòng hết chỗ
+const roomsWithAvailable = computed(() =>
+    filterAndSortRooms.value.filter(
+        (room) => room.availableRoomDTO?.length && room.availableRooms > 0
+    )
+);
+
+const roomsFullMatched = computed(() =>
+    filterAndSortRooms.value.filter(
+        (room) =>
+            room.availableRoomDTO?.length &&
+            room.availableRooms === 0 &&
+            room.peopleAbout === bookings.numberOfPeople
+    )
+);
+
+// Lấy ảnh phòng
+const getImageUrl = (publicId) => {
+    return `${baseUrl}/${publicId}`;
+};
+
+// Tìm kiếm
+const numberOfPeople = ref(1);
+const handleSearch = async () => {
+    bookings.numberOfPeople = Number(numberOfPeople.value);
+    await bookings.getAvailableRooms(
+        checkin.value,
+        checkOutDate.value,
+        Number(numberOfPeople.value)
+    );
+    console.log(JSON.stringify(bookings.listRoomsAvailable, null, 2));
+};
+
+onMounted(async () => {
+    checkin.value = new Date();
+    checkin1.value = route.query.checkins;
+    checkout1.value = route.query.checkouts;
+    numberOfPeople1.value = Number(route.query.numberOfPeoples);
+    console.log(
+        "checkin",
+        checkin1.value,
+        "checkout",
+        checkout1.value,
+        "numberOfPeople",
+        numberOfPeople1.value
+    );
+    await bookings.getAvailableRooms(checkin1.value, checkout1.value, numberOfPeople1.value);
+});
 </script>
