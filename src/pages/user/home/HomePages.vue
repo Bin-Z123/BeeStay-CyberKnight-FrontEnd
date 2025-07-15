@@ -427,7 +427,7 @@ const numberOfPeople = ref(1);
 const handleSearch = async () => {
     bookings.numberOfPeople = Number(numberOfPeople.value);
     await bookings.getAvailableRooms(checkin.value, checkOutDate.value, numberOfPeople.value);
-    console.log(JSON.stringify(bookings.listRoomsAvailable, null, 2))
+    console.log("Phòng Còn Trống Nè",JSON.stringify(bookings.listRoomsAvailable, null, 2))
     router.push({ path: "/user/roomtype", query: { checkins: checkin.value, checkouts: checkOutDate.value, numberOfPeoples: numberOfPeople.value } });
 };
 
