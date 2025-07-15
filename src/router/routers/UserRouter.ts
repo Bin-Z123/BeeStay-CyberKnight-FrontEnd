@@ -1,3 +1,4 @@
+import { title } from "process";
 import { RouteRecordRaw } from "vue-router";
 
 const userRouter: RouteRecordRaw = {
@@ -9,6 +10,9 @@ const userRouter: RouteRecordRaw = {
             path: "home",
             name: "home",
             component: () => import("../../pages/user/home/HomePages.vue"),
+            meta: {
+                title: "Trang chủ",
+            }
         },
         {
             path: "roomdetail",
