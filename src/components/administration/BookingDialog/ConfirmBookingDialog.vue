@@ -197,7 +197,7 @@
 
             <DialogFooter class="p-6 pt-0 flex justify-between">
                 <Button class="justify-self-start">Tổng tiền phải trả: <b>{{ formatVND(bookingData.totalAmount)
-                        }}</b></Button>
+                }}</b></Button>
                 <Button @click="handleConfirm(bookingData.id)" :disabled="isDirty"
                     class="bg-muesli-400 hover:bg-muesli-600 disabled:opacity-50 text-white px-3 py-2 rounded-sm">
                     Xác nhận
@@ -506,6 +506,7 @@ const handleUpdateQuantityRoom = async () => {
     isDirty.value = false
     await bookingDetailStore.updateBookingDetail(updateBooking.value.bookingDetailRequest, bookingData.value.id)
     await bookingStore.getBookings
+    await bookingStore.updatePriceForBooking(bookingData.value.id)
 }
 // Validate và xác nhận đặt phòng
 const validateStayBeforeSubmit = (): boolean => {

@@ -1829,7 +1829,12 @@ proxy-from-env@^1.1.0:
   resolved "https://registry.yarnpkg.com/proxy-from-env/-/proxy-from-env-1.1.0.tgz#e102f16ca355424865755d2c9e8ea4f24d58c3e2"
   integrity sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==
 
-reka-ui@^2.3.2:
+qrcode.vue@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/qrcode.vue/-/qrcode.vue-3.6.0.tgz#d940fe96712922232aa19892bdd68793e62c73e7"
+  integrity sha512-vQcl2fyHYHMjDO1GguCldJxepq2izQjBkDEEu9NENgfVKP6mv/e2SU62WbqYHGwTgWXLhxZ1NCD1dAZKHQq1fg==
+
+reka-ui@^2.3.1:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/reka-ui/-/reka-ui-2.3.2.tgz#aedae51d85dcc61e418f12ffc0b013fccd5bb00c"
   integrity sha512-lCysSCILH2uqShEnt93/qzlXnB7ySvK7scR0Q5C+a2iXwFVzHhvZQsMaSnbQYueoCihx6yyUZTYECepnmKrbRA==

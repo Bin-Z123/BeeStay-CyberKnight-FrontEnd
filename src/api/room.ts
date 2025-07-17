@@ -3,6 +3,7 @@ import axios from "axios";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 import { defineStore } from "pinia";
+import { Room } from "@/interface/booking.interface";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const isLoading = ref(false);
@@ -63,7 +64,7 @@ interface ResponseRoom {
     message: string;
     data: RoomResponse[];
 }
-export const Room = defineStore('room', () => {
+export const RoomAPI = defineStore('room', () => {
     const listRooms = ref<RoomResponse[]>([]);
     //GET ALL ROOMS
     const getAllRooms = async (): Promise<ResponseRoom> => {
@@ -150,11 +151,32 @@ export const Room = defineStore('room', () => {
         }
     }
 
+    const room = ref<RoomResponse[]>();
+    const getRoomById = async (id: number): Promise<ResponseRoom> => {
+        isLoading.value = true;
+        try {
+            const response = await axios.get<ResponseRoom>(`${baseUrl}/admin/rooms/${id}`, { withCredentials: true });
+            room.value = response.data.data;
+            console.log("Room details:", room.value);
+            return response.data;
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                toast.error("Lỗi khi lấy thông tin phòng bằng ID", {
+                    description: error.message,
+                });
+            }
+            throw error;
+        } finally {
+            isLoading.value = false;
+        }
+    }
 
     return {
         getAllRooms,
         createRoom,
         updateRoom,
+        getRoomById,
+        room,
         listRooms,
         isLoading,
     };
