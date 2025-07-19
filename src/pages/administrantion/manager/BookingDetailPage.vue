@@ -188,15 +188,16 @@
                             <div class="border-t my-2"></div>
                             <div class="flex justify-between text-xl font-bold">
                                 <span class="text-gray-900">Tổng Cộng</span>
-                                <span class="text-blue-600">20.295.000 ₫</span>
+                                <span class="text-blue-600">{{ formatVND(BookingStore.bookingTicket?.totalAmount ?? 0)
+                                    }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Đã thanh toán (Cọc đêm đầu)</span>
                                 <span class="font-medium text-gray-800">10.147.500 ₫</span>
                             </div>
-                            <div class="flex justify-between text-lg font-bold bg-yellow-100 p-3 rounded-lg">
-                                <span class="text-yellow-800">Cần thanh toán khi nhận phòng </span>
-                                <span class="text-yellow-800"> 10.147.500 ₫</span>
+                            <div class="flex justify-between  text-lg font-bold bg-yellow-100 p-3 rounded-lg  ">
+                                <span class="text-yellow-800 my-auto w-48">Cần thanh toán khi nhận phòng </span>
+                                <span class="text-yellow-800 my-auto"> 10.147.500 ₫</span>
                             </div>
                             <!-- STAFF ONLY SECTION -->
                             <div id="staff-payment-section" class="mt-6 pt-6 border-t border-dashed printable-hidden">
@@ -225,12 +226,16 @@
                                 <div id="cash-payment-ui" class="mt-4" v-if="paymentMethod === 'cash'">
                                     <label for="cash-input" class="block text-sm font-medium text-gray-700">Số tiền
                                         khách đưa (VND)</label>
-                                    <input type="number" id="cash-input"
+                                    <input type="number" id="cash-input" v-model="paymentCash.amount"
                                         class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                         placeholder="Nhập số tiền...">
-                                    <button id="confirm-cash-payment"
+
+                                    <p class="text-xs text-red-500">* Lưu ý: Nhập tối đa {{
+                                        formatVND(paymentStore.paymentOsData.data.amount) }}</p>
+                                    <button id="confirm-cash-payment" @click="handleConfirmCashPayment"
                                         class="mt-4 w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition">Xác
-                                        nhận thanh toán</button>
+                                        nhận thanh toán <span v-if="paymentCash.amount > 0">{{
+                                            formatVND(paymentCash.amount) }}</span></button>
                                 </div>
 
                                 <!-- QR Payment UI -->
@@ -345,33 +350,12 @@
                     <div class="bg-white p-4 rounded-b-2xl border-t border-gray-200">
                         <p class="text-xs text-gray-500">Đơn hàng <strong id="qr-order-code"></strong> sẽ hết hạn sau ít
                             phút.</p>
+                        <p>*Nếu không quét mã được hãy bấm vào <br><a class="text-blue-600 hover:underline"
+                                @click="handleOpenVietQR">Quét
+                                mã tại đây</a></p>
                     </div>
                 </div>
             </div>
-            <!-- <div v-if="showQR" class="fixed inset-0  bg-black/50  flex items-center justify-center p-4"
-                @click.self="showQR = false">
-                <div class="bg-white rounded-lg shadow-2xl w-full max-w-sm p-8 text-center relative">
-                    <button @click="showQR = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                    <h2 class="text-xl font-bold text-gray-800">Thanh toán Online</h2>
-                    <p class="text-3xl font-bold text-blue-600 my-2">{{
-                        formatVND(paymentStore.paymentOsData.data.amount)
-                    }}</p>
-                    <p class="text-sm text-gray-500 mb-4">Vui lòng quét mã VietQR để thanh toán</p>
-                    <div class="flex justify-center my-4">
-                        <qrcode-vue :value="fiexdQRString" :size="250" level="H" />
-                    </div>
-
-                    <p class="text-xs text-gray-500 mt-4">Nội dung: <span class="font-semibold">{{
-                        paymentStore.paymentOsData.data.description }}</span>
-                    </p>
-                </div>
-            </div> -->
         </transition>
     </div>
 
@@ -387,9 +371,10 @@ import { formatDateWithTimeToHour, formatDateWithTimeToTicket, formatVND } from 
 import { RoomAPI } from '@/api/room';
 import { RoomResponse } from '@/types';
 import { PaymentAPI } from '@/api/payment';
-import { CreatePaymentLinkRequest } from '@/types/payment-dto';
+import { CreatePaymentLinkRequest, PaymentCashRequest } from '@/types/payment-dto';
 import QrcodeVue from 'qrcode.vue';
 import { nextTick } from 'process';
+
 
 const paymentStore = PaymentAPI();
 const roomStore = RoomAPI();
@@ -399,6 +384,10 @@ const showQR = ref(false);
 const props = defineProps<{
     id: number;
 }>();
+const paymentCash = ref<PaymentCashRequest>({
+    bookingId: props.id,
+    amount: 0
+})
 // Tạo map để lưu id Stay và thông tin phòng
 const roomMap = ref<Map<number, RoomResponse>>(new Map());
 const paymentPayOs = ref<CreatePaymentLinkRequest>({
@@ -437,10 +426,7 @@ onMounted(async () => {
         }
     }
 
-
     // await paymentStore.getPaymentOsData(props.id);
-
-
 
 
     console.log('Booking Detail Page Mounted with ID:', JSON.stringify(BookingStore.bookingTicket, null, 2));
@@ -585,7 +571,26 @@ const fixPayOSQRCode = (qrString: string): string => {
 }
 const fiexdQRString = ref<string>('');
 
+/**
+ * Tính tiền mặt
+ */
+const handleConfirmCashPayment = () => {
+    if (paymentCash.value.amount > paymentStore.paymentOsData.data.amount) {
+        toast.error('Số tiền nhập vào không hợp lệ')
+        return;
+    } else if (paymentCash.value.amount < 1000) {
+        toast.error('Số tiền phải nhất lớn hơn 1000')
+        return;
+    }
 
+    // console.log("Payment Cash: ", paymentCash.value)
+    paymentStore.createPaymentByCash(paymentCash.value)
+}
+
+// Mở VietQR
+const handleOpenVietQR = () => {
+    window.open(paymentStore.paymentOsData.data.checkoutUrl, '_blank');
+}
 watch(() => paymentStore.paymentOsData.data, (newValue) => {
     if (newValue) {
         fiexdQRString.value = fixPayOSQRCode(newValue.qrCode)

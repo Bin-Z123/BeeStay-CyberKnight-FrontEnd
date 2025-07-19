@@ -2,7 +2,7 @@ import axios from "axios";
 import { defineStore } from "pinia";
 import { toast } from "vue-sonner";
 import { ref } from "vue";
-import { CreatePaymentLinkRequest, PaymentPayOsResponse } from "@/types/payment-dto";
+import { CreatePaymentLinkRequest, PaymentPayOsResponse, PaymentCashRequest } from "@/types/payment-dto";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -49,9 +49,33 @@ export const PaymentAPI = defineStore('payment', () => {
 
         }
     }
+
+    // Payment Cash 
+    const createPaymentByCash = async (request: PaymentCashRequest) => {
+        isLoading.value = true;
+        try {
+            const response = await axios.post(`${baseUrl}/admin/payment/pay`, request)
+
+            toast.success("Tạo thanh toán thành công", {
+                action: {
+                    label: "Thoát"
+                }
+            });
+            return response.data;
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error.response?.data.message || "Failed to create cash payment", {
+                    action: {
+                        label: "Thoát"
+                    }
+                });
+            }
+        }
+    }
     return {
         isLoading,
         paymentOsData,
+        createPaymentByCash,
         createPaymentPayOsLink,
         getPaymentOsData,
     }

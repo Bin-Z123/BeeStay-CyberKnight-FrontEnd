@@ -6,6 +6,13 @@ export interface CreatePaymentLinkRequest {
     returnUrl: string;
     cancelUrl: string;
 }
+/**
+ * PaymentCashRequest interface
+ */
+export interface PaymentCashRequest {
+    bookingId: number;
+    amount: number;
+}
 
 /**
  * PaymentResponse interface
