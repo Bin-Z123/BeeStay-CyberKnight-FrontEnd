@@ -92,10 +92,10 @@
                                 </span>
                             </div>
                             <p class="text-muesli-400 text-3xl">{{ roomType.price }} VNĐ</p>
-                            <RouterLink :to="{ path: '/user/roomdetail', query: { roomTypeId: roomType.roomTypeId } }"
+                            <a :href="getRoomDetails(roomType.roomTypeId)" target="_blank"
                                 class="text-muesli-400 underline">
                                 Xem Chi Tiết
-                            </RouterLink>
+                        </a>
                         </div>
                     </div>
                 </div>
@@ -211,10 +211,19 @@ import { useKeenSlider } from 'keen-slider/vue';
 import { Bookings } from '@/api/booking';
 import { useRoute } from "vue-router";
 import { parseISO } from 'date-fns';
+import { useRouter } from 'vue-router';
 
 const baseUrl = import.meta.env.VITE_CLOUDINARY_IMG_URL;
 const bookings = Bookings();
 const route = useRoute();
+const router = useRouter();
+
+const getRoomDetails = (roomTypeId) => {
+  return router.resolve({
+    path: '/user/roomdetail',
+    query: { roomTypeId }
+  }).href
+}
 
 const checkin1 = ref();
 const checkout1 = ref();
@@ -272,7 +281,7 @@ const filterAndSortRooms = computed(() => {
     return [...matched, ...others];
 });
 
-// ➕ Tách rõ phòng còn và phòng hết chỗ
+// Tách rõ phòng còn và phòng hết chỗ
 const roomsWithAvailable = computed(() =>
     filterAndSortRooms.value.filter(
         (room) => room.availableRoomDTO?.length && room.availableRooms > 0
@@ -319,5 +328,6 @@ onMounted(async () => {
         numberOfPeople1.value
     );
     await bookings.getAvailableRooms(checkin1.value, checkout1.value, numberOfPeople1.value);
+    console.log("Available Rooms:", JSON.stringify(bookings.listRoomsAvailable, null, 2));
 });
 </script>

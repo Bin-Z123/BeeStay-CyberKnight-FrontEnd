@@ -3,6 +3,22 @@
         <div class="md:w-1/3 me-4  mb-4 rounded-lg p-4">
             <form action="" class="flex flex-col gap-3">
                 <div>
+                    <label class="text-muesli-400">Ảnh dịch vụ</label>
+                    <label for="image-upload"
+                        class="rounded-sm w-60 h-60 flex flex-col items-center justify-self-center justify-center outline-2 outline-dashed outline-muesli-400 hover:bg-gray-100"
+                        tabindex="0">
+                        <ImageUp class="size-10 stroke-2" v-if="!imagePreview"></ImageUp>
+                        <p class="truncate w-58 text-center" v-if="!imagePreview">Tải ảnh lên</p>
+                        <input class="hidden" type="file" name="" id="image-upload" accept="image/*"
+                            @change="onFileChange" />
+                        <div class=" w-55 h-55 overflow-hidden rounded-sm flex justify-center" v-if="imagePreview">
+                            <img :src="imagePreview" v-if="imagePreview"
+                                class="object-center rounded-sm  object-cover hover:scale-105 transition-all duration-300">
+                        </div>
+                    </label>
+
+                </div>
+                <div>
                     <label class="text-muesli-400">Dịch Vụ</label><br />
                     <input type="text" v-model="facilities.facility.facilityName" :class="[
                         'w-full h-10 rounded-lg focus:outline-none px-5 text-center shadow-sm',
@@ -35,11 +51,17 @@
                 <div class="flex justify-center gap-2">
                     <button type="button" @click.prevent="handleCreateFacility"
                         class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm w-[80px]">
-                        Tạo
+                        <span v-if="!facilities.isLoading">Tạo</span>
+                        <span v-else class="animate-spin">
+                            <LoaderCircle></LoaderCircle>
+                        </span>
                     </button>
                     <button type="button" @click.prevent="handleUpdateFacility"
                         class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm">
-                        Cập Nhật
+                        <span v-if="!facilities.isLoadingUpdate">Cập nhật</span>
+                        <span v-else class="animate-spin">
+                            <LoaderCircle></LoaderCircle>
+                        </span>
                     </button>
                     <button type="button" @click.prevent="handleDeleteFacility"
                         class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm w-[80px]">
@@ -56,19 +78,22 @@
             <table class="w-full border border-gray-300 text-sm text-center bg-white">
                 <thead class="bg-gradient-to-r from-muesli-200 to-muesli-400 text-white">
                     <tr>
+                        <th class="px-4 py-2 border truncate max-w-[120px]">Ảnh</th>
                         <th class="px-4 py-2 border truncate max-w-[120px]">Tiêu Đề</th>
-                        <th class="px-4 py-2 border truncate max-w-[100px]">Mã Giảm Giá</th>
-                        <th class="px-4 py-2 border truncate max-w-[80px]">Loại Giảm</th>
+                        <th class="px-4 py-2 border truncate max-w-[100px]">Mô tả</th>
+                        <th class="px-4 py-2 border truncate max-w-[80px]">Giá/ ngày</th>
                         <th class="px-4 py-2 border truncate max-w-[120px]">Tùy Chọn</th>
                     </tr>
                 </thead>
                 <tbody class="text-gray-700">
                     <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
                         v-for="facilitie in facilities.facilities" :key="facilitie.id">
+                        <td class="py-2 flex justify-center  gap-2 h-full "><img class="size-10"
+                                :src="imageUrl + facilitie.publicId"></td>
                         <td class="py-2">{{ facilitie.facilityName }}</td>
                         <td class="py-2">{{ facilitie.description }}</td>
                         <td class="py-2">{{ facilitie.price }}</td>
-                        <td class="py-2 flex justify-center items-center gap-2 h-full m-1.5">
+                        <td class="py-2 flex justify-center items-center gap-2 h-full m-auto">
                             <button @click.prevent="getFacilitiesById(facilitie.id)"
                                 class="text-blue-400 hover:text-blue-700">
                                 <SquarePen />
@@ -94,27 +119,28 @@
 </template>
 <script setup lang="ts">
 import {
-    SquarePen,
+    SquarePen, ImageUp, LoaderCircle
 } from "lucide-vue-next";
 import { ref, onMounted, computed } from 'vue';
 import { Facilities } from '@/api/facilities';
 const facilities = Facilities();
-
+const imageUrl = import.meta.env.VITE_CLOUDINARY_IMG_URL;
 const handleCreateFacility = async () => {
     if (!validateForm()) return;
-    await facilities.createFacility(facilities.facility);
+    await facilities.createFacility(facilities.facility, selectFiles.value[0]);
     await facilities.getAllFacilities();
     resetFacility();
 }
 
 const getFacilitiesById = async (id: number) => {
     const selectedFacility = facilities.facilities.find(facility => facility.id === id);
+    imagePreview.value = imageUrl + selectedFacility?.publicId
     if (selectedFacility) facilities.facility = { ...selectedFacility };
 }
 
 const handleUpdateFacility = async () => {
     if (!validateForm()) return;
-    await facilities.updateFacility(facilities.facility);
+    await facilities.updateFacility(facilities.facility, selectFiles.value[0]);
     await facilities.getAllFacilities();
     resetFacility();
 }
@@ -131,12 +157,14 @@ const resetFacility = () => {
         facilityName: '',
         description: '',
         price: 0,
+        publicId: '',
     };
     errors.value = {
         facilityName: '',
         description: '',
         price: '',
     };
+    selectFiles.value = [];
 }
 
 const errors = ref({
@@ -170,4 +198,23 @@ const validateForm = () => {
 onMounted(async () => {
     await facilities.getAllFacilities();
 });
+
+// Upload ảnh
+const imagePreview = ref()
+const selectFiles = ref<File[]>([]);
+const onFileChange = (e: Event) => {
+    selectFiles.value = [];
+    const file = (e.target as HTMLInputElement).files?.[0];
+    console.log("file: ", file)
+    if (file) {
+        selectFiles.value.push(file)
+        const reader = new FileReader()
+        reader.onload = (e) => {
+            const imageUrl = e.target?.result as String
+            imagePreview.value = imageUrl
+        }
+        reader.readAsDataURL(file)
+    }
+    console.log("selectFiles.value: ", selectFiles.value)
+}
 </script>

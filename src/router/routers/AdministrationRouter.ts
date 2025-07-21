@@ -12,7 +12,10 @@ const administrationRouter: RouteRecordRaw = {
         {
             path: "dashboard",
             name: "dashboard",
-            component: () => import("../../pages/administrantion/DashBoardPage.vue")
+            component: () => import("../../pages/administrantion/DashBoardPage.vue"),
+            meta: {
+                title: "Trang quản trị"
+            }
         },
         // ADMIN
         {
