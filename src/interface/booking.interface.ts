@@ -2,7 +2,10 @@ export interface BookingResponse {
   code: number;
   data: Booking[];
 }
-
+export interface BookingTicketResponse {
+  code: number;
+  data: Booking;
+}
 export interface Booking {
   id: number;
   checkInDate: Date;
@@ -127,7 +130,7 @@ export interface Facility {
 
 export interface Stay {
   id: number;
-  room: string;
+  roomId: number;
   booking: string;
   actualCheckIn: string;
   actualCheckOut: string;

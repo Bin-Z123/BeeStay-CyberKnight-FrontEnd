@@ -328,5 +328,6 @@ onMounted(async () => {
         numberOfPeople1.value
     );
     await bookings.getAvailableRooms(checkin1.value, checkout1.value, numberOfPeople1.value);
+    console.log("Available Rooms:", JSON.stringify(bookings.listRoomsAvailable, null, 2));
 });
 </script>

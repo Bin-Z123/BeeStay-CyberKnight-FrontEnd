@@ -93,10 +93,10 @@ import { Button } from "@/components/ui/button";
 import DialogCreateRoom from "@/components/administration/RoomDialog/CreateRoomDialog.vue";
 import DialogUpdateRoom from "@/components/administration/RoomDialog/UpdateRoomDialog.vue";
 import { Rooms } from "@/components/administration/RoomDialog/Room";
-import { Room } from "@/api/room";
+import { RoomAPI } from "@/api/room";
 import { RoomType } from "@/api/roomtype";
 const { rooms } = Rooms();
-const roomStore = Room();
+const roomStore = RoomAPI();
 const roomTypeStore = RoomType();
 // import { Input } from '@/components/ui/input'
 // import { Label } from '@/components/ui/label'

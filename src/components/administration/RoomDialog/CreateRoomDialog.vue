@@ -108,9 +108,9 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "vue-sonner";
 import { ref, watch } from "vue";
-import { Room } from "@/api/room";
+import { RoomAPI } from "@/api/room";
 
-const { createRoom, isLoading } = Room();
+const { createRoom, isLoading } = RoomAPI();
 
 const emit = defineEmits<{
   (e: "update:open", value: boolean): void;
