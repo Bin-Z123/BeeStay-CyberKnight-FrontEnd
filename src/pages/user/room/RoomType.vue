@@ -68,7 +68,7 @@
                     </div>
 
                     <div v-if="roomsWithAvailable.length">
-                        <div v-for="(roomType, index) in bookings.listRoomsAvailable" :key="roomType.roomTypeId" :class="[
+                        <div v-for="(roomType, index) in roomsWithAvailable" :key="roomType.roomTypeId" :class="[
                             'flex flex-col lg:flex-row items-center mb-10 bg-white shadow-lg rounded-2xl lg:py-0 py-4 lg:gap-0',
                             index % 2 === 0 ? '' : 'lg:flex-row-reverse'
                         ]">

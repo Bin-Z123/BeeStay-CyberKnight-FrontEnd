@@ -27,11 +27,11 @@ router.beforeEach(async (to, from, next) => {
         }
     }
 
-    const authRoutes = ["/auth/login", "/auth/otp", "/auth/register"];
+    // const authRoutes = ["/auth/login", "/auth/otp", "/auth/register"];
 
-    if (authRoutes.includes(to.path) && authStore.isAuthenticated) {
-        return next("/user/home");
-    }
+    // if (authRoutes.includes(to.path) && authStore.isAuthenticated) {
+    //     return next("/user/home");
+    // }
 
     if (requiredRole && authStore.user?.role.roleName.toUpperCase() !== requiredRole.toUpperCase()) {
         toast.error("Không có quyền truy cập!");
