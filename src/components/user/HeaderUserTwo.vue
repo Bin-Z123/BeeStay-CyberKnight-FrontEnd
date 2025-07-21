@@ -108,7 +108,7 @@
               </p>
             </div>
             <hr>
-            <RouterLink to=""
+            <RouterLink to="/user/setting/point"
               class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400">
               <CircleDollarSign class="w-4 h-4 inline-block" /> {{ authStore.user.point }} Điểm
             </RouterLink>

@@ -174,25 +174,24 @@
                             to ensure a restful night's sleep.</h1>
                     </div>
                 </div>
-                <div ref="container" class="keen-slider mt-10 rounded-xl">
-                    <div class="keen-slider__slide h-[500px] flex items-center justify-center">
-                        <div
-                            class="w-full h-full bg-[url('@/assets/images/slider1.png')] bg-cover bg-center rounded-xl shadow-md">
-                        </div>
-                    </div>
-                    <div class="keen-slider__slide h-[500px] flex items-center justify-center">
-                        <div
-                            class="w-full h-full bg-[url('@/assets/images/slider2.png')] bg-cover bg-center rounded-xl shadow-md">
-                        </div>
-                    </div>
-                    <div class="keen-slider__slide h-[500px] flex items-center justify-center">
-                        <div
-                            class="w-full h-full bg-[url('@/assets/images/slider3.png')] bg-cover bg-center rounded-xl shadow-md">
-                        </div>
-                    </div>
-                    <div class="keen-slider__slide h-[500px] flex items-center justify-center">
-                        <div
-                            class="w-full h-full bg-[url('@/assets/images/slider3.png')] bg-cover bg-center rounded-xl shadow-md">
+                <div ref="container" class="keen-slider mt-10 rounded-2xl" v-if="bookings.listRoomsAvailable.length">
+                    <div class="keen-slider__slide h-[500px] flex items-center justify-center relative"
+                        v-for="room in bookings.listRoomsAvailable" :key="room.roomTypeId">
+                        <img v-if="room.availableRoomDTO[0]?.roomImage[0]?.url"
+                            :src="getImageUrl(room.availableRoomDTO[0].roomImage[0].url)" alt="Ảnh Phòng"
+                            class="h-full w-full object-cover">
+                        <div class="absolute inset-0 bg-black opacity-40"></div>
+                        <div class="absolute inset-0 flex flex-col justify-end text-white gap-3 p-4">
+                            <h1 class="text-4xl">{{ room.nameRoomType }}</h1>
+                            <div class="flex items-center gap-4">
+                                <span class="flex items-center gap-1">
+                                    <Square class="inline-block w-5 h-5" />{{ room.size }} m²
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <User class="inline-block w-5 h-5" />{{ room.peopleAbout }} người
+                                </span>
+                            </div>
+                            <p class="text-2xl">{{ room.price }} VNĐ</p>
                         </div>
                     </div>
                 </div>
@@ -334,15 +333,16 @@
     </section>
 </template>
 <script setup>
-import { MoveRight, MoveLeft, BedDouble, ShieldCheck, WavesLadder, Monitor, Star, Users } from "lucide-vue-next";
-import { ref, onMounted, watch, computed } from "vue";
+import { MoveRight, MoveLeft, BedDouble, ShieldCheck, WavesLadder, Monitor, Star, Users, Square, User } from "lucide-vue-next";
+import { ref, onMounted, watch, computed, nextTick, onUnmounted } from "vue";
 import { vi } from "date-fns/locale";
 import { addDays, format } from "date-fns";
 import { useKeenSlider } from 'keen-slider/vue'
+import KeenSlider from 'keen-slider';
+import 'keen-slider/keen-slider.min.css';
 import { useRouter } from "vue-router";
 import { RoomType } from "@/api/roomtype";
 import { Bookings } from "@/api/booking";
-import path from "path";
 
 const roomTypes = RoomType();
 const bookings = Bookings();
@@ -364,7 +364,9 @@ const formatDate = (date) => {
 };
 onMounted(async () => {
     checkin.value = new Date();
-    await roomTypes.getAllRoomType();
+    // await roomTypes.getAllRoomType();
+    await bookings.getAvailableRooms(bookings.checkin, bookings.checkout, bookings.numberOfPeople);
+    console.log("Phòng Còn Trống Nè Hehehe", JSON.stringify(bookings.listRoomsAvailable, null, 2));
 });
 
 const numberOfNights = ref(null);
@@ -380,21 +382,21 @@ const checkOutDate = computed(() => {
 });
 
 // Slider
-const [container] = useKeenSlider({
-    loop: true,
-    slides: {
-        perView: 4,
-        spacing: 15,
-    },
-    breakpoints: {
-        '(max-width: 768px)': {
-            slides: {
-                perView: 1,
-                spacing: 10,
-            },
-        },
-    },
-})
+const sliderInstance = ref(null);
+const container = ref(null);
+
+watch(() => bookings.listRoomsAvailable, (newValue) => {
+    nextTick(() => {
+        if (sliderInstance.value) sliderInstance.value.destroy();
+        if (newValue && newValue.length > 0 && container.value) {
+            sliderInstance.value = new KeenSlider(container.value, {
+                loop: true,
+                slides: { perView: 4, spacing: 15 },
+                breakpoints: { '(max-width: 768px)': { slides: { perView: 1, spacing: 10 } } },
+            });
+        }
+    });
+}, { deep: true });
 
 // Slider reviews
 const [reviews] = useKeenSlider({
@@ -427,10 +429,12 @@ const numberOfPeople = ref(1);
 const handleSearch = async () => {
     bookings.numberOfPeople = Number(numberOfPeople.value);
     await bookings.getAvailableRooms(checkin.value, checkOutDate.value, numberOfPeople.value);
-    console.log("Phòng Còn Trống Nè",JSON.stringify(bookings.listRoomsAvailable, null, 2))
+    console.log("Phòng Còn Trống Nè", JSON.stringify(bookings.listRoomsAvailable, null, 2))
     router.push({ path: "/user/roomtype", query: { checkins: checkin.value, checkouts: checkOutDate.value, numberOfPeoples: numberOfPeople.value } });
 };
 
+const baseUrl = import.meta.env.VITE_CLOUDINARY_IMG_URL;
+const getImageUrl = (image) => `${baseUrl}/${image}`;
 </script>
 <style scoped>
 :deep(.dp__input) {

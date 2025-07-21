@@ -56,48 +56,97 @@
     </section>
 
     <section>
-        <div class="bg-white">
-            <div class="py-25 container mx-auto flex flex-col gap-18">
-                <div v-for="roomType in roomsFullMatched" :key="roomType.roomTypeId"
-                    class="text-center border-2 rounded-xl p-6 mb-10 bg-muesli-50 border-muesli-200">
-                    <h2 class="text-2xl font-bold mb-2">
-                        Loại phòng "{{ roomType.nameRoomType }}" đã hết chỗ
-                    </h2>
-                    <p>Dưới đây là một số loại phòng khác mà bạn có thể quan tâm:</p>
-                </div>
+        <div class="bg-gray-50">
+            <div class="py-15 container mx-auto flex lg:flex-row flex-col gap-5">
+                <div class="flex flex-col lg:flex-row gap-10 lg:w-2/3 px-4 lg:px-0">
+                    <div v-for="roomType in roomsFullMatched" :key="roomType.roomTypeId"
+                        class="text-center border-2 rounded-xl p-6 mb-10 bg-muesli-50 border-muesli-200">
+                        <h2 class="text-2xl font-bold mb-2">
+                            Loại phòng "{{ roomType.nameRoomType }}" đã hết chỗ
+                        </h2>
+                        <p>Dưới đây là một số loại phòng khác mà bạn có thể quan tâm:</p>
+                    </div>
 
-                <div v-if="roomsWithAvailable.length">
-                    <div v-for="(roomType, index) in roomsWithAvailable" :key="roomType.roomTypeId" :class="[
-                        'flex flex-col lg:flex-row items-center gap-10 mb-10',
-                        index % 2 === 0 ? '' : 'lg:flex-row-reverse'
-                    ]">
-                        <div class="lg:w-1/2 px-4 lg:px-0">
-                            <img v-if="roomType.availableRoomDTO?.[0]?.roomImage?.[0]?.url"
-                                :src="getImageUrl(roomType.availableRoomDTO[0].roomImage[0].url)" alt="Ảnh phòng"
-                                class="rounded-2xl w-full h-85" />
-                        </div>
-                        <div class="lg:w-1/2 flex flex-col gap-5 justify-center lg:px-0 px-4">
-                            <h1 class="font-bold text-4xl">
-                                {{ roomType.nameRoomType }}
-                                <span class="text-gray-500 text-[20px]">
-                                    (Còn {{ roomType.availableRooms }} phòng trống)
-                                </span>
-                            </h1>
-                            <div class="flex items-center gap-4 text-gray-500">
-                                <span class="flex items-center gap-1">
-                                    <Square class="inline-block w-5 h-5" />{{ roomType.size }} m²
-                                </span>
-                                <span class="flex items-center gap-1">
-                                    <User class="inline-block w-5 h-5" />{{ roomType.peopleAbout }} người
-                                </span>
+                    <div v-if="roomsWithAvailable.length">
+                        <div v-for="(roomType, index) in roomsWithAvailable" :key="roomType.roomTypeId" :class="[
+                            'flex flex-col lg:flex-row items-center mb-10 bg-white shadow-lg rounded-2xl lg:py-0 py-4 lg:gap-0',
+                            index % 2 === 0 ? '' : 'lg:flex-row-reverse'
+                        ]">
+                            <div class="lg:w-2/5 px-4 lg:px-0">
+                                <img v-if="roomType.availableRoomDTO?.[0]?.roomImage?.[0]?.url"
+                                    :src="getImageUrl(roomType.availableRoomDTO[0].roomImage[0].url)" alt="Ảnh phòng"
+                                    :class="['w-full h-65', index % 2 === 0 ? 'lg:rounded-l-2xl' : 'lg:rounded-r-2xl']" />
                             </div>
-                            <p class="text-muesli-400 text-3xl">{{ roomType.price }} VNĐ</p>
-                            <a :href="getRoomDetails(roomType.roomTypeId)" target="_blank"
-                                class="text-muesli-400 underline">
-                                Xem Chi Tiết
-                        </a>
+                            <div class="lg:w-3/5 flex flex-col gap-5 justify-center px-10">
+                                <h1 class="font-bold text-3xl text-muesli-400">
+                                    {{ roomType.nameRoomType }}
+                                    <span class="text-gray-500 text-[16px]">
+                                        (Còn {{ roomType.availableRooms }} phòng trống)
+                                    </span>
+                                </h1>
+                                <div class="flex items-center gap-4 text-gray-500">
+                                    <span class="flex items-center gap-1">
+                                        <Square class="inline-block w-5 h-5" />{{ roomType.size }} m²
+                                    </span>
+                                    <span class="flex items-center gap-1">
+                                        <User class="inline-block w-5 h-5" />{{ roomType.peopleAbout }} người
+                                    </span>
+                                </div>
+                                <p class="text-xl font-bold">{{ roomType.price }} VNĐ<span
+                                        class="text-gray-500 font-normal">/ngày</span></p>
+                                <div class="flex">
+                                    <div class="w-1/2">
+                                        <a :href="getRoomDetails(roomType.roomTypeId)" target="_blank"
+                                            class="text-muesli-400 underline">
+                                            Xem Chi Tiết
+                                        </a>
+                                    </div>
+                                    <div class="w-1/2 flex justify-end items-center">
+                                        <div class="flex items-center gap-2 border border-gray-300 rounded-lg px-2 py-1">
+                                            <!-- <button @click="toggleDarkMode"
+                                                class="bg-muesli-400 text-white px-4 py-2 rounded-lg">
+                                                Chọn Phòng
+                                            </button> -->
+                                            <button>-</button>
+                                            <input type="text" value="1" class="w-12 text-center border border-t-0 border-b-0" />
+                                            <button>+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+                <div class="lg:w-1/3 self-start sticky top-25 w-full px-4 lg:px-0">
+                    <form>
+                        <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col gap-4">
+                            <h1 class="text-xl font-bold">Thông Tin Đặt Phòng</h1>
+                            <hr>
+                            <div class="flex flex-col gap-2">
+                                <p class="text-gray-500">Ngày Đến: <span class="font-bold float-end">11/11/2023</span>
+                                </p>
+                                <p class="text-gray-500">Ngày Đi: <span class="font-bold float-end">11/11/2023</span>
+                                </p>
+                                <p class="text-gray-500">Số Người: <span class="font-bold float-end">2</span></p>
+                                <p class="font-bold">Tổng Số Đêm: <span class="font-bold float-end">0</span></p>
+                            </div>
+                            <hr>
+                            <div class="flex flex-col gap-2">
+                                <p class="text-gray-500">Phòng Thường x 1: <span class="font-bold float-end">0
+                                        VNĐ</span></p>
+                                <p class="text-gray-500">Phòng Thường x 1: <span class="font-bold float-end">0
+                                        VNĐ</span></p>
+                            </div>
+                            <hr>
+                            <div class="flex justify-between items-center">
+                                <p class="font-bold">Tổng Cộng:</p>
+                                <p class="text-xl font-bold">0 VNĐ</p>
+                            </div>
+                            <button @click.prevent="isBookingUserDialogOpen = true" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors">
+                                Điền Thông Tin & Đặt Phòng
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -189,6 +238,7 @@
                 </div>
             </div>
         </div>
+        <BookingUserDialog v-model:open="isBookingUserDialogOpen"></BookingUserDialog>
     </section>
 </template>
 <script setup>
@@ -212,17 +262,19 @@ import { Bookings } from '@/api/booking';
 import { useRoute } from "vue-router";
 import { parseISO } from 'date-fns';
 import { useRouter } from 'vue-router';
+import BookingUserDialog from '@/components/user/BookingUserDialog/BookingUserDialog.vue';
 
 const baseUrl = import.meta.env.VITE_CLOUDINARY_IMG_URL;
 const bookings = Bookings();
 const route = useRoute();
 const router = useRouter();
+const isBookingUserDialogOpen = ref(false);
 
 const getRoomDetails = (roomTypeId) => {
-  return router.resolve({
-    path: '/user/roomdetail',
-    query: { roomTypeId }
-  }).href
+    return router.resolve({
+        path: '/user/roomdetail',
+        query: { roomTypeId }
+    }).href
 }
 
 const checkin1 = ref();
