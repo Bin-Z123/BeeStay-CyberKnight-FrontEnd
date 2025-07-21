@@ -72,9 +72,31 @@ export const PaymentAPI = defineStore('payment', () => {
             }
         }
     }
+    const paymentPaid = ref(0);
+    const getPaymentPaidByBookingId = async (bookingId: number): Promise<Number> => {
+        isLoading.value = true;
+        try {
+            const response = await axios.get(`${baseUrl}/admin/payment/calculatePaymentofBooking/${bookingId}`, {
+                withCredentials: true
+            });
+            paymentPaid.value = response.data.data;
+            return response.data;
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error.response?.data.message || "Failed to calculate payment", {
+                    action: {
+                        label: "Thoát"
+                    }
+                });
+            }
+            throw error;
+        }
+    }
     return {
         isLoading,
         paymentOsData,
+        paymentPaid,
+        getPaymentPaidByBookingId,
         createPaymentByCash,
         createPaymentPayOsLink,
         getPaymentOsData,
