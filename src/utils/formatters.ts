@@ -62,7 +62,63 @@ export function formatDateWithTimeToUI(date: Date): string {
     const tt = pad(d.getDay());
     const t = tt.split('0')[1];
 
+
     return `T${t} ${dd}/${MM}/${yyyy} ${HH}h${mm}`;
+}
+
+export function formatDateWithTimeToTicket(date: Date): string {
+    const d = new Date(date);
+
+    const pad = (n: number): string => n.toString().padStart(2, '0');
+
+    const yyyy = d.getFullYear();
+    const MM = pad(d.getMonth() + 1); // tháng bắt đầu từ 0
+    const dd = pad(d.getDate());
+    const HH = pad(d.getHours());
+    const mm = pad(d.getMinutes());
+    const ss = pad(d.getSeconds());
+    const tt = pad(d.getDay());
+    let t = tt.split('0')[1];
+
+    switch (t) {
+
+        case '1':
+            t = 'Thứ 2';
+            break;
+        case '2':
+            t = 'Thứ 3';
+            break;
+        case '3':
+            t = 'Thứ 4';
+            break;
+        case '4':
+            t = 'Thứ 5';
+            break;
+        case '5':
+            t = 'Thứ 6';
+            break;
+        case '6':
+            t = 'Thứ 7';
+            break;
+        case '7':
+            t = 'Chủ Nhật';
+            break;
+        default:
+            t = '';
+    }
+
+    return `${t}, ${dd}/${MM}/${yyyy}`;
+}
+
+export function formatDateWithTimeToHour(date: Date): string {
+    const d = new Date(date);
+
+    const pad = (n: number): string => n.toString().padStart(2, '0');
+    const HH = pad(d.getHours());
+    const mm = pad(d.getMinutes());
+
+
+    return `${HH}:${mm}`;
 }
 export function customFormatDatePicker(dates: [Date, Date] | null): string {
     if (!dates || !dates[0] || !dates[1]) return '';

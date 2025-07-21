@@ -10,7 +10,7 @@ export interface RoomResponse {
     roomNumber: string;
     roomStatus: string;
     floor: number;
-    roomType: string;
+    roomType: roomType;
     roomImages: RoomImage[];
 }
 
@@ -22,4 +22,11 @@ export interface RoomTypeResponse2 {
     peopleAbout: number;
     description: string;
     rooms: RoomResponse[];
+}
+interface roomType {
+    id: number;
+    name: string;
+    size: number;
+    price: number;
+    peopleAbout: number;
 }

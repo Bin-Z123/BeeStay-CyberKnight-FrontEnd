@@ -7,7 +7,8 @@ import {
   Booking,
   BookingResponse,
   BookingStatus,
-  BlacklistStatus
+  BlacklistStatus,
+  BookingTicketResponse
 } from "@/interface/booking.interface";
 import { CreateBookingRequest, RoomAvailabilityResponse } from "@/types";
 import { format } from "date-fns";
@@ -146,6 +147,40 @@ export const Bookings = defineStore("booking", () => {
     }
   }
 
+  const bookingTicket = ref<Booking>()
+  const getBookingbyId = async (id: number): Promise<BookingTicketResponse> => {
+    isloading.value = true;
+    try {
+      const response = await axios.get<BookingTicketResponse>(`${baseUrl}/booking/${id}`, { withCredentials: true });
+      bookingTicket.value = response.data.data;
+      return response.data;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error("Lỗi khi tải thông tin booking");
+        throw error;
+      }
+      throw error;
+    } finally {
+      isloading.value = false;
+    }
+  }
+
+  const updatePriceForBooking = async (bookingId: number) => {
+    isloading.value = true;
+    try {
+      const response = await axios.put(`${baseUrl}/afterUBD/${bookingId}`, {}, { withCredentials: true });
+      return response.data;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error("Lỗi khi cập nhật giá booking");
+        throw error;
+      }
+      throw error;
+    } finally {
+      isloading.value = false;
+    }
+  }
+
   return {
     checkin,
     checkout,
@@ -156,6 +191,9 @@ export const Bookings = defineStore("booking", () => {
     getAvailableRooms,
     createBooking,
     getAvailableRoomsByDate,
+    getBookingbyId,
+    updatePriceForBooking,
+    bookingTicket,
     listRoomsAvailable,
     isloading,
   };

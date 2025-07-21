@@ -93,9 +93,9 @@ import { Button } from "@/components/ui/button";
 import { useMockRooms } from "./mockRoom";
 import { vi } from "date-fns/locale";
 import { format } from "path";
-import { Room } from "@/api/room";
+import { RoomAPI } from "@/api/room";
 
-const roomStore = Room();
+const roomStore = RoomAPI();
 const mockRoomData = useMockRooms();
 
 const isOpen = ref(false);
