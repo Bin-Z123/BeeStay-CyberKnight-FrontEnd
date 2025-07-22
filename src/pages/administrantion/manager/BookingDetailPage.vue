@@ -179,7 +179,7 @@
                                     BookingStore.bookingTicket?.user?.rank?.discount_percent + "%"
                                         }})</span>
                                     <span v-else>(Không có hạng)</span></span>
-                                <span class="font-medium text-red-600">- 2.050.000 ₫</span>
+                                <span class="font-medium text-red-600">- 0 ₫ </span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Thuế & Phí (0%)</span>
@@ -192,12 +192,13 @@
                                     }}</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-gray-600">Đã thanh toán (Cọc đêm đầu)</span>
-                                <span class="font-medium text-gray-800">10.147.500 ₫</span>
+                                <span class="text-gray-600">Đã thanh toán </span>
+                                <span class="font-medium text-gray-800">{{ formatVND(paymentPaid) }}</span>
                             </div>
                             <div class="flex justify-between  text-lg font-bold bg-yellow-100 p-3 rounded-lg  ">
-                                <span class="text-yellow-800 my-auto w-48">Cần thanh toán khi nhận phòng </span>
-                                <span class="text-yellow-800 my-auto"> 10.147.500 ₫</span>
+                                <span class="text-yellow-800 my-auto w-48">Cần thanh toán: </span>
+                                <span class="text-yellow-800 my-auto"> {{
+                                    formatVND(paymentOsdata.amount) }}</span>
                             </div>
                             <!-- STAFF ONLY SECTION -->
                             <div id="staff-payment-section" class="mt-6 pt-6 border-t border-dashed printable-hidden">
@@ -231,11 +232,15 @@
                                         placeholder="Nhập số tiền...">
 
                                     <p class="text-xs text-red-500">* Lưu ý: Nhập tối đa {{
-                                        formatVND(paymentStore.paymentOsData.data.amount) }}</p>
+                                        formatVND(paymentOsdata.amount) }}</p>
                                     <button id="confirm-cash-payment" @click="handleConfirmCashPayment"
-                                        class="mt-4 w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition">Xác
-                                        nhận thanh toán <span v-if="paymentCash.amount > 0">{{
-                                            formatVND(paymentCash.amount) }}</span></button>
+                                        :disabled="paymentStore.isLoading"
+                                        class="mt-4 w-full bg-blue-600 flex justify-center disabled:opacity-70 space-x-1 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition">
+                                        <Loader v-if="paymentStore.isLoading" class="animate-spin" />
+                                        Xác
+                                        nhận thanh toán <span class="ml-1" v-if="paymentCash.amount > 0">{{
+                                            formatVND(paymentCash.amount) }}</span>
+                                    </button>
                                 </div>
 
                                 <!-- QR Payment UI -->
@@ -308,18 +313,18 @@
                             <div class="flex justify-between items-center py-2 border-b border-gray-100">
                                 <span class="text-sm text-gray-500">Số tiền</span>
                                 <span id="qr-amount" class="font-bold text-lg text-blue-600">{{
-                                    formatVND(paymentStore.paymentOsData.data.amount) }}</span>
+                                    formatVND(paymentOsdata.amount) }}</span>
                             </div>
                             <div class="flex justify-between items-center py-2 border-b border-gray-100">
                                 <span class="text-sm text-gray-500">Người thụ hưởng</span>
                                 <span id="qr-account-name" class="font-semibold text-gray-800">{{
-                                    paymentStore.paymentOsData.data.accountName }}</span>
+                                    paymentStore.paymentOsData.data.accountName ?? 0 }}</span>
                             </div>
                             <div class="flex justify-between items-center py-2 border-b border-gray-100">
                                 <span class="text-sm text-gray-500">Số tài khoản</span>
                                 <div class="flex items-center space-x-2">
                                     <span id="qr-account-number" class="font-semibold text-gray-800">{{
-                                        paymentStore.paymentOsData.data.accountNumber }}</span>
+                                        paymentStore.paymentOsData.data.accountNumber ?? 0 }}</span>
                                     <button class="copy-btn p-1 text-gray-500 hover:text-blue-600"
                                         data-copy-target="qr-account-number">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
@@ -334,7 +339,7 @@
                                 <span class="text-sm text-gray-500">Nội dung</span>
                                 <div class="flex items-center space-x-2">
                                     <span id="qr-description" class="font-semibold text-gray-800">{{
-                                        paymentStore.paymentOsData.data.description }}</span>
+                                        paymentStore.paymentOsData.data.description ?? 0 }}</span>
                                     <button class="copy-btn p-1 text-gray-500 hover:text-blue-600"
                                         data-copy-target="qr-description">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
@@ -364,6 +369,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, shallowReactive, watch } from 'vue';
+import { computed, onMounted, ref, shallowReactive, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import { Bookings } from '@/api/booking';
 import { BookingTicketResponse, Booking, Room } from '@/interface/booking.interface';
@@ -374,6 +380,7 @@ import { PaymentAPI } from '@/api/payment';
 import { CreatePaymentLinkRequest, PaymentCashRequest } from '@/types/payment-dto';
 import QrcodeVue from 'qrcode.vue';
 import { nextTick } from 'process';
+import { Loader } from 'lucide-vue-next';
 
 
 const paymentStore = PaymentAPI();
@@ -384,6 +391,8 @@ const showQR = ref(false);
 const props = defineProps<{
     id: number;
 }>();
+const paymentOsdata = ref({})
+const paymentPaid = ref(0);
 const paymentCash = ref<PaymentCashRequest>({
     bookingId: props.id,
     amount: 0
@@ -406,10 +415,13 @@ onMounted(async () => {
         toast.error('Booking ID is required!');
         return;
     }
+    await paymentStore.getPaymentPaidByBookingId(props.id);
     await BookingStore.updatePriceForBooking(props.id);
     // Tải thông tin booking bằng ID
     await BookingStore.getBookingbyId(props.id)
     await paymentStore.createPaymentPayOsLink(paymentPayOs.value);
+    paymentOsdata.value = await paymentStore.paymentOsData.data
+    paymentPaid.value = paymentStore.paymentPaid
     if (BookingStore.bookingTicket?.stay) {
         try {
             BookingStore.bookingTicket.stay.forEach(async (stay) => {
@@ -430,7 +442,7 @@ onMounted(async () => {
 
 
     console.log('Booking Detail Page Mounted with ID:', JSON.stringify(BookingStore.bookingTicket, null, 2));
-    console.log("QR Code:", paymentStore.paymentOsData.data.qrCode);
+    console.log("QR Code:", paymentStore.paymentOsData.data.qrCode ?? 0);
     // Fetch booking details using props.id
     toast.success(`Booking Detail for ID: ${props.id} loaded successfully!`);
     calculateNumberOfNights();
@@ -574,7 +586,8 @@ const fiexdQRString = ref<string>('');
 /**
  * Tính tiền mặt
  */
-const handleConfirmCashPayment = () => {
+const handleConfirmCashPayment = async () => {
+
     if (paymentCash.value.amount > paymentStore.paymentOsData.data.amount) {
         toast.error('Số tiền nhập vào không hợp lệ')
         return;
@@ -585,6 +598,14 @@ const handleConfirmCashPayment = () => {
 
     // console.log("Payment Cash: ", paymentCash.value)
     paymentStore.createPaymentByCash(paymentCash.value)
+
+    // Tải thông tin booking bằng ID
+    await paymentStore.createPaymentPayOsLink(paymentPayOs.value);
+    await paymentStore.getPaymentPaidByBookingId(props.id);
+    paymentOsdata.value = await paymentStore.paymentOsData.data
+    paymentPaid.value = paymentStore.paymentPaid
+    paymentCash.value.amount = 0
+
 }
 
 // Mở VietQR
