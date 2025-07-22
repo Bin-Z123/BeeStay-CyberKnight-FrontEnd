@@ -26,7 +26,7 @@ const authRouter: RouteRecordRaw = {
             component: () => import('../../pages/auth/OTPPage.vue')
         }
     ]
-    
+
 }
 
 export default authRouter;

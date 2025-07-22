@@ -4,7 +4,13 @@ import administrationRouter from "../router/routers/AdministrationRouter";
 import userRouter from "../router/routers/UserRouter";
 import { useAuthStore } from "../stores/auth/login";
 import { toast } from "vue-sonner";
-const routes: RouteRecordRaw[] = [authRouter, administrationRouter, userRouter];
+const routes: RouteRecordRaw[] = [authRouter, administrationRouter, userRouter,
+    {
+        path: "/:pathMatch(.*)*",
+        name: "not-found",
+        component: () => import("../pages/error/error.vue")
+    }
+];
 
 const router = createRouter({
     history: createWebHistory(),

@@ -22,7 +22,7 @@
                             <option value="">Tất cả </option>
                             <option value="CONFIRMED">Chờ nhận phòng</option>
                             <option value="STAY">Đặt tại khách sạn</option>
-                            <option value="COMPLETED">Đã trả phòng</option>
+                            <option value="PAID">Đã trả phòng</option>
                             <option value="CANCEL">Đã Hủy</option>
                             <option value="LATE">Giữ phòng</option>
                         </select>
@@ -86,7 +86,7 @@
                                         ? 'Đã Hủy'
                                         : booking.bookingStatus === 'STAY'
                                             ? 'Đang ở'
-                                            : booking.bookingStatus === 'COMPLETED'
+                                            : booking.bookingStatus === 'PAID'
                                                 ? 'Đã Trả Phòng'
                                                 : booking.bookingStatus === 'LATE'
                                                     ? 'Giữ phòng'

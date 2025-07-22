@@ -189,16 +189,16 @@
                             <div class="flex justify-between text-xl font-bold">
                                 <span class="text-gray-900">Tổng Cộng</span>
                                 <span class="text-blue-600">{{ formatVND(BookingStore.bookingTicket?.totalAmount ?? 0)
-                                    }}</span>
+                                }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Đã thanh toán </span>
-                                <span class="font-medium text-gray-800">{{ formatVND(paymentStore.paymentPaid) }}</span>
+                                <span class="font-medium text-gray-800">{{ formatVND(paymentPaid) }}</span>
                             </div>
                             <div class="flex justify-between  text-lg font-bold bg-yellow-100 p-3 rounded-lg  ">
                                 <span class="text-yellow-800 my-auto w-48">Cần thanh toán: </span>
                                 <span class="text-yellow-800 my-auto"> {{
-                                    formatVND(amountPayment) }}</span>
+                                    formatVND(paymentOsdata.amount) }}</span>
                             </div>
                             <!-- STAFF ONLY SECTION -->
                             <div id="staff-payment-section" class="mt-6 pt-6 border-t border-dashed printable-hidden">
@@ -232,11 +232,15 @@
                                         placeholder="Nhập số tiền...">
 
                                     <p class="text-xs text-red-500">* Lưu ý: Nhập tối đa {{
-                                        formatVND(paymentStore.paymentOsData.data.amount) ?? 0 }}</p>
+                                        formatVND(paymentOsdata.amount) }}</p>
                                     <button id="confirm-cash-payment" @click="handleConfirmCashPayment"
-                                        class="mt-4 w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition">Xác
-                                        nhận thanh toán <span v-if="paymentCash.amount > 0">{{
-                                            formatVND(paymentCash.amount) }}</span></button>
+                                        :disabled="paymentStore.isLoading"
+                                        class="mt-4 w-full bg-blue-600 flex justify-center disabled:opacity-70 space-x-1 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition">
+                                        <Loader v-if="paymentStore.isLoading" class="animate-spin" />
+                                        Xác
+                                        nhận thanh toán <span class="ml-1" v-if="paymentCash.amount > 0">{{
+                                            formatVND(paymentCash.amount) }}</span>
+                                    </button>
                                 </div>
 
                                 <!-- QR Payment UI -->
@@ -309,7 +313,7 @@
                             <div class="flex justify-between items-center py-2 border-b border-gray-100">
                                 <span class="text-sm text-gray-500">Số tiền</span>
                                 <span id="qr-amount" class="font-bold text-lg text-blue-600">{{
-                                    formatVND(paymentStore.paymentOsData.data.amount) ?? 0 }}</span>
+                                    formatVND(paymentOsdata.amount) }}</span>
                             </div>
                             <div class="flex justify-between items-center py-2 border-b border-gray-100">
                                 <span class="text-sm text-gray-500">Người thụ hưởng</span>
@@ -375,6 +379,7 @@ import { PaymentAPI } from '@/api/payment';
 import { CreatePaymentLinkRequest, PaymentCashRequest } from '@/types/payment-dto';
 import QrcodeVue from 'qrcode.vue';
 import { nextTick } from 'process';
+import { Loader } from 'lucide-vue-next';
 
 
 const paymentStore = PaymentAPI();
@@ -385,7 +390,8 @@ const showQR = ref(false);
 const props = defineProps<{
     id: number;
 }>();
-const amountPayment = ref(0)
+const paymentOsdata = ref({})
+const paymentPaid = ref(0);
 const paymentCash = ref<PaymentCashRequest>({
     bookingId: props.id,
     amount: 0
@@ -413,8 +419,8 @@ onMounted(async () => {
     // Tải thông tin booking bằng ID
     await BookingStore.getBookingbyId(props.id)
     await paymentStore.createPaymentPayOsLink(paymentPayOs.value);
-    amountPayment.value = await paymentStore.paymentOsData.data.amount
-
+    paymentOsdata.value = await paymentStore.paymentOsData.data
+    paymentPaid.value = paymentStore.paymentPaid
     if (BookingStore.bookingTicket?.stay) {
         try {
             BookingStore.bookingTicket.stay.forEach(async (stay) => {
@@ -579,7 +585,8 @@ const fiexdQRString = ref<string>('');
 /**
  * Tính tiền mặt
  */
-const handleConfirmCashPayment = () => {
+const handleConfirmCashPayment = async () => {
+
     if (paymentCash.value.amount > paymentStore.paymentOsData.data.amount) {
         toast.error('Số tiền nhập vào không hợp lệ')
         return;
@@ -590,6 +597,14 @@ const handleConfirmCashPayment = () => {
 
     // console.log("Payment Cash: ", paymentCash.value)
     paymentStore.createPaymentByCash(paymentCash.value)
+
+    // Tải thông tin booking bằng ID
+    await paymentStore.createPaymentPayOsLink(paymentPayOs.value);
+    await paymentStore.getPaymentPaidByBookingId(props.id);
+    paymentOsdata.value = await paymentStore.paymentOsData.data
+    paymentPaid.value = paymentStore.paymentPaid
+    paymentCash.value.amount = 0
+
 }
 
 // Mở VietQR
