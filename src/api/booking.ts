@@ -10,7 +10,7 @@ import {
   BlacklistStatus,
   BookingTicketResponse
 } from "@/interface/booking.interface";
-import { CreateBookingRequest, RoomAvailabilityResponse } from "@/types";
+import { CreateBookingRequest, RoomAvailabilityResponse, GuestBookingRequest } from "@/types";
 import { format } from "date-fns";
 import { ro } from "date-fns/locale";
 
@@ -106,6 +106,10 @@ export const Bookings = defineStore("booking", () => {
   const numberOfPeople = ref<number>(0);
   const checkin = ref<Date>(new Date());
   const checkout = ref<Date>(new Date());
+  const finalSelectedRooms = ref<any>({}); 
+  const finalNumberOfNights = ref(0);
+  const selectedFacilities = ref<any[]>([]);
+
   const getAvailableRooms = async (checkinDateF: Date, checkoutDateF: Date, numberofpeople: number): Promise<AvalableResponse> => {
     try {
       const checkinDate = formatDateWitCheckInCheckOutAvailable(checkinDateF, 14, 0, 0)
@@ -181,6 +185,50 @@ export const Bookings = defineStore("booking", () => {
     }
   }
 
+const processAndConfirmBooking = async (guestInfo: GuestBookingRequest) => {
+    const checkinDate = checkin.value;
+    const checkoutDate = checkout.value;
+    const numGuest = numberOfPeople.value;
+    const selectedRoomsData = finalSelectedRooms.value;
+    const numberOfNights = finalNumberOfNights.value;
+    const selectedFacilitiesData = selectedFacilities.value;
+
+    const bookingDetailRequest = Object.values(selectedRoomsData).map((entry: any) => ({
+        roomTypeId: entry.roomData.roomTypeId,
+        quantity: entry.quantity,
+    }));
+
+    const bookingFacilityRequest = selectedFacilitiesData.map((facility) => ({
+        facilityId: facility.id,
+        quantity: 1, 
+    }));
+
+    const bookingPayload: CreateBookingRequest = {
+        guestBookingRequest: guestInfo,
+        bookingRequest: {
+            checkInDate: format(checkinDate, "yyyy-MM-dd'T'14:00'"),
+            checkOutDate: format(checkoutDate, "yyyy-MM-dd'T'12:00'"),
+            isDeposit: false,
+            bookingStatus: "CONFIRMED",
+            numGuest: numGuest,
+            userId: 0,
+            numberOfNights: numberOfNights,
+        },
+        bookingDetailRequest: bookingDetailRequest,
+        bookingFacilityRequest: bookingFacilityRequest,
+        stayRequest: [],
+    };
+
+    console.log("Dữ liệu gửi về BE để tạo booking:", JSON.stringify(bookingPayload, null, 2));
+    const result = await createBooking(bookingPayload);
+    if (result) {
+      toast.success("Booking đã được xác nhận thành công!");
+    } else {
+      toast.error("Xác nhận booking thất bại, vui lòng thử lại sau.");
+    }
+    return result;
+};
+
   return {
     checkin,
     checkout,
@@ -196,5 +244,9 @@ export const Bookings = defineStore("booking", () => {
     bookingTicket,
     listRoomsAvailable,
     isloading,
+    processAndConfirmBooking,
+    finalSelectedRooms,
+    finalNumberOfNights,
+    selectedFacilities,
   };
 });

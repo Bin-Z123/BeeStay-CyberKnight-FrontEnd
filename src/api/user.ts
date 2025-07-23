@@ -69,6 +69,15 @@ interface UpdateUserRequest {
     rankId: number;
 }
 
+interface UserProfile {
+    fullname: string;
+    gender: boolean;
+    birthday: string;
+    phone: string;
+    email: string;
+    cccd: string;
+}
+
 const isLoading = ref(false);
 
 export const User = defineStore('user', () => {
@@ -144,5 +153,18 @@ export const User = defineStore('user', () => {
         }
     };
 
-    return { users, user, getAllUser, createReceptionist, updataReceptionist, isLoading };
+    const updateProfile = async (profile: UserProfile): Promise<User> => {
+        try {
+            const response = await axios.put(`${baseUrl}/user/update-profile`, profile, {
+                withCredentials: true
+            });
+            toast.success("Cập nhật người dùng thành công!");
+            return response.data;
+        } catch (error) {
+            toast.error("Lỗi khi cập nhật người dùng");
+            throw error;
+        }
+    };
+
+    return { users, user, getAllUser, createReceptionist, updataReceptionist, isLoading, updateProfile };
 });
