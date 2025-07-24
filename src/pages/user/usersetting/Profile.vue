@@ -14,37 +14,42 @@
                             <form action="">
                                 <div>
                                     <label for="">Tên đầy đủ</label>
-                                    <input type="text"
+                                    <input type="text" v-model="user.fullname"
                                         class="w-full h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300">
                                 </div>
                                 <div class="flex gap-5">
                                     <div class="w-1/2 flex flex-col">
                                         <label for="">Giới tính</label>
-                                        <select name="" id=""
+                                        <select name="" id="" v-model="user.gender"
                                             class="w-full h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300">
-                                            <option value="">Nam</option>
-                                            <option value="">Nữ</option>
+                                            <option value="true">Nam</option>
+                                            <option value="false">Nữ</option>
                                         </select>
                                     </div>
                                     <div class="w-1/2">
                                         <label for="">Ngày sinh</label>
-                                        <input type="date"
+                                        <input type="date" v-model="user.birthday"
                                             class="w-full h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300">
                                     </div>
                                 </div>
                                 <div>
                                     <label for="">SĐT</label>
-                                    <input type="text"
+                                    <input type="text" v-model="user.phone"
                                         class="w-full h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300">
                                 </div>
                                 <div>
                                     <label for="">Email</label>
-                                    <input type="email"
+                                    <input type="email" v-model="user.email" disabled
+                                        class="w-full h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300">
+                                </div>
+                                <div>
+                                    <label for="">CCCD</label>
+                                    <input type="text" v-model="user.cccd"
                                         class="w-full h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300">
                                 </div>
                                 <div class="flex gap-3 justify-end">
                                     <button class="px-4 py-2 bg-gray-100 rounded-lg text-gray-500 hover:bg-gray-200 transition-all duration-300 hover:scale-105">Để Sau</button>
-                                    <button class="px-4 py-2 bg-muesli-400 rounded-lg text-white border border-muesli-400 hover:bg-white hover:text-muesli-400 transition-all duration-300 hover:scale-105">Lưu</button>
+                                    <button @click.prevent="handleUpdateProfile()" class="px-4 py-2 bg-muesli-400 rounded-lg text-white border border-muesli-400 hover:bg-white hover:text-muesli-400 transition-all duration-300 hover:scale-105">Lưu</button>
                                 </div>
                             </form>
                         </div>
@@ -54,7 +59,7 @@
                     <div class="bg-white rounded-lg shadow-lg">
                         <h1 class="font-bold p-5 border-b">Đổi Mật Khẩu</h1>
                         <div class="p-5">
-                            <form action="">
+                            <form>
                                 <div>
                                     <label>Mật Khẩu Hiện Tại</label>
                                     <input type="password" v-model="form.oldPassword"
@@ -86,6 +91,7 @@
 import { ref, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth/login';
 import { useChangePasswordStore } from '@/stores/auth/changepassword';
+import { User } from '@/api/user';
 import { toast } from 'vue-sonner';
 import {
     Tabs,
@@ -95,7 +101,48 @@ import {
 } from '@/components/ui/tabs'
 const authStore = useAuthStore();
 const changePasswordStore = useChangePasswordStore();
+const userStore = User();
+// Cập nhật thông tin tài khoản
+const formatDateForInput = (dateString: string | Date | undefined) => {
+    if (!dateString) return '';
+    // Cắt chuỗi để lấy phần YYYY-MM-DD
+    return new Date(dateString).toISOString().split('T')[0];
+};
 
+const user = ref({
+    fullname: '',
+    gender: true,
+    birthday: '',
+    phone: '',
+    email: '',
+    cccd: '',
+});
+
+const syncUserData = () => {
+        user.value.fullname = authStore.user?.fullname || '';
+        user.value.gender = authStore.user?.gender ?? true;
+        user.value.birthday = authStore.user?.birthday ? formatDateForInput(authStore.user?.birthday) : '';
+        user.value.phone = authStore.user?.phone || '';
+        user.value.email = authStore.user?.email || '';
+        user.value.cccd = authStore.user?.cccd || '';
+}
+
+const handleUpdateProfile = async () => {
+    try {
+        const userId = authStore.user?.id;
+        if (!userId) {
+            toast.error('Không tìm thấy thông tin người dùng!');
+            return;
+        }
+        await userStore.updateProfile(user.value);
+        await authStore.fetchUser();
+        toast.success('Cập nhật thông tin thành công!');
+    } catch (error) {
+        toast.error('Cập nhật thông tin thất bại!');
+    }
+}
+
+// Mật khẩu & Bảo Mật
 const form = ref({
     oldPassword: '',
     newPassword: '',
@@ -133,5 +180,6 @@ const handleChangePassword = () => {
 
 onMounted(async () => {
     await authStore.fetchUser();
+    syncUserData();
 });
 </script>

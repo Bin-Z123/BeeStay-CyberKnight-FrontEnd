@@ -11,13 +11,13 @@
                         <div class="lg:w-1/2">
                             <div class="mb-4">
                                 <label for="name" class="block text-sm font-medium text-gray-700">Họ và Tên</label>
-                                <input type="text"
+                                <input type="text" v-model="user.fullname"
                                     class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
                                     placeholder="Nhập họ và tên" />
                             </div>
                             <div class="mb-4">
                                 <label for="sdt" class="block text-sm font-medium text-gray-700">Số Điện Thoại</label>
-                                <input type="text"
+                                <input type="text" v-model="user.phone"
                                     class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
                                     placeholder="Nhập số điện thoại" />
                             </div>
@@ -25,22 +25,29 @@
                         <div class="lg:w-1/2">
                             <div class="mb-4">
                                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                                <input type="email"
+                                <input type="email" v-model="user.email"
                                     class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
                                     placeholder="Nhập email" />
                             </div>
                             <div class="mb-4">
                                 <label for="cccd" class="block text-sm font-medium text-gray-700">CCCD</label>
-                                <input type="text"
+                                <input type="text" v-model="user.cccd"
                                     class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
                                     placeholder="Nhập cccd" />
                             </div>
                         </div>
                     </div>
                     <hr>
+                    <!-- <div>
+                        <h1 class="text-2xl text-muesli-400 font-bold">Dịch Vụ Đi Kèm</h1>
+                        <div class="flex">
+                            <div></div>
+                        </div>
+                    </div> -->
                     <div class="flex justify-end gap-2">
-                        <button class="px-6 py-2 bg-gray-500 text-white font-semibold rounded-md hover:bg-gray-600">Hủy</button>
-                        <button class="px-6 py-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700">Xác Nhận Đặt Phòng</button>
+                        <button @click.prevent="handleConfirmBooking()"
+                            class="px-6 py-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700">Xác
+                            Nhận Đặt Phòng</button>
                     </div>
                 </form>
             </div>
@@ -56,4 +63,56 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import { useAuthStore } from "@/stores/auth/login";
+import { ref, computed, onMounted } from "vue";
+import { Bookings } from "@/api/booking";
+import { toast } from "vue-sonner";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const authStore = useAuthStore();
+const bookings = Bookings();
+
+
+const user = ref({
+    fullname: "",
+    phone: "",
+    email: "",
+    cccd: ""
+});
+
+const asyncUserData = () => {
+    user.value.fullname = authStore.user?.fullname || "";
+    user.value.phone = authStore.user?.phone || "";
+    user.value.email = authStore.user?.email || "";
+    user.value.cccd = authStore.user?.cccd || "";
+};
+
+const handleConfirmBooking = async () => {
+    if (!user.value.fullname || !user.value.phone || !user.value.email || !user.value.cccd) {
+        toast.error("Vui lòng điền đầy đủ thông tin!");
+        return;
+    }
+    try {
+        const response = await bookings.processAndConfirmBooking({
+            fullname: user.value.fullname,
+            phone: user.value.phone,
+            email: user.value.email,
+            cccd: user.value.cccd,
+        });
+        console.log("Booking response:", JSON.stringify(response, null, 2));
+        const routerData = router.resolve({
+            name: 'booking-payment',
+            params: { id: response.data.id }
+        })
+        window.open(routerData.href, '_blank');
+    } catch (error) {
+        console.error("Lỗi khi xác nhận đặt phòng:", error);
+    }
+};
+
+onMounted(async () => {
+    await authStore.fetchUser();
+    asyncUserData();
+});
 </script>
