@@ -9,7 +9,7 @@
                         <h1 class="text-2xl font-bold text-gray-800">Xác Nhận Đặt Phòng</h1>
                         <p class="text-sm text-gray-500 mt-1">Mã Booking: <span
                                 class="font-semibold text-gray-700">#BK-{{ BookingStore.bookingTicket?.id }}</span></p>
-                        <p class="text-sm text-gray-500">Ngày đặt: 14/07/2025</p>
+                        <p class="text-sm text-gray-500">Ngày đặt: {{ BookingStore.bookingTicket?.bookingDate }}</p>
                     </div>
                     <div class="mt-4 sm:mt-0">
                         <span
@@ -18,13 +18,15 @@
                                     ? 'Chờ Nhận Phòng'
                                     : BookingStore.bookingTicket?.bookingStatus === 'CANCEL'
                                         ? 'Đã Hủy'
-                                        : BookingStore.bookingTicket?.bookingStatus === 'STAY'
-                                            ? 'Đang ở'
-                                            : BookingStore.bookingTicket?.bookingStatus === 'COMPLETED'
-                                                ? 'Đã Trả Phòng'
-                                                : BookingStore.bookingTicket?.bookingStatus === 'LATE'
-                                                    ? 'Giữ phòng'
-                                                    : 'Chờ Thanh Toán' }}</span>
+                                        : BookingStore.bookingTicket?.bookingStatus === 'NOTPAID'
+                                            ? 'Chưa Thanh Toán'
+                                            : BookingStore.bookingTicket?.bookingStatus === 'STAY'
+                                                ? 'Đang ở'
+                                                : BookingStore.bookingTicket?.bookingStatus === 'COMPLETED'
+                                                    ? 'Đã Trả Phòng'
+                                                    : BookingStore.bookingTicket?.bookingStatus === 'LATE'
+                                                        ? 'Giữ phòng'
+                                                        : 'Chờ Thanh Toán' }}</span>
                     </div>
                 </div>
 
@@ -163,9 +165,11 @@
                         <h3 class="text-lg font-bold text-gray-800 mb-4">Tổng Kết Thanh Toán</h3>
                         <div class="space-y-3">
                             <div class="flex justify-between">
-                                <span class="text-gray-600">Tiền phòng ({{ quantityRoom }} phòng x {{ night }}
+                                <span class="text-gray-600">Tiền phòng đêm đầu ({{ quantityRoom }} phòng x 1
                                     đêm)</span>
-                                <span class="font-medium text-gray-800">{{ formatVND(totalAmountRoom) }}</span>
+                                <span class="font-medium text-gray-800">{{
+                                    formatVND(BookingStore?.bookingTicket?.totalAmount - totalPriceFacility)
+                                    }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Tiền dịch vụ</span>
@@ -173,8 +177,8 @@
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Tạm tính</span>
-                                <span class="font-medium text-gray-800">{{ formatVND(totalAmountRoom +
-                                    totalPriceFacility) }}</span>
+                                <span class="font-medium text-gray-800">{{
+                                    formatVND(BookingStore?.bookingTicket?.totalAmount ?? 0) }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Giảm giá <span v-if="BookingStore.bookingTicket?.user">({{
@@ -190,25 +194,26 @@
                             </div>
                             <div class="border-t my-2"></div>
                             <div class="flex justify-between text-xl font-bold">
-                                <span class="text-gray-900">Tổng Cộng</span>
-                                <span class="text-blue-600">{{ formatVND(BookingStore.bookingTicket?.totalAmount ?? 0)
+                                <span class="text-gray-900">Tổng Cộng ({{ numberOfNights }} Đêm)</span>
+                                <span class="text-blue-600">{{ formatVND(BookingStore.bookingTicket?.totalAmount *
+                                    numberOfNights)
                                     }}</span>
                             </div>
-                            <div class="flex justify-between">
+                            <!-- <div class="flex justify-between">
                                 <span class="text-gray-600">Đã thanh toán </span>
                                 <span class="font-medium text-gray-800">{{ formatVND(paymentPaid) }}</span>
-                            </div>
+                            </div> -->
                             <div class="flex justify-between  text-lg font-bold bg-yellow-100 p-3 rounded-lg  ">
-                                <span class="text-yellow-800 my-auto w-48">Cần thanh toán: </span>
+                                <span class="text-yellow-800 my-auto w-48"> Cọc đêm đầu: </span>
                                 <span class="text-yellow-800 my-auto"> {{
                                     formatVND(paymentOsdata.amount) }}</span>
                             </div>
                             <!-- STAFF ONLY SECTION -->
                             <div id="staff-payment-section" class="mt-6 pt-6 border-t border-dashed printable-hidden">
-                                <h4 class="font-bold text-gray-700 text-center mb-4">Ghi nhận thanh toán</h4>
+                                <!-- <h4 class="font-bold text-gray-700 text-center mb-4">Ghi nhận thanh toán</h4> -->
 
                                 <!-- Payment Method Radio Buttons -->
-                                <fieldset class="flex justify-center gap-4">
+                                <!-- <fieldset class="flex justify-center gap-4">
                                     <legend class="sr-only">Phương thức thanh toán</legend>
                                     <div>
                                         <input type="radio" name="paymentMethod" value="cash" id="pay-cash"
@@ -224,10 +229,10 @@
                                             class="block cursor-pointer rounded-lg border border-gray-300 p-2 text-sm font-medium shadow-sm peer-checked:border-blue-500 peer-checked:ring-1 peer-checked:ring-blue-500">Thanh
                                             toán Online (QR)</label>
                                     </div>
-                                </fieldset>
+                                </fieldset> -->
 
                                 <!-- Cash Payment UI -->
-                                <div id="cash-payment-ui" class="mt-4" v-if="paymentMethod === 'cash'">
+                                <!-- <div id="cash-payment-ui" class="mt-4" v-if="paymentMethod === 'cash'">
                                     <label for="cash-input" class="block text-sm font-medium text-gray-700">Số tiền
                                         khách đưa (VND)</label>
                                     <input type="number" id="cash-input" v-model="paymentCash.amount"
@@ -244,10 +249,10 @@
                                         nhận thanh toán <span class="ml-1" v-if="paymentCash.amount > 0">{{
                                             formatVND(paymentCash.amount) }}</span>
                                     </button>
-                                </div>
+                                </div> -->
 
                                 <!-- QR Payment UI -->
-                                <div id="qr-payment-ui" class=" mt-4 text-center" v-if="paymentMethod === 'qr'">
+                                <div id="qr-payment-ui" class=" mt-4 text-center">
                                     <p class="text-sm text-gray-600 mb-3">Nhấn nút bên dưới để hiển thị mã QR cho khách
                                         hàng quét.</p>
                                     <button id="show-qr-button"
@@ -419,8 +424,8 @@ onMounted(async () => {
         return;
     }
     await paymentStore.getPaymentPaidByBookingId(props.id);
-    await BookingStore.updatePriceForBooking(props.id);
-    await BookingStore.updatePriceBookingStay(props.id);
+    await BookingStore.updatePriceForBookingFirstNight(props.id);
+    // await BookingStore.updatePriceBookingStay(props.id);
     // Tải thông tin booking bằng ID
     await BookingStore.getBookingbyId(props.id)
     await paymentStore.createPaymentPayOsLink(paymentPayOs.value);

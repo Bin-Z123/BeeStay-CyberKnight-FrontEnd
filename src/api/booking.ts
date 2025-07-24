@@ -14,7 +14,8 @@ import { CreateBookingRequest, RoomAvailabilityResponse, GuestBookingRequest } f
 import { format } from "date-fns";
 import { ro } from "date-fns/locale";
 import { useAuthStore } from "@/stores/auth/login";
-
+import { useRouter } from "vue-router";
+const router = useRouter();
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export const Bookings = defineStore("booking", () => {
@@ -107,7 +108,7 @@ export const Bookings = defineStore("booking", () => {
   const numberOfPeople = ref<number>(0);
   const checkin = ref<Date>(new Date());
   const checkout = ref<Date>(new Date());
-  const finalSelectedRooms = ref<any>({}); 
+  const finalSelectedRooms = ref<any>({});
   const finalNumberOfNights = ref(0);
   const selectedFacilities = ref<any[]>([]);
 
@@ -185,75 +186,92 @@ export const Bookings = defineStore("booking", () => {
       isloading.value = false;
     }
   }
+  const updatePriceForBookingFirstNight = async (bookingId: number) => {
+    isloading.value = true;
+    try {
+      const response = await axios.put(`${baseUrl}/afterUBD2/${bookingId}`, {}, { withCredentials: true });
+      return response.data;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error("Lỗi khi cập nhật giá booking");
+        throw error;
+      }
+      throw error;
+    } finally {
+      isloading.value = false;
+    }
+  }
 
-const processAndConfirmBooking = async (guestInfo: GuestBookingRequest) => {
-    const checkinDate = checkin.value;
-    const checkoutDate = checkout.value;
+  const processAndConfirmBooking = async (guestInfo: GuestBookingRequest) => {
+    const checkinDate = ref(checkin.value);
+    const checkoutDate = ref(checkout.value);
     const numGuest = numberOfPeople.value;
     const selectedRoomsData = finalSelectedRooms.value;
     const numberOfNights = finalNumberOfNights.value;
     const selectedFacilitiesData = selectedFacilities.value;
 
-    let userIdForBooking : number;
+    let userIdForBooking: number;
     let guestDataForBooking: GuestBookingRequest | null;
 
     if (authStore.user && authStore.user.id) {
-            userIdForBooking = authStore.user.id;
-            guestDataForBooking = null;
-        } else {
-            userIdForBooking = 0;
-            guestDataForBooking = guestInfo;
-        }
+      userIdForBooking = authStore.user.id;
+      guestDataForBooking = null;
+    } else {
+      userIdForBooking = 0;
+      guestDataForBooking = guestInfo;
+    }
 
     const bookingDetailRequest = Object.values(selectedRoomsData).map((entry: any) => ({
-        roomTypeId: entry.roomData.roomTypeId,
-        quantity: entry.quantity,
+      roomTypeId: entry.roomData.roomTypeId,
+      quantity: entry.quantity,
     }));
 
     const bookingFacilityRequest = selectedFacilitiesData.map((facility) => ({
-        facilityId: facility.id,
-        quantity: 1, 
+      facilityId: facility.id,
+      quantity: 1,
     }));
 
     const bookingPayload: CreateBookingRequest = {
-        guestBookingRequest: guestDataForBooking,
-        bookingRequest: {
-            checkInDate: format(checkinDate, "yyyy-MM-dd'T'14:00'"),
-            checkOutDate: format(checkoutDate, "yyyy-MM-dd'T'12:00'"),
-            isDeposit: false,
-            bookingStatus: "CONFIRMED",
-            numGuest: numGuest,
-            userId: userIdForBooking,
-            numberOfNights: numberOfNights,
-        },
-        bookingDetailRequest: bookingDetailRequest,
-        bookingFacilityRequest: bookingFacilityRequest,
-        stayRequest: [],
+      guestBookingRequest: guestDataForBooking,
+      bookingRequest: {
+        checkInDate: format(checkinDate.value, "yyyy-MM-dd'T'14:00'"),
+        checkOutDate: format(checkoutDate.value, "yyyy-MM-dd'T'12:00'"),
+        isDeposit: false,
+        bookingStatus: "NOTPAID",
+        numGuest: numGuest,
+        userId: userIdForBooking,
+        numberOfNights: numberOfNights,
+      },
+      bookingDetailRequest: bookingDetailRequest,
+      bookingFacilityRequest: bookingFacilityRequest,
+      stayRequest: [],
     };
-
+    console.log("Checkout", checkoutDate.value);
     console.log("Dữ liệu gửi về BE để tạo booking:", JSON.stringify(bookingPayload, null, 2));
     const result = await createBooking(bookingPayload);
     if (result) {
+
       toast.success("Booking đã được xác nhận thành công!");
+
     } else {
       toast.error("Xác nhận booking thất bại, vui lòng thử lại sau.");
     }
     return result;
-};
+  };
 
-const bookinghistory = ref<Booking[]>([]);
-const bookingHistory = async () => {
-  try {
-    const response = await axios.get<BookingResponse>(`${baseUrl}/user/booking-history`, { withCredentials: true });
-    bookinghistory.value = response.data.data;
-    return response.data;
-  } catch (error: any) {
-    toast.error("Lỗi khi tải lịch sử booking");
-    throw error;
+  const bookinghistory = ref<Booking[]>([]);
+  const bookingHistory = async () => {
+    try {
+      const response = await axios.get<BookingResponse>(`${baseUrl}/user/booking-history`, { withCredentials: true });
+      bookinghistory.value = response.data.data;
+      return response.data;
+    } catch (error: any) {
+      toast.error("Lỗi khi tải lịch sử booking");
+      throw error;
+    }
   }
-}
 
-const checkoutBooking = async (bookingId: number) => {
+  const checkoutBooking = async (bookingId: number) => {
     try {
       const response = await axios.put(`${baseUrl}/checkout/${bookingId}`, {}, { withCredentials: true });
       return response.data;
@@ -293,6 +311,7 @@ const checkoutBooking = async (bookingId: number) => {
     getBookingbyId,
     updatePriceForBooking,
     updatePriceBookingStay,
+    updatePriceForBookingFirstNight,
     bookingTicket,
     listRoomsAvailable,
     isloading,

@@ -98,9 +98,11 @@
                                                     ? 'Đã Trả Phòng'
                                                     : booking.bookingStatus === 'PAID'
                                                         ? 'Đã Thanh Toán'
-                                                        : booking.bookingStatus === 'LATE'
-                                                            ? 'Giữ phòng'
-                                                            : 'Chưa Nhận Phòng' }}</td>
+                                                        : booking.bookingStatus === 'NOTPAID'
+                                                            ? 'Đặt Phòng Chưa Cọc'
+                                                            : booking.bookingStatus === 'LATE'
+                                                                ? 'Giữ phòng'
+                                                                : 'Chưa Nhận Phòng' }}</td>
                         <td class="py-2 flex justify-center items-center gap-5 h-full">
                             <button
                                 class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">

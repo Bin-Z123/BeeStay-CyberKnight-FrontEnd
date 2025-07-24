@@ -358,7 +358,7 @@ onMounted(async () => {
     console.log("Phòng Còn Trống Nè Hehehe", JSON.stringify(bookings.listRoomsAvailable, null, 2));
 });
 
-const numberOfNights = ref(null);
+const numberOfNights = ref(1);
 const checkOutDateText = (night) => {
     if (!checkin.value) return "";
     const date = addDays(checkin.value, night);

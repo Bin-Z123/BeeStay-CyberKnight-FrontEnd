@@ -119,13 +119,13 @@
               <hr>
               <div class="flex flex-col gap-2">
                 <p class="text-gray-500">Ngày Đến: <span class="font-bold text-black float-end">{{ formatDate(checkin)
-                    }}</span>
+                }}</span>
                 </p>
                 <p class="text-gray-500">Ngày Đi: <span class="font-bold text-black float-end">{{
                   formatDate(checkOutDate) }}</span>
                 </p>
                 <p class="text-gray-500">Số Người: <span class="font-bold text-black float-end">{{ numberOfPeople
-                    }}</span></p>
+                }}</span></p>
                 <p class="font-bold">Tổng Số Đêm: <span class="font-bold float-end">{{ numberOfNights || 0 }}</span></p>
               </div>
               <hr>
@@ -266,7 +266,7 @@ const formatDate = (date) => {
   return date ? format(date, "dd/MM/yyyy") : "";
 };
 
-const numberOfNights = ref(null);
+const numberOfNights = ref(1);
 const checkOutDateText = (night) => {
   if (!checkin.value) return "";
   const date = addDays(checkin.value, night);
@@ -412,7 +412,9 @@ const proceedToBooking = () => {
     }
     return null;
   }).filter(Boolean); // Lọc bỏ các giá trị null nếu có
-
+  handleSearch();
   isBookingUserDialogOpen.value = true;
+  console.log("CHeckout: ", checkOutDate.value);
+  console.log("Selected BK:", JSON.stringify(bookings, null, 2));
 };
 </script>

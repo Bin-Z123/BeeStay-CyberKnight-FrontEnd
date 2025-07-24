@@ -35,6 +35,15 @@ const userRouter: RouteRecordRaw = {
             component: () => import("../../pages/user/contact/ConTact.vue"),
         },
         {
+            path: "booking/:id",
+            name: "booking-payment",
+            component: () => import("../../pages/user/PaymentBooking.vue"),
+            props: true,
+            meta: {
+                title: "Chi tiết đặt phòng"
+            }
+        },
+        {
             path: "setting",
             name: "setting",
             component: () => import("../../layouts/user/UserLayoutSetting.vue"),

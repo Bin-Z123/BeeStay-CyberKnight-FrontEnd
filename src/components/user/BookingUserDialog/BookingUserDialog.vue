@@ -45,7 +45,9 @@
                         </div>
                     </div> -->
                     <div class="flex justify-end gap-2">
-                        <button @click.prevent="handleConfirmBooking()" class="px-6 py-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700">Xác Nhận Đặt Phòng</button>
+                        <button @click.prevent="handleConfirmBooking()"
+                            class="px-6 py-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700">Xác
+                            Nhận Đặt Phòng</button>
                     </div>
                 </form>
             </div>
@@ -65,9 +67,12 @@ import { useAuthStore } from "@/stores/auth/login";
 import { ref, computed, onMounted } from "vue";
 import { Bookings } from "@/api/booking";
 import { toast } from "vue-sonner";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const authStore = useAuthStore();
 const bookings = Bookings();
+
 
 const user = ref({
     fullname: "",
@@ -96,12 +101,17 @@ const handleConfirmBooking = async () => {
             cccd: user.value.cccd,
         });
         console.log("Booking response:", JSON.stringify(response, null, 2));
+        const routerData = router.resolve({
+            name: 'booking-payment',
+            params: { id: response.data.id }
+        })
+        window.open(routerData.href, '_blank');
     } catch (error) {
         console.error("Lỗi khi xác nhận đặt phòng:", error);
     }
 };
 
-onMounted( async () => {
+onMounted(async () => {
     await authStore.fetchUser();
     asyncUserData();
 });
