@@ -24,21 +24,21 @@
                                                 ? 'Đã Trả Phòng'
                                                 : BookingStore.bookingTicket?.bookingStatus === 'LATE'
                                                     ? 'Giữ phòng'
-                                                    : 'Chưa Nhận Phòng' }}</span>
+                                                    : 'Chờ Thanh Toán' }}</span>
                     </div>
                 </div>
 
                 <!-- Trip Summary: Check-in, Check-out, Duration -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 py-6 border-b">
                     <div>
-                        <h3 class="text-sm font-semibold text-gray-500 uppercase">Nhận phòng</h3>
+                        <h3 class="text-sm font-semibold text-gray-500 uppercase"> Nhận phòng dự kiến:</h3>
                         <p class="text-lg font-semibold text-gray-800"> {{
                             formatDateWithTimeToTicket(BookingStore.bookingTicket?.checkInDate ?? new Date()) }}</p>
                         <p class="text-sm text-gray-500">Từ {{
                             formatDateWithTimeToHour(BookingStore.bookingTicket?.checkInDate ?? new Date()) }}</p>
                     </div>
                     <div>
-                        <h3 class="text-sm font-semibold text-gray-500 uppercase">Trả phòng</h3>
+                        <h3 class="text-sm font-semibold text-gray-500 uppercase">Trả phòng dự kiến</h3>
                         <p class="text-lg font-semibold text-gray-800"> {{
                             formatDateWithTimeToTicket(BookingStore.bookingTicket?.checkOutDate ?? new Date()) }}</p>
                         <p class="text-sm text-gray-500">Trước {{
@@ -115,8 +115,7 @@
                             <thead>
                                 <tr class="border-b bg-gray-50">
                                     <th class="p-3 text-sm font-semibold text-gray-600">Tên Dịch Vụ</th>
-                                    <th class="p-3 text-sm font-semibold text-gray-600 text-center">Số Lượng</th>
-                                    <th class="p-3 text-sm font-semibold text-gray-600 text-right">Đơn Giá</th>
+                                    <th class="p-3 text-sm font-semibold text-gray-600 text-center">Đơn Giá</th>
                                     <th class="p-3 text-sm font-semibold text-gray-600 text-right">Thành Tiền</th>
                                 </tr>
                             </thead>
@@ -125,12 +124,12 @@
                                     v-for="(service, index) in BookingStore.bookingTicket?.bookingFacilities"
                                     :key="index">
                                     <td class="p-3">
-                                        <p class="font-semibold text-gray-800">Đưa đón sân bay {{
-                                            service.facility.facilityName }}</p>
+                                        <p class="font-semibold text-gray-800"> {{
+                                            service.facilities[0].facilityName }}</p>
                                     </td>
-                                    <td class="p-3 text-center">{{ service.facility.description }}</td>
-                                    <td class="p-3 text-right">{{ formatVND(service.facility.price) }}</td>
-                                    <td class="p-3 text-right">500.000 ₫</td>
+                                    <td class="p-3 text-center">{{ formatVND(service.facilities[0].price) }}
+                                    </td>
+                                    <td class="p-3 text-right">{{ formatVND(service.facilities[0].price) }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -141,10 +140,14 @@
                 <div class="py-6 border-b">
                     <h3 class="text-lg font-bold text-gray-800 mb-4">Thông Tin Khách Lưu Trú</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-gray-50 p-4 rounded-lg" v-for="(stay, index) in BookingStore.bookingTicket?.stay"
+                        <div class="bg-gray-50 p-4 rounded-lg" v-for="(stay, index) in staysWithNightDetails"
                             :key="index">
                             <h4 class="font-semibold text-gray-700">{{
-                                getRoomByIdForStay(stay.roomId) }}</h4>
+                                getRoomByIdForStay(stay.roomId) }} - {{ stay.numberOfNights }} Đêm</h4>
+                            <p class="text-sm text-gray-600">Ngày nhận phòng: <span>{{ formatDateWithTimeToTicket(new
+                                Date(stay.actualCheckIn)) }}</span></p>
+                            <p class="text-sm text-gray-600">Ngày trả phòng: <span>{{ formatDateWithTimeToTicket(new
+                                Date(stay.actualCheckOut)) }}</span></p>
                             <ul class="mt-2 text-sm text-gray-600 list-disc list-inside"
                                 v-for="guest in stay.infoGuests" :key="guest.id">
                                 <li>{{ guest.name }} (CCCD: {{ guest.cccd }})</li>
@@ -160,9 +163,9 @@
                         <h3 class="text-lg font-bold text-gray-800 mb-4">Tổng Kết Thanh Toán</h3>
                         <div class="space-y-3">
                             <div class="flex justify-between">
-                                <span class="text-gray-600">Tiền phòng ({{ quantityRoom }} phòng x {{ numberOfNights }}
+                                <span class="text-gray-600">Tiền phòng ({{ quantityRoom }} phòng x {{ night }}
                                     đêm)</span>
-                                <span class="font-medium text-gray-800">{{ formatVND(totalPriceRoom) }}</span>
+                                <span class="font-medium text-gray-800">{{ formatVND(totalAmountRoom) }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Tiền dịch vụ</span>
@@ -170,7 +173,7 @@
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Tạm tính</span>
-                                <span class="font-medium text-gray-800">{{ formatVND(totalPriceRoom +
+                                <span class="font-medium text-gray-800">{{ formatVND(totalAmountRoom +
                                     totalPriceFacility) }}</span>
                             </div>
                             <div class="flex justify-between">
@@ -189,7 +192,7 @@
                             <div class="flex justify-between text-xl font-bold">
                                 <span class="text-gray-900">Tổng Cộng</span>
                                 <span class="text-blue-600">{{ formatVND(BookingStore.bookingTicket?.totalAmount ?? 0)
-                                    }}</span>
+                                }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Đã thanh toán </span>
@@ -369,7 +372,6 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, shallowReactive, watch } from 'vue';
-import { computed, onMounted, ref, shallowReactive, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import { Bookings } from '@/api/booking';
 import { BookingTicketResponse, Booking, Room } from '@/interface/booking.interface';
@@ -381,6 +383,7 @@ import { CreatePaymentLinkRequest, PaymentCashRequest } from '@/types/payment-dt
 import QrcodeVue from 'qrcode.vue';
 import { nextTick } from 'process';
 import { Loader } from 'lucide-vue-next';
+import { differenceInDays, parseISO } from 'date-fns';
 
 
 const paymentStore = PaymentAPI();
@@ -417,6 +420,7 @@ onMounted(async () => {
     }
     await paymentStore.getPaymentPaidByBookingId(props.id);
     await BookingStore.updatePriceForBooking(props.id);
+    await BookingStore.updatePriceBookingStay(props.id);
     // Tải thông tin booking bằng ID
     await BookingStore.getBookingbyId(props.id)
     await paymentStore.createPaymentPayOsLink(paymentPayOs.value);
@@ -444,11 +448,12 @@ onMounted(async () => {
     console.log('Booking Detail Page Mounted with ID:', JSON.stringify(BookingStore.bookingTicket, null, 2));
     console.log("QR Code:", paymentStore.paymentOsData.data.qrCode ?? 0);
     // Fetch booking details using props.id
-    toast.success(`Booking Detail for ID: ${props.id} loaded successfully!`);
+    toast.success(`Booking với ID: ${props.id} đã tạo thành công!`);
     calculateNumberOfNights();
     calculateGuestCount();
     getRoomCount();
     calculateTotalPriceByRoomAndQuantity();
+    calculateTotalPriceByFacility();
 
 });
 
@@ -527,8 +532,8 @@ const calculateTotalPriceByRoomAndQuantity = () => {
 const calculateTotalPriceByFacility = () => {
     if (BookingStore.bookingTicket?.bookingFacilities) {
         BookingStore.bookingTicket.bookingFacilities.forEach(facility => {
-            if (facility.facility && facility.facility.price) {
-                totalPriceFacility.value += facility.facility.price;
+            if (facility.facilities && facility.facilities[0].price) {
+                totalPriceFacility.value += facility.facilities[0].price;
             }
         })
     }
@@ -591,8 +596,8 @@ const handleConfirmCashPayment = async () => {
     if (paymentCash.value.amount > paymentStore.paymentOsData.data.amount) {
         toast.error('Số tiền nhập vào không hợp lệ')
         return;
-    } else if (paymentCash.value.amount < 1000) {
-        toast.error('Số tiền phải nhất lớn hơn 1000')
+    } else if (paymentCash.value.amount < 100) {
+        toast.error('Số tiền phải nhất lớn hơn 100 đồng')
         return;
     }
 
@@ -618,4 +623,36 @@ watch(() => paymentStore.paymentOsData.data, (newValue) => {
         console.log('Fixed QR String:', fiexdQRString.value);
     }
 }, { deep: true });
+
+
+// 1. COMPUTED: Bổ sung số đêm cho mỗi "stay"
+const staysWithNightDetails = computed(() => {
+    // Kiểm tra nếu không có dữ liệu thì trả về mảng rỗng
+    if (!BookingStore.bookingTicket?.stay) {
+        return [];
+    }
+
+    // Dùng map để tạo ra một mảng mới với thông tin bổ sung
+    return BookingStore.bookingTicket.stay.map(stay => {
+        // parseISO an toàn hơn new Date() cho các chuỗi ngày tháng chuẩn ISO
+        const checkInDate = parseISO(stay.actualCheckIn);
+        const checkOutDate = parseISO(stay.actualCheckOut);
+
+        // Tính số ngày chênh lệch (ra 2 vào 3 = 1 đêm)
+        const nights = differenceInDays(checkOutDate, checkInDate);
+
+        return {
+            ...stay, // Giữ lại toàn bộ dữ liệu gốc của stay
+            numberOfNights: nights + 1, // Thêm thuộc tính mới là số đêm
+        };
+    });
+});
+// 2. COMPUTED: Tính tổng số đêm từ mảng đã tính toán ở trên
+const totalAmountRoom = computed(() => {
+    // Dùng reduce để cộng dồn số đêm của tất cả các stay
+    return totalPriceRoom.value * night.value;
+});
+const night = computed(() => {
+    return staysWithNightDetails.value.reduce((total, stay) => stay.numberOfNights, 0);
+})
 </script>

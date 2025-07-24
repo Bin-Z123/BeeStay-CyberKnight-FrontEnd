@@ -116,7 +116,7 @@ export interface Discount {
 export interface BookingFacility {
   id: number;
   booking: string;
-  facility: Facility;
+  facilities: Facility[];
   quantity: number;
 }
 

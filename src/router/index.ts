@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [authRouter, administrationRouter, userRouter,
     {
         path: "/:pathMatch(.*)*",
         name: "not-found",
-        component: () => import("../pages/error/error.vue")
+        component: () => import("../pages/error/notFoundPage.vue")
     }
 ];
 
