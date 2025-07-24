@@ -21,8 +21,10 @@
                             class="appearance-none w-full h-10 px-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-start">
                             <option value="">Tất cả </option>
                             <option value="CONFIRMED">Chờ nhận phòng</option>
-                            <option value="STAY">Đặt tại khách sạn</option>
-                            <option value="PAID">Đã trả phòng</option>
+                            <option value="CHECKOUT">Đã trả phòng</option>
+                            <option value="STAY">Đang ở</option>
+                            <option value="PAID">Đã thanh toán</option>
+                            <option value="PENDING">Chờ thanh toán</option>
                             <option value="CANCEL">Đã Hủy</option>
                             <option value="LATE">Giữ phòng</option>
                         </select>
@@ -42,7 +44,11 @@
                     <!-- Btn bật dialog -->
                     <Button @click="isOpenBooking = true"
                         class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white px-4 my-3">
-                        Thêm
+                        Ở ngay
+                    </Button>
+                    <Button @click="isOpenPendingBooking = true"
+                        class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white px-4 my-3">
+                        Đặt trước
                     </Button>
                 </div>
             </div>
@@ -77,20 +83,24 @@
                         <td class="py-2" :class="booking.bookingStatus == 'CONFIRMED' ? 'text-green-500'
                             : booking.bookingStatus === 'STAY'
                                 ? 'text-blue-500'
-                                : booking.bookingStatus === 'NOSHOW' ? 'text-yellow-500'
+                                : booking.bookingStatus === 'LATE' ? 'text-yellow-500'
                                     : 'text-red-500'">
                             {{
                                 booking.bookingStatus === 'CONFIRMED'
                                     ? 'Chờ Nhận Phòng'
-                                    : booking.bookingStatus === 'CANCEL'
-                                        ? 'Đã Hủy'
-                                        : booking.bookingStatus === 'STAY'
-                                            ? 'Đang ở'
-                                            : booking.bookingStatus === 'PAID'
-                                                ? 'Đã Trả Phòng'
-                                                : booking.bookingStatus === 'LATE'
-                                                    ? 'Giữ phòng'
-                                                    : 'Chưa Nhận Phòng' }}</td>
+                                    : booking.bookingStatus === 'PENDING'
+                                        ? 'Chờ Thanh Toán'
+                                        : booking.bookingStatus === 'CANCEL'
+                                            ? 'Đã Hủy'
+                                            : booking.bookingStatus === 'STAY'
+                                                ? 'Đang Ở'
+                                                : booking.bookingStatus === 'CHECKOUT'
+                                                    ? 'Đã Trả Phòng'
+                                                    : booking.bookingStatus === 'PAID'
+                                                        ? 'Đã Thanh Toán'
+                                                        : booking.bookingStatus === 'LATE'
+                                                            ? 'Giữ phòng'
+                                                            : 'Chưa Nhận Phòng' }}</td>
                         <td class="py-2 flex justify-center items-center gap-5 h-full">
                             <button
                                 class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
@@ -138,6 +148,12 @@
             <div v-if="menu.data.bookingStatus == 'STAY'">
                 <button class="w-full text-left px-4 py-2 hover:bg-gray-100" @click="openTabBooking(menu.data.id)">Trả
                     phòng</button>
+                <button class="w-full text-left px-4 py-2 hover:bg-gray-100" @click="openAlert = true">Trả
+                    phòng bây giờ </button>
+            </div>
+            <div v-if="menu.data.bookingStatus == 'PENDING'">
+                <button class="w-full text-left px-4 py-2 hover:bg-gray-100" @click="openTabBooking(menu.data.id)">
+                    Thanh Toán </button>
             </div>
             <div v-if="menu.data.bookingStatus == 'NOSHOW'">
                 <button class="w-full text-left px-4 py-2 hover:bg-gray-100">Gia hạn ngày đến</button>
@@ -152,7 +168,9 @@
     <AsyncConfirmBookingDialog v-if="isOpenConfirmBooking" v-model:open="isOpenConfirmBooking" :Booking="menu.data"
         @update:open="handleDialogUpdate" ref="editDialogRef">
     </AsyncConfirmBookingDialog>
-    <NewBookingDialog v-model:open="isOpenBooking"></NewBookingDialog>
+    <AsyncNewBookingDialog v-model:open="isOpenBooking"></AsyncNewBookingDialog>
+    <AsyncPendingBookingDialog v-model:open="isOpenPendingBooking"></AsyncPendingBookingDialog>
+    <AsyncAlertDialog v-model:open="openAlert" :IdBooking="menu.data.id"></AsyncAlertDialog>
 </template>
 <script setup lang="ts">
 import {
@@ -162,11 +180,11 @@ import {
     ChevronLeft,
     ChevronRight,
 } from "lucide-vue-next";
-import { ref, onMounted, computed, reactive, defineAsyncComponent, Component, Ref } from "vue";
+import { ref, onMounted, computed, reactive, defineAsyncComponent, Component, Ref, defineComponent } from "vue";
 import { Button } from "@/components/ui/button";
 import { Bookings } from "@/api/booking";
 import { formatDateWithTimeToUI, customFormatDatePicker } from "@/utils";
-import { vi } from 'date-fns/locale';
+import { id, vi } from 'date-fns/locale';
 import { useRouter } from "vue-router";
 import NewBookingDialog from "@/components/administration/BookingDialog/NewBookingDialog.vue";
 import ConfirmBookingDialog from "@/components/administration/BookingDialog/ConfirmBookingDialog.vue";
@@ -178,12 +196,19 @@ import {
     BookingStatus,
     BlacklistStatus
 } from "@/interface/booking.interface";
+
 import { resolve } from "path";
 import { set } from "lodash";
 
 const router = useRouter();
 const AsyncConfirmBookingDialog = defineAsyncComponent({
     loader: () => import("@/components/administration/BookingDialog/ConfirmBookingDialog.vue"),
+})
+const AsyncAlertDialog = defineAsyncComponent({
+    loader: () => import("@/components/administration/BookingDialog/AlertDialog.vue"),
+})
+const AsyncPendingBookingDialog = defineAsyncComponent({
+    loader: () => import("@/components/administration/BookingDialog/PendingBookingDialog.vue")
 })
 const AsyncNewBookingDialog = defineAsyncComponent({
     loader: () => import("@/components/administration/BookingDialog/NewBookingDialog.vue"),
@@ -212,6 +237,8 @@ const handleDialogUpdate = () => {
 const bookings = Bookings();
 const isOpenBooking = ref(false);
 const isOpenConfirmBooking = ref(false);
+const isOpenPendingBooking = ref(false);
+const openAlert = ref(false);
 
 const currentPage = ref(1);
 const pageSize = ref(10);
@@ -319,4 +346,7 @@ const openTabBooking = (id: number) => {
     })
     window.open(routerData.href, '_blank');
 }
+
+
+
 </script>
