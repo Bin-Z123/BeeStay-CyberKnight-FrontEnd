@@ -1,7 +1,7 @@
 <template>
     <div class="lg:flex lg:container mx-auto pb-20">
         <div class="w-1/3 lg:block hidden">
-            <Sidebar></Sidebar>
+            <Sidebar class="sticky top-28"></Sidebar>
         </div>
         <div class="lg:w-2/3">
             <RouterView></RouterView>
