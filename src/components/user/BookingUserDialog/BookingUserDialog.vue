@@ -45,7 +45,6 @@
                         </div>
                     </div> -->
                     <div class="flex justify-end gap-2">
-                        <button class="px-6 py-2 bg-gray-500 text-white font-semibold rounded-md hover:bg-gray-600">Hủy</button>
                         <button @click.prevent="handleConfirmBooking()" class="px-6 py-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700">Xác Nhận Đặt Phòng</button>
                     </div>
                 </form>

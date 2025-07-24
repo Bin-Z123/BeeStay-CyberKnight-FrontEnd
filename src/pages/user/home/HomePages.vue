@@ -123,35 +123,14 @@
             <h2 class="text-2xl text-muesli-400">Dịch Vụ</h2>
             <p class="text-4xl font-bold mb-10">Dịch Vụ Của Khách Sạn</p>
             <div class="lg:container lg:mx-auto">
-                <div class="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 text-center">
-                    <div
-                        class="sm:w-auto bg-white flex flex-col justify-center items-center rounded-2xl h-70 p-10 gap-3">
-                        <BedDouble class="w-14 h-14 text-muesli-400" />
-                        <h1 class="font-bold text-xl">Room And Suite</h1>
-                        <h1 class="text-sm text-gray-400">Varied types of rooms, from standard to luxury suites,
-                            equipped with essentials like beds.</h1>
+                <div ref="facilitys" class="keen-slider rounded-2xl">
+                    <div class="keen-slider__slide sm:w-auto bg-white flex flex-col justify-center items-center rounded-2xl h-70 p-10 gap-3"
+                        v-for="facility in facilities.facilities" :key="facility.id">
+                        <img :src="getImageUrl(facility.publicId)" class="w-14 h-14" alt="">
+                        <h1 class="font-bold text-xl">{{ facility.facilityName }}</h1>
+                        <h1 class="text-sm text-gray-400">{{ facility.description }}</h1>
                     </div>
-                    <div
-                        class="sm:w-auto bg-white flex flex-col justify-center items-center rounded-2xl h-70 p-10 gap-3">
-                        <ShieldCheck class="w-14 h-14 text-muesli-400" />
-                        <h1 class="font-bold text-xl">Room And Suite</h1>
-                        <h1 class="text-sm text-gray-400">Varied types of rooms, from standard to luxury suites,
-                            equipped with essentials like beds.</h1>
-                    </div>
-                    <div
-                        class="sm:w-auto bg-white flex flex-col justify-center items-center rounded-2xl h-70 p-10 gap-3">
-                        <Monitor class="w-14 h-14 text-muesli-400" />
-                        <h1 class="font-bold text-xl">Room And Suite</h1>
-                        <h1 class="text-sm text-gray-400">Varied types of rooms, from standard to luxury suites,
-                            equipped with essentials like beds.</h1>
-                    </div>
-                    <div
-                        class="sm:w-auto bg-white flex flex-col justify-center items-center rounded-2xl h-70 p-10 gap-3">
-                        <WavesLadder class="w-14 h-14 text-muesli-400" />
-                        <h1 class="font-bold text-xl">Room And Suite</h1>
-                        <h1 class="text-sm text-gray-400">Varied types of rooms, from standard to luxury suites,
-                            equipped with essentials like beds.</h1>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -297,6 +276,13 @@
         <div class="flex flex-col justify-center items-center px-4 pt-25 gap-3 bg-white pb-25">
             <h1 class="text-2xl text-muesli-400">Dịch Vụ</h1>
             <h1 class="text-4xl font-bold mb-10">Dịch Vụ Của Khách Sạn</h1>
+            <!-- <div ref="post" class="keen-slider rounded-2xl">
+                <div class="keen-slider__slide rounded-2xl" v-for="facility in facilities.facilities" :key="facility.id">
+                    <div v-if="facility.publicId">
+                        <img :src="getImageUrl(facility.publicId)" alt="Ảnh Dịch Vụ">
+                    </div>
+                </div>
+            </div> -->
             <div ref="post" class="keen-slider rounded-2xl">
                 <div class="keen-slider__slide rounded-2xl">
                     <div>
@@ -343,10 +329,12 @@ import 'keen-slider/keen-slider.min.css';
 import { useRouter } from "vue-router";
 import { RoomType } from "@/api/roomtype";
 import { Bookings } from "@/api/booking";
+import { Facilities } from "@/api/facilities";
 
 const roomTypes = RoomType();
 const bookings = Bookings();
 const router = useRouter();
+const facilities = Facilities();
 
 console.log("Loại Phòng Đây Nè", roomTypes.roomtypes);
 
@@ -365,6 +353,7 @@ const formatDate = (date) => {
 onMounted(async () => {
     checkin.value = new Date();
     // await roomTypes.getAllRoomType();
+    await facilities.getAllFacilities();
     await bookings.getAvailableRooms(bookings.checkin, bookings.checkout, bookings.numberOfPeople);
     console.log("Phòng Còn Trống Nè Hehehe", JSON.stringify(bookings.listRoomsAvailable, null, 2));
 });
@@ -407,22 +396,37 @@ const [reviews] = useKeenSlider({
     },
 })
 
-// Slider reviews
-const [post] = useKeenSlider({
-    loop: true,
-    slides: {
-        perView: 6,
-        spacing: 15,
-    },
-    breakpoints: {
-        '(max-width: 768px)': {
-            slides: {
-                perView: 2,
-                spacing: 10,
-            },
-        },
-    }
-})
+// Slider posts
+const postInstance = ref(null);
+const post = ref(null);
+watch(() => bookings.listRoomsAvailable, (newValue) => {
+    nextTick(() => {
+        if (postInstance.value) postInstance.value.destroy();
+        if (newValue && newValue.length > 0 && post.value) {
+            postInstance.value = new KeenSlider(post.value, {
+                loop: true,
+                slides: { perView: 6, spacing: 15 },
+                breakpoints: { '(max-width: 768px)': { slides: { perView: 1, spacing: 10 } } },
+            });
+        }
+    });
+}, { deep: true });
+
+// Slider facilities
+const facilitiesInstance = ref(null);
+const facilitys = ref(null);
+watch(() => bookings.listRoomsAvailable, (newValue) => {
+    nextTick(() => {
+        if (facilitiesInstance.value) facilitiesInstance.value.destroy();
+        if (newValue && newValue.length > 0 && facilitys.value) {
+            facilitiesInstance.value = new KeenSlider(facilitys.value, {
+                loop: true,
+                slides: { perView: 4, spacing: 15 },
+                breakpoints: { '(max-width: 768px)': { slides: { perView: 1, spacing: 10 } } },
+            });
+        }
+    });
+}, { deep: true });
 
 // Tìm Loại phòng trống theo thời gian
 const numberOfPeople = ref(1);

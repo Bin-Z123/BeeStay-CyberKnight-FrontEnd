@@ -1,7 +1,7 @@
 import axios from "axios";
 import { defineStore } from "pinia";
 import { toast } from "vue-sonner";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { formatDateWitCheckInCheckOutAvailable, } from "@/utils";
 import {
   Booking,
@@ -13,13 +13,14 @@ import {
 import { CreateBookingRequest, RoomAvailabilityResponse, GuestBookingRequest } from "@/types";
 import { format } from "date-fns";
 import { ro } from "date-fns/locale";
+import { useAuthStore } from "@/stores/auth/login";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export const Bookings = defineStore("booking", () => {
   const isloading = ref(false);
   const bookings = ref<Booking[]>([]);
-
+  const authStore = useAuthStore();
   const booking = ref<Booking>({
     id: 0,
     checkInDate: new Date(),
@@ -193,6 +194,17 @@ const processAndConfirmBooking = async (guestInfo: GuestBookingRequest) => {
     const numberOfNights = finalNumberOfNights.value;
     const selectedFacilitiesData = selectedFacilities.value;
 
+    let userIdForBooking : number;
+    let guestDataForBooking: GuestBookingRequest | null;
+
+    if (authStore.user && authStore.user.id) {
+            userIdForBooking = authStore.user.id;
+            guestDataForBooking = null;
+        } else {
+            userIdForBooking = 0;
+            guestDataForBooking = guestInfo;
+        }
+
     const bookingDetailRequest = Object.values(selectedRoomsData).map((entry: any) => ({
         roomTypeId: entry.roomData.roomTypeId,
         quantity: entry.quantity,
@@ -204,14 +216,14 @@ const processAndConfirmBooking = async (guestInfo: GuestBookingRequest) => {
     }));
 
     const bookingPayload: CreateBookingRequest = {
-        guestBookingRequest: guestInfo,
+        guestBookingRequest: guestDataForBooking,
         bookingRequest: {
             checkInDate: format(checkinDate, "yyyy-MM-dd'T'14:00'"),
             checkOutDate: format(checkoutDate, "yyyy-MM-dd'T'12:00'"),
             isDeposit: false,
             bookingStatus: "CONFIRMED",
             numGuest: numGuest,
-            userId: 0,
+            userId: userIdForBooking,
             numberOfNights: numberOfNights,
         },
         bookingDetailRequest: bookingDetailRequest,
@@ -228,6 +240,18 @@ const processAndConfirmBooking = async (guestInfo: GuestBookingRequest) => {
     }
     return result;
 };
+
+const bookinghistory = ref<Booking[]>([]);
+const bookingHistory = async () => {
+  try {
+    const response = await axios.get<BookingResponse>(`${baseUrl}/user/booking-history`, { withCredentials: true });
+    bookinghistory.value = response.data.data;
+    return response.data;
+  } catch (error: any) {
+    toast.error("Lỗi khi tải lịch sử booking");
+    throw error;
+  }
+}
 
   return {
     checkin,
@@ -248,5 +272,7 @@ const processAndConfirmBooking = async (guestInfo: GuestBookingRequest) => {
     finalSelectedRooms,
     finalNumberOfNights,
     selectedFacilities,
+    bookinghistory,
+    bookingHistory,
   };
 });

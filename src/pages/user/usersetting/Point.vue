@@ -1,17 +1,17 @@
 <template>
-  <div class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+  <div class="dark:bg-gray-900 text-gray-800 dark:text-gray-200">
     <div class="container mx-auto max-w-5xl p-4 sm:p-6 lg:p-8">
 
       <!-- Phần Header Chào mừng và Tổng điểm -->
-      <header class="bg-gradient-to-br from-blue-600 to-cyan-500 text-white rounded-2xl shadow-2xl p-8 mb-8 transition-all duration-300 hover:shadow-cyan-500/50">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+      <header class="bg-gradient-to-br from-muesli-500 to-muesli-200 text-white rounded-2xl shadow-xl p-8 mb-8 transition-all duration-300 hover:shadow-muesli-500/50">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center" v-if="authStore.user">
           <div>
-            <h1 class="text-2xl font-bold">Xin chào, {{ user.name }}!</h1>
-            <p class="text-blue-100 mt-1">Chào mừng bạn trở lại trang điểm thưởng.</p>
+            <h1 class="text-2xl font-bold">Xin chào, {{ authStore.user.fullname }}!</h1>
+            <p class="text-white mt-1">Chào mừng bạn trở lại trang điểm thưởng.</p>
           </div>
           <div class="mt-4 sm:mt-0 text-left sm:text-right">
-            <p class="text-sm uppercase text-blue-200 tracking-wider">Điểm khả dụng</p>
-            <p class="text-5xl font-extrabold tracking-tight">{{ user.points.toLocaleString() }}</p>
+            <p class="text-sm uppercase text-white tracking-wider">Điểm khả dụng</p>
+            <p class="text-5xl font-extrabold tracking-tight">{{ authStore.user.point }}</p>
           </div>
         </div>
       </header>
@@ -29,6 +29,19 @@
           <div class="bg-gradient-to-r from-amber-400 to-orange-500 h-2.5 rounded-full" :style="{ width: user.tier.progress + '%' }"></div>
         </div>
         <p class="text-sm text-gray-600 dark:text-gray-400">Bạn cần thêm <span class="font-bold text-gray-800 dark:text-white">{{ user.tier.pointsToNext.toLocaleString() }}</span> điểm nữa để thăng hạng {{ user.tier.nextTier }}.</p>
+      </div>
+
+
+      <div class="bg-white h-30 w-full my-15 shadow-2xl rounded-2xl p-6 mb-8 keen-slider" ref="ranks">
+        <div class="keen-slider__slide">
+          1
+        </div>
+        <div class="keen-slider__slide">
+          2
+        </div>
+        <div class="keen-slider__slide">
+          3
+        </div>
       </div>
 
       <!-- Phần Tabs Điều Hướng -->
@@ -153,7 +166,24 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useAuthStore } from '@/stores/auth/login';
+import KeenSlider from 'keen-slider';
+import 'keen-slider/keen-slider.min.css';
+import { useKeenSlider } from 'keen-slider/vue'
+
+const authStore = useAuthStore();
+onMounted( async () => {
+  await authStore.fetchUser();
+})
+
+const [ranks] = useKeenSlider({
+  slides: {
+    perView: 1,
+    spacing: 10,
+  },
+  loop: true,
+})
 
 // --- Reactive State ---
 const activeTab = ref('overview');
