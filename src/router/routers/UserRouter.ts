@@ -7,6 +7,24 @@ const userRouter: RouteRecordRaw = {
     component: () => import("../../layouts/user/UserLayout.vue"),
     children: [
         {
+            path: "payment-success",
+            name: "payment-success",
+            component: () => import("../../pages/pay/success.vue"),
+            meta: {
+                title: "Thanh toán thành công",
+                redirectPath: '/user/home'
+            }
+        }, {
+            path: "payment-failed",
+            name: "payment-failed",
+            component: () => import("../../pages/pay/failed.vue"),
+            meta: {
+                title: "Thanh toán thất bại",
+                redirectPath: '/user/home'
+            }
+        },
+
+        {
             path: "home",
             name: "home",
             component: () => import("../../pages/user/home/HomePages.vue"),
