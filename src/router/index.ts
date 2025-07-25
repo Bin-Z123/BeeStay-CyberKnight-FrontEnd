@@ -4,11 +4,26 @@ import administrationRouter from "../router/routers/AdministrationRouter";
 import userRouter from "../router/routers/UserRouter";
 import { useAuthStore } from "../stores/auth/login";
 import { toast } from "vue-sonner";
+import { time } from "console";
+import { title } from "process";
 const routes: RouteRecordRaw[] = [authRouter, administrationRouter, userRouter,
     {
         path: "/:pathMatch(.*)*",
         name: "not-found",
         component: () => import("../pages/error/notFoundPage.vue")
+    },
+    {
+        path: "/payment-success",
+        name: "success",
+        component: () => import("../pages/pay/success.vue"),
+        props: true,
+        meta: {
+            title: "Thanh toán thành công"
+        }
+    }, {
+        path: "/payment-failed",
+        name: "failed",
+        component: () => import("../pages/pay/failed.vue")
     }
 ];
 

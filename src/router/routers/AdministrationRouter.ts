@@ -10,6 +10,24 @@ const administrationRouter: RouteRecordRaw = {
     },
     children: [
         {
+            path: "payment-success",
+            name: "AdminPaymentSuccess",
+            component: () => import("../../pages/pay/success.vue"),
+            meta: {
+                title: "Thanh toán thành công",
+                redirectPath: '/administration/dashboard'
+            }
+        }, {
+            path: "payment-failed",
+            name: "AdminPaymentFailed",
+            component: () => import("../../pages/pay/failed.vue"),
+            meta: {
+                title: "Thanh toán thất bại",
+                redirectPath: '/administration/dashboard'
+            }
+        },
+
+        {
             path: "dashboard",
             name: "dashboard",
             component: () => import("../../pages/administrantion/DashBoardPage.vue"),

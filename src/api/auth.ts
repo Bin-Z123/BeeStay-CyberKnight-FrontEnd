@@ -58,7 +58,7 @@ export const Auth = () => {
 
   const getUserInfoByToken = async (): Promise<User> => {
     try {
-      const response = await axios.get<{data: User}>(`${baseUrl}/me`, {
+      const response = await axios.get<{ data: User }>(`${baseUrl}/me`, {
         withCredentials: true,
       });
       return response.data.data;
@@ -75,7 +75,7 @@ export const Auth = () => {
       const response = await axios.post<LoginResponse>(`${baseUrl}/login`, {
         username,
         password,
-      },{
+      }, {
         withCredentials: true
       });
       //Lấy thông tin sau khi login
@@ -89,12 +89,12 @@ export const Auth = () => {
       });
 
       const role = user.role.roleName.toUpperCase();
-      console.log("role: "+role);
+      console.log("role: " + role);
       if (role === "ADMIN") {
-      router.push("/administration/dashboard");
-    } else {
-      router.push("/user/home");
-    }
+        router.push("/administration/dashboard");
+      } else {
+        router.push("/user/home");
+      }
 
       return response.data;
     } catch (error: any) {
@@ -111,37 +111,37 @@ export const Auth = () => {
   };
 
   const register = async (user: RegisterRequest): Promise<RegisterResponse> => {
-  isLoading.value = true;
+    isLoading.value = true;
 
-  try {
-    const response = await axios.post(`${baseUrl}/register/send-otp`, user);
-    if (response.data.code === 400) {
-      toast.error(response.data.message || "Email đã được sử dụng");
-      throw new Error("Đăng ký thất bại");
+    try {
+      const response = await axios.post(`${baseUrl}/register/send-otp`, user);
+      if (response.data.code === 400) {
+        toast.error(response.data.message || "Email đã được sử dụng");
+        throw new Error("Đăng ký thất bại");
+      }
+      toast.success("OTP đã được gửi!", {
+        description: "Vui lòng kiểm tra email.",
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    } finally {
+      isLoading.value = false;
     }
-    toast.success("OTP đã được gửi!", {
-      description: "Vui lòng kiểm tra email.",
-    });
-    return response.data;
-  } catch (error) {
-    throw error;
-  } finally {
-    isLoading.value = false;
-  }
-};
+  };
 
-const verifyOTP = async (email: string, otp: string): Promise<RegisterResponse> => {
-  isLoading.value = true;
+  const verifyOTP = async (email: string, otp: string): Promise<RegisterResponse> => {
+    isLoading.value = true;
 
-  try {
-    const response = await axios.post(`${baseUrl}/register/verify-otp`, { email, otp });
-    return response.data;
-  } catch (error) {
-    throw error;
-  } finally {
-    isLoading.value = false;
-  }
-};
+    try {
+      const response = await axios.post(`${baseUrl}/register/verify-otp`, { email, otp });
+      return response.data;
+    } catch (error) {
+      throw error;
+    } finally {
+      isLoading.value = false;
+    }
+  };
 
   return {
     login,
