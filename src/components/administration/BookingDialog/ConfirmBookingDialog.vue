@@ -197,7 +197,7 @@
 
             <DialogFooter class="p-6 pt-0 flex justify-between">
                 <Button class="justify-self-start">Tổng tiền phải trả dự kiến: <b>{{ formatVND(bookingData.totalAmount)
-                        }}</b></Button>
+                }}</b></Button>
                 <Button @click="handleConfirm(bookingData.id)" :disabled="isDirty"
                     class="bg-muesli-400 hover:bg-muesli-600 disabled:opacity-50 text-white px-3 py-2 rounded-sm">
                     Xác nhận
@@ -540,6 +540,7 @@ const validateStayBeforeSubmit = (): boolean => {
 }
 
 const handleConfirm = async (bookingID: number) => {
+    if (!validateStayBeforeSubmit()) return
     const routerData = router.resolve({
         name: 'booking-detail',
         params: { id: bookingID }
