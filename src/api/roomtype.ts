@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { toast } from 'vue-sonner'
 import { defineStore } from "pinia";
 import { RoomTypeResponse2 } from "@/types";
+import { myAxios } from "./axios";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const isLoading = ref(false);
@@ -34,7 +35,7 @@ export const RoomType = defineStore('roomtype', () => {
     });
     const getAllRoomType = async (): Promise<RoomTypeResponse> => {
         try {
-            const response = await axios.get<RoomTypeResponse>(`${baseUrl}/admin/roomTypes`,{
+            const response = await axios.get<RoomTypeResponse>(`${baseUrl}/admin/roomTypes`, {
                 withCredentials: true
             });
             roomtypes.value = response.data.data;
@@ -108,7 +109,7 @@ export const RoomType = defineStore('roomtype', () => {
 
     const getRoomTypeById = async (roomtypeId: number): Promise<RoomType> => {
         try {
-            const response = await axios.get<{code: number, data: RoomType}>(`${baseUrl}/admin/roomTypes/${roomtypeId}`, {withCredentials: true});
+            const response = await axios.get<{ code: number, data: RoomType }>(`${baseUrl}/admin/roomTypes/${roomtypeId}`, { withCredentials: true });
             roomtype.value = response.data.data;
             return response.data.data;
         } catch (error) {
@@ -118,3 +119,16 @@ export const RoomType = defineStore('roomtype', () => {
 
     return { roomtype, roomtypes, getAllRoomType, createRoomType, updateRoomType, deleteRoomType, getRoomTypeById, isLoading };
 });
+
+
+const getRoomTypesList = async () => {
+    return myAxios.get('/admin/roomTypes')
+}
+const getRoomTypeById = async (roomtypeId: number) => {
+    return myAxios.get(`/admin/roomTypes/${roomtypeId}`)
+}
+
+export {
+    getRoomTypesList,
+    getRoomTypeById
+}

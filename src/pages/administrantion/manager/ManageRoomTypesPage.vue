@@ -94,18 +94,20 @@ import { Button } from "@/components/ui/button";
 import DialogCreateRoomType from "@/components/administration/roomTypeDialog/CreateRoomTypeDialog.vue";
 import DialogUpdateRoomType from "@/components/administration/roomTypeDialog/UpdateRoomTypeDialog.vue";
 import { RoomType } from "@/api/roomtype";
+import { useGetRoomTypeList } from "@/hook/useRoomType";
 
 const isOpen = ref(false);
 const isOpenUpdate = ref(false);
-const roomTypes = RoomType();
+const roomTypesStore = RoomType();
+const { data: roomTypes } = useGetRoomTypeList();
 
 // Search
 const searchQuery = ref("");
 const filteredRoomTypes = computed(() => {
   if (!searchQuery.value) {
-    return roomTypes.roomtypes;
+    return roomTypes.value;
   }
-  return roomTypes.roomtypes.filter((roomtype) =>
+  return roomTypes.value.filter((roomtype: any) =>
     roomtype.name.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
@@ -128,12 +130,13 @@ const openUpdateRoomType = async (roomtype: any) => {
 }
 
 const handleDeleteRoomType = async (roomtype: any) => {
-  await roomTypes.deleteRoomType(roomtype.id);
-  await roomTypes.getAllRoomType();
+  await roomTypesStore.deleteRoomType(roomtype.id);
+  await roomTypesStore.getAllRoomType();
 }
 
 onMounted(async () => {
-  await roomTypes.getAllRoomType();
-  console.log(JSON.stringify(roomTypes.roomtypes, null, 2));
+  // await roomTypes.getAllRoomType();
+  // console.log(JSON.stringify(roomTypes.roomtypes, null, 2));
+  console.log(" Lấy loại phòng bằng TanStack: ", roomTypes.value);
 });
 </script>
