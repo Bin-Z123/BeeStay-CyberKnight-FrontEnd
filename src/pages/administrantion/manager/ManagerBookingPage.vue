@@ -27,6 +27,7 @@
                             <option value="PENDING">Chờ thanh toán</option>
                             <option value="CANCEL">Đã Hủy</option>
                             <option value="LATE">Giữ phòng</option>
+                            <option value="NOTPAID">Chưa Thanh Toán</option>
                         </select>
                         <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                             <ChevronDown class="w-5 h-5 text-gray-400" />
@@ -40,7 +41,7 @@
             </div>
 
             <div class="w-1/3">
-                <div class="flex justify-end px-4">
+                <div class="flex justify-end px-4 space-x-1">
                     <!-- Btn bật dialog -->
                     <Button @click="isOpenBooking = true"
                         class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white px-4 my-3">
@@ -256,10 +257,27 @@ const paginatedRoomTypes = computed(() => {
 const sortedBookings = ref<Booking[]>([]);
 onMounted(async () => {
     await bookings.getBookings();
+    const statusToEnd = 'NOTPAID';
+
     sortedBookings.value = [...bookings.bookings]
         .filter(b => b.bookingStatus !== 'X')
-        .sort((a, b) => new Date(b.bookingDate).getTime() - new Date(a.bookingDate).getTime());
+        .sort((a, b) => {
+            // ---- Logic 1: Ưu tiên kiểm tra status cần đưa xuống cuối ----
+            const aIsEndStatus = a.bookingStatus === statusToEnd;
+            const bIsEndStatus = b.bookingStatus === statusToEnd;
 
+            if (aIsEndStatus && !bIsEndStatus) {
+                return 1; // Đẩy a xuống cuối
+            }
+            if (!aIsEndStatus && bIsEndStatus) {
+                return -1; // Đẩy b xuống cuối (giữ a ở trên)
+            }
+
+            // ---- Logic 2: Nếu không thuộc trường hợp trên, sắp xếp theo ngày như cũ ----
+            // Logic này chỉ được thực thi khi cả a và b đều là status "bình thường"
+            // hoặc cả hai đều là status cần đưa xuống cuối.
+            return new Date(b.bookingDate).getTime() - new Date(a.bookingDate).getTime();
+        });
     // const startDate = new Date();
     // const endDate = new Date(new Date().setDate(startDate.getDate() + 30));
     // date.value = [startDate, endDate];
@@ -274,6 +292,7 @@ const filteredBookings = computed(() => {
     return fillteredBookingsByDate.value.filter(b => {
         const user = b.user
         const guest = b.guestBooking
+
 
         const userMatch = b.user &&
             (user.phone.toLowerCase().includes(keyword) ||
