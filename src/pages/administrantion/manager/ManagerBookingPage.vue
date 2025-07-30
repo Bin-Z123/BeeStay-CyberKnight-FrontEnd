@@ -54,8 +54,11 @@
                 </div>
             </div>
         </div>
-
-        <div class="shadow-lg px-4 pb-4 h-[622px]">
+        <div v-if="isFetchingBookings" class="flex justify-center items-center h-200 w-full space-x-1">
+            <div class="loader"></div>
+            <div>Đang tải dữ liệu...</div>
+        </div>
+        <div v-else class="shadow-lg px-4 pb-4 h-[622px]">
             <table class="w-full border border-gray-300 text-sm text-center bg-white">
                 <thead class="bg-gradient-to-r from-muesli-200 to-muesli-400 text-white">
                     <tr>
@@ -144,7 +147,8 @@
 
 
                 <hr>
-                <button class="w-full  text-left px-4 py-2 hover:bg-gray-100">
+                <button @click="() => isOpenAlertCancelBooking = true"
+                    class="w-full  text-left px-4 py-2 hover:bg-gray-100">
                     Hủy phòng
                 </button>
             </div>
@@ -168,13 +172,7 @@
         </div>
 
     </section>
-    <AlertDialog>
-        <AlertDialogTrigger as-child>
-            <Button variant="outline">
-                Show Dialog
-            </Button>
-        </AlertDialogTrigger>
-    </AlertDialog>
+    <AsyncAlertCancelBooking v-model:open="isOpenAlertCancelBooking" :Booking="menu.data.id"></AsyncAlertCancelBooking>
     <AsyncConfirmBookingDialog v-if="isOpenConfirmBooking" v-model:open="isOpenConfirmBooking" :Booking="menu.data"
         @update:open="handleDialogUpdate" ref="editDialogRef">
     </AsyncConfirmBookingDialog>
@@ -194,26 +192,14 @@ import { ref, onMounted, computed, reactive, defineAsyncComponent, Component, Re
 import { Button } from "@/components/ui/button";
 import { Bookings } from "@/api/booking";
 import { formatDateWithTimeToUI, customFormatDatePicker } from "@/utils";
-import { id, vi } from 'date-fns/locale';
+import { vi } from 'date-fns/locale';
 import { useRouter } from "vue-router";
-import NewBookingDialog from "@/components/administration/BookingDialog/NewBookingDialog.vue";
-import ConfirmBookingDialog from "@/components/administration/BookingDialog/ConfirmBookingDialog.vue";
-import LoadingSpinner from "@/components/common/LoadingSpinner.vue";
-import ErrorDisplay from "@/components/common/ErrorDisplay.vue";
 import {
-    Booking,
-    BookingResponse,
-    BookingStatus,
-    BlacklistStatus
+    Booking
 } from "@/interface/booking.interface";
-import {
-    AlertDialog,
-    AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
+import { useBookingsList } from "@/hook/useBooking";
 
-import { resolve } from "path";
-import { set } from "lodash";
-
+const { data: bookingsList, isFetching: isFetchingBookings } = useBookingsList();
 const router = useRouter();
 const AsyncConfirmBookingDialog = defineAsyncComponent({
     loader: () => import("@/components/administration/BookingDialog/ConfirmBookingDialog.vue"),
@@ -223,6 +209,9 @@ const AsyncAlertDialog = defineAsyncComponent({
 })
 const AsyncPendingBookingDialog = defineAsyncComponent({
     loader: () => import("@/components/administration/BookingDialog/PendingBookingDialog.vue")
+})
+const AsyncAlertCancelBooking = defineAsyncComponent({
+    loader: () => import("@/components/administration/BookingDialog/AlertCancelBooking.vue")
 })
 const AsyncNewBookingDialog = defineAsyncComponent({
     loader: () => import("@/components/administration/BookingDialog/NewBookingDialog.vue"),
@@ -253,7 +242,7 @@ const isOpenBooking = ref(false);
 const isOpenConfirmBooking = ref(false);
 const isOpenPendingBooking = ref(false);
 const openAlert = ref(false);
-
+const isOpenAlertCancelBooking = ref(false);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const totalPages = computed(() => {
@@ -267,10 +256,11 @@ const paginatedRoomTypes = computed(() => {
 // Sort theo ngày mới nhất
 const sortedBookings = ref<Booking[]>([]);
 onMounted(async () => {
-    await bookings.getBookings();
+    // await bookings.getBookings();
     const statusToEnd = 'NOTPAID';
 
-    sortedBookings.value = [...bookings.bookings]
+    // sortedBookings.value = [...bookings.bookings]
+    sortedBookings.value = [...bookingsList.value]
         .filter(b => b.bookingStatus !== 'X')
         .sort((a, b) => {
             // ---- Logic 1: Ưu tiên kiểm tra status cần đưa xuống cuối ----

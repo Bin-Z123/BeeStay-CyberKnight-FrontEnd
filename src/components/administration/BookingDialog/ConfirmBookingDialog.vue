@@ -25,23 +25,23 @@
 
                             <div>
                                 <label for="">Tên người đặt</label>
-                                <input :disabled="!checkBoxInfo" type="text" class="input-booking"
-                                    v-model="bookingData.user.fullname">
+                                <input :disabled="!checkBoxInfo" type="text" :value="bookingData.user?.fullname || bookingData.guestBooking?.fullname " class="input-booking"
+                                  >
                             </div>
                             <div>
                                 <label for="">Sđt</label>
-                                <input :disabled="!checkBoxInfo" type="text" class="input-booking"
-                                    v-model="bookingData.user.phone">
+                                <input :disabled="!checkBoxInfo" type="text" :value="bookingData.user?.phone || bookingData.guestBooking?.phone" class="input-booking"
+                                   >
                             </div>
                             <div>
                                 <label for="">Email</label>
-                                <input :disabled="!checkBoxInfo" type="text" class="input-booking"
-                                    v-model="bookingData.user.email">
+                                <input :disabled="!checkBoxInfo" type="text" :value="bookingData.user?.email || bookingData.guestBooking?.email" class="input-booking"
+                                 >
                             </div>
                             <div>
                                 <label for="">CCCD</label>
-                                <input :disabled="!checkBoxInfo" type="text" class="input-booking"
-                                    v-model="bookingData.user.cccd">
+                                <input :disabled="!checkBoxInfo" type="text" :value="bookingData.user?.cccd || bookingData.guestBooking?.cccd" class="input-booking"
+                                    >
                             </div>
                         </div>
                         <div>
@@ -219,7 +219,7 @@ import {
 import {
     Booking,
 } from "@/interface/booking.interface";
-import { onMounted, ref, watch, computed, watchEffect } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
 import { formatDateWithTimeToUI, formatVND, formatDateWithTime } from "@/utils";
 import { Bookings } from "@/api/booking";
 import { toast } from "vue-sonner";

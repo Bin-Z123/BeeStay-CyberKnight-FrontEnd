@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import { ro } from "date-fns/locale";
 import { useAuthStore } from "@/stores/auth/login";
 import { useRouter } from "vue-router";
+import { myAxios } from "./axios";
 const router = useRouter();
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -323,3 +324,14 @@ export const Bookings = defineStore("booking", () => {
     bookingHistory,
   };
 });
+//  NEW API
+const getBookingsList = async () => {
+  return myAxios.get('/admin/booking/list')
+}
+
+const putCancelBooking = async (bookingId: number) => {
+  return myAxios.put(`/cancel/${bookingId}`)
+}
+
+
+export { putCancelBooking, getBookingsList }
