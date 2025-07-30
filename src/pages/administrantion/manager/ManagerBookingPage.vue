@@ -168,6 +168,13 @@
         </div>
 
     </section>
+    <AlertDialog>
+        <AlertDialogTrigger as-child>
+            <Button variant="outline">
+                Show Dialog
+            </Button>
+        </AlertDialogTrigger>
+    </AlertDialog>
     <AsyncConfirmBookingDialog v-if="isOpenConfirmBooking" v-model:open="isOpenConfirmBooking" :Booking="menu.data"
         @update:open="handleDialogUpdate" ref="editDialogRef">
     </AsyncConfirmBookingDialog>
@@ -199,6 +206,10 @@ import {
     BookingStatus,
     BlacklistStatus
 } from "@/interface/booking.interface";
+import {
+    AlertDialog,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 import { resolve } from "path";
 import { set } from "lodash";

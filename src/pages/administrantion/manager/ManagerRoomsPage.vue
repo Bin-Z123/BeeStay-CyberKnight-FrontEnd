@@ -1,5 +1,9 @@
 <template>
-  <section>
+  <div v-if="isFetchingRooms" class="flex justify-center items-center h-200 w-full space-x-1">
+    <div class="loader"></div>
+    <div>Đang tải dữ liệu...</div>
+  </div>
+  <section v-else>
     <div>
       <div class="flex relative">
         <div class="w-1/2">
@@ -96,6 +100,9 @@ import DialogUpdateRoom from "@/components/administration/RoomDialog/UpdateRoomD
 import { Rooms } from "@/components/administration/RoomDialog/Room";
 import { RoomAPI } from "@/api/room";
 import { RoomType } from "@/api/roomtype";
+import { useGetRoomList } from "@/hook/useRoom";
+
+const { data: roomsList, isFetching: isFetchingRooms, isPending: isPendingRooms } = useGetRoomList();
 const { rooms } = Rooms();
 const roomStore = RoomAPI();
 const roomTypeStore = RoomType();

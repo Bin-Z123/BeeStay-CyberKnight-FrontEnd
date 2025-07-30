@@ -15,7 +15,10 @@ const useGetRoomList = () => {
 const useGetRoomProfile = (roomId: Ref<number | undefined>, open: Ref<Boolean>) => {
     return useQuery({
         queryKey: [QUERY_KEY_ROOM.ROOM_INFO, roomId],
-        queryFn: async () => (await getRoomProfile(roomId)),
+        queryFn: async () => {
+            const response = await getRoomProfile(roomId)
+            return response.data?.data
+        },
         enabled: computed(() => open.value && !!roomId),
     })
 }
