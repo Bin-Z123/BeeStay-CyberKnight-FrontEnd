@@ -1,9 +1,10 @@
 import { Rooms } from "@/components/administration/RoomDialog/Room";
 import axios from "axios";
-import { ref } from "vue";
+import { Ref, ref } from "vue";
 import { toast } from "vue-sonner";
 import { defineStore } from "pinia";
 import { Room } from "@/interface/booking.interface";
+import { myAxios } from "./axios";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const isLoading = ref(false);
@@ -181,3 +182,19 @@ export const RoomAPI = defineStore('room', () => {
         isLoading,
     };
 });
+
+// NEW AIXOS
+
+const getRoomsList = () => {
+    return myAxios.get('/admin/rooms')
+}
+
+const getRoomProfile = (roomId: Ref<number | undefined>) => {
+    return myAxios.get(`/admin/rooms/${roomId.value}`)
+
+}
+
+export {
+    getRoomsList,
+    getRoomProfile
+}

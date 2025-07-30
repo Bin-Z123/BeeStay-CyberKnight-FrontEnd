@@ -1,5 +1,13 @@
 <template>
-  <section>
+  <div v-if="isFetchingRoomTypes" class="flex justify-center items-center h-200 w-full space-x-1">
+    <div class="loader"></div>
+    <div>Đang tải dữ liệu...</div>
+  </div>
+  <div v-if="isPendingRoomTypes" class="flex justify-center items-center h-200 w-full space-x-1">
+    <div class="loader"></div>
+    <div>Đang chờ dữ liệu...</div>
+  </div>
+  <section v-if="!isFetchingRoomTypes && !isPendingRoomTypes">
     <div>
       <div class="flex relative">
         <div class="w-1/2">
@@ -7,11 +15,11 @@
             <!-- <input type="text"
               class="w-2/6 h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 ms-4 text-center"
               placeholder="Tìm kiếm" /> -->
-            <div class="relative w-2/6 mx-4">
+            <div class="relative w-2/6 mx-4" v-if="roomTypes?.data?.data">
               <select v-model="searchQuery"
                 class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center">
                 <option value="">Tất cả</option>
-                <option :value="roomtype.name" v-for="roomtype in roomTypes.roomtypes" :key="roomtype.id">{{
+                <option :value="roomtype.name" v-for="(roomtype, index) in roomTypes.data.data" :key="index">{{
                   roomtype.name }}</option>
               </select>
               <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
@@ -32,6 +40,7 @@
         </div>
       </div>
       <div class="px-4 pb-4 h-[622px]">
+
         <table class="w-full border border-gray-300 text-sm text-center bg-white">
           <thead class="bg-gradient-to-r from-muesli-200 to-muesli-400 text-white">
             <tr>
@@ -45,19 +54,20 @@
             </tr>
           </thead>
           <tbody class="text-gray-700">
-            <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
-              v-for="roomtype in paginatedRoomTypes" :key="roomtype.id">
-              <td class="py-2">{{ roomtype.name }}</td>
-              <td class="py-2">{{ roomtype.description == null ? "Không Có Mô Tả Nào" : roomtype.description }}</td>
-              <td class="py-2">{{ roomtype.size }}m²</td>
-              <td class="py-2">{{ roomtype.price }}</td>
-              <td class="py-2">{{ roomtype.peopleAbout }}</td>
-              <td class="py-2">{{ roomtype.rooms?.length ?? 0 }}</td>
+            <tr v-if="roomTypes?.data?.data" class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
+              v-for="(roomtype, index) in paginatedRoomTypes" :key="index">
+              <td class="py-2">{{ roomtype?.name }}</td>
+              <td class="py-2">{{ roomtype?.description == null ? "Không Có Mô Tả Nào" : roomtype?.description }}</td>
+              <td class="py-2">{{ roomtype?.size }}m²</td>
+              <td class="py-2">{{ roomtype?.price }}</td>
+              <td class="py-2">{{ roomtype?.peopleAbout }}</td>
+              <td class="py-2">{{ roomtype?.rooms?.length ?? 0 }}</td>
               <td class="py-2 flex justify-center items-center gap-5 h-full">
-                <button @click.prevent="handleDeleteRoomType(roomtype)" class="hover:text-red-700 m-1.5 text-red-500">
+                <button v-if="roomtype" @click.prevent="handleDeleteRoomType(roomtype)"
+                  class="hover:text-red-700 m-1.5 text-red-500">
                   <Trash2 />
                 </button>
-                <button @click="openUpdateRoomType(roomtype)" class="text-blue-400 hover:text-blue-700">
+                <button v-if="roomtype" @click="openUpdateRoomType(roomtype)" class="text-blue-400 hover:text-blue-700">
                   <SquarePen />
                 </button>
               </td>
@@ -79,7 +89,9 @@
       </div>
     </div>
   </section>
-  <DialogUpdateRoomType v-model:open="isOpenUpdate" :roomtype="selectedRoomType"></DialogUpdateRoomType>
+  <div v-if="isFetchingRoomTypes"></div>
+  <AsyncDialogUpdateRoomType v-else-if="selectedRoomType" v-model:open="isOpenUpdate" :roomtype="selectedRoomType">
+  </AsyncDialogUpdateRoomType>
 </template>
 <script setup lang="ts">
 import {
@@ -89,25 +101,32 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-vue-next";
-import { ref, onMounted, computed, watchEffect } from "vue";
+import { ref, onMounted, computed, watchEffect, toRaw, defineAsyncComponent } from "vue";
 import { Button } from "@/components/ui/button";
 import DialogCreateRoomType from "@/components/administration/roomTypeDialog/CreateRoomTypeDialog.vue";
 import DialogUpdateRoomType from "@/components/administration/roomTypeDialog/UpdateRoomTypeDialog.vue";
 import { RoomType } from "@/api/roomtype";
-import { useGetRoomTypeList } from "@/hook/useRoomType";
+import {
+  useGetRoomTypeList
+} from "@/hook/useRoomType";
 
 const isOpen = ref(false);
 const isOpenUpdate = ref(false);
 const roomTypesStore = RoomType();
-const { data: roomTypes } = useGetRoomTypeList();
+const { data: roomTypes, isFetching: isFetchingRoomTypes, isPending: isPendingRoomTypes } = useGetRoomTypeList();
+
+const AsyncDialogUpdateRoomType = defineAsyncComponent(() => import("@/components/administration/roomTypeDialog/UpdateRoomTypeDialog.vue"));
+
 
 // Search
 const searchQuery = ref("");
 const filteredRoomTypes = computed(() => {
   if (!searchQuery.value) {
-    return roomTypes.value;
+    // console.log('LOG: ')
+    // console.log(roomTypes.value?.data?.data)
+    return roomTypes.value?.data.data;
   }
-  return roomTypes.value.filter((roomtype: any) =>
+  return roomTypes.value?.data?.data.filter((roomtype: any) =>
     roomtype.name.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
@@ -115,16 +134,35 @@ const filteredRoomTypes = computed(() => {
 const currentPage = ref(1);
 const pageSize = ref(10);
 const totalPages = computed(() => {
+  if (filteredRoomTypes.value == null) return 0
   return Math.ceil(filteredRoomTypes.value.length / pageSize.value);
 });
+
+// const paginatedRoomTypes = computed(() => {
+//   //   const startIndex = (currentPage.value) * pageSize.value;
+//   //   const endIndex = startIndex + pageSize.value;
+//   if (filteredRoomTypes.value) {
+//     const data = toRaw(JSON.parse(JSON.stringify([...filteredRoomTypes.value])))
+//     console.log(data)
+//     return data;
+//   }
+//   else return []
+// });
+
+
 const paginatedRoomTypes = computed(() => {
-  const startIndex = (currentPage.value - 1) * pageSize.value;
-  const endIndex = startIndex + pageSize.value;
-  return filteredRoomTypes.value.slice(startIndex, endIndex);
+  if (filteredRoomTypes.value) {
+    const startIndex = (currentPage.value - 1) * pageSize.value;
+    const endIndex = startIndex + pageSize.value;
+    return filteredRoomTypes.value.slice(startIndex, endIndex);
+  }
+  return [];
 });
+
 
 const selectedRoomType = ref(null);
 const openUpdateRoomType = async (roomtype: any) => {
+  if (!roomtype) return
   selectedRoomType.value = { ...roomtype };
   isOpenUpdate.value = true;
 }
@@ -135,8 +173,13 @@ const handleDeleteRoomType = async (roomtype: any) => {
 }
 
 onMounted(async () => {
-  // await roomTypes.getAllRoomType();
-  // console.log(JSON.stringify(roomTypes.roomtypes, null, 2));
-  console.log(" Lấy loại phòng bằng TanStack: ", roomTypes.value);
+  console.log(roomTypes)
+  console.log('Computed:', paginatedRoomTypes.value)
 });
+watchEffect(() => {
+  if (currentPage.value > totalPages.value) {
+    currentPage.value = totalPages.value || 1;
+  }
+});
+
 </script>

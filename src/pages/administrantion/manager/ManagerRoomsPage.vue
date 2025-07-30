@@ -47,8 +47,9 @@
               <td class="py-2">{{ room.roomNumber }}</td>
               <td class="py-2">{{ room.roomType.name }}</td>
               <td class="py-2">{{ room.floor }}</td>
-              <td class="py-2" :class="room.roomStatus == 'INACTIVE' ? 'text-red-500' : 'text-green-500'">{{
-                room.roomStatus }}</td>
+              <td class="py-2" :class="room.roomStatus == 'INACTIVE' ? 'text-green-500' : 'text-red-500'">{{
+                room.roomStatus == 'INACTIVE' ? 'Đang sử dụng' : room.roomStatus == 'FIX' ? 'Đang sửa chữa' : 'Lỗi' }}
+              </td>
               <td class="py-2 flex justify-center items-center gap-5 h-full">
                 <button
                   class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">

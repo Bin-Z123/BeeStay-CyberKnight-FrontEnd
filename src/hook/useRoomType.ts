@@ -5,20 +5,29 @@ import {
 
 import { QUERY_KEY_ROOMTYPE } from "@/constants/query-keys"
 import { useQuery, useMutation } from "@tanstack/vue-query"
+import { MaybeRef, MaybeRefOrGetter } from "@tanstack/vue-query/build/legacy/types"
+import { computed, Ref } from "vue"
 
 const useGetRoomTypeList = () => {
-    const { data, isLoading, isError, isPending } = useQuery({
+    return useQuery({
         queryKey: [QUERY_KEY_ROOMTYPE.LIST_ROOMTYPE],
-        queryFn: async () => {
-            const response = await getRoomTypesList();
-            console.log("response roomType: ", JSON.stringify(response, null, 2));
-            return response.data.data;
-        },
-
+        queryFn: async () => (await getRoomTypesList()),
+        refetchOnWindowFocus: true
     })
-    return { data, isLoading, isError, isPending }
 }
 
+const useGetRoomTypeInfo = (roomtypeId: Ref<number | undefined>, open: Ref<Boolean>) => {
+    return useQuery({
+        queryKey: [QUERY_KEY_ROOMTYPE.ROOMTYPE_INFO, roomtypeId],
+        queryFn: async () => {
+
+            const response = await getRoomTypeById(roomtypeId);
+            return response.data.data
+        },
+        enabled: computed(() => open.value && !!roomtypeId),
+    })
+}
 export {
-    useGetRoomTypeList
+    useGetRoomTypeList,
+    useGetRoomTypeInfo
 }

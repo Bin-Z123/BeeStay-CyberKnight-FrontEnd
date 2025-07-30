@@ -1,9 +1,10 @@
 import axios from "axios";
-import { ref } from "vue";
+import { Ref, ref } from "vue";
 import { toast } from 'vue-sonner'
 import { defineStore } from "pinia";
 import { RoomTypeResponse2 } from "@/types";
 import { myAxios } from "./axios";
+import { MaybeRef, MaybeRefOrGetter } from "@tanstack/vue-query/build/legacy/types";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const isLoading = ref(false);
@@ -120,12 +121,13 @@ export const RoomType = defineStore('roomtype', () => {
     return { roomtype, roomtypes, getAllRoomType, createRoomType, updateRoomType, deleteRoomType, getRoomTypeById, isLoading };
 });
 
+// NEW AXIOS
 
 const getRoomTypesList = async () => {
     return myAxios.get('/admin/roomTypes')
 }
-const getRoomTypeById = async (roomtypeId: number) => {
-    return myAxios.get(`/admin/roomTypes/${roomtypeId}`)
+const getRoomTypeById = async (roomtypeId: Ref<number | undefined>) => {
+    return myAxios.get(`/admin/roomTypes/${roomtypeId.value}`)
 }
 
 export {
