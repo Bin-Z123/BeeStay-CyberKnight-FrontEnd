@@ -336,7 +336,7 @@ const bookings = Bookings();
 const router = useRouter();
 const facilities = Facilities();
 
-console.log("Loại Phòng Đây Nè", roomTypes.roomtypes);
+// console.log("Loại Phòng Đây Nè", roomTypes.roomtypes);
 
 const toggleDarkMode = () => {
     const htmlElement = document.documentElement;
@@ -357,7 +357,7 @@ onMounted(async () => {
     // await roomTypes.getAllRoomType();
     await facilities.getAllFacilities();
     await bookings.getAvailableRooms(bookings.checkin, bookings.checkout, bookings.numberOfPeople);
-    console.log("Phòng Còn Trống Nè Hehehe", JSON.stringify(bookings.listRoomsAvailable, null, 2));
+    // console.log("Phòng Còn Trống Nè Hehehe", JSON.stringify(bookings.listRoomsAvailable, null, 2));
 });
 const numberOfNights = ref(1);
 const checkOutDateText = (night) => {

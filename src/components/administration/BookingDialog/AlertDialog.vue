@@ -112,7 +112,7 @@ watch(() => props.open, (isOpen) => {
         // Bắt đầu đếm ngược
         intervalId = window.setInterval(() => {
             countdown.value -= 1;
-            console.log(countdown.value);
+            // console.log(countdown.value);
             if (countdown.value <= 0) {
                 clearInterval(intervalId);
                 isActionDisabled.value = false; // Mở khóa nút

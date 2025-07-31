@@ -25,23 +25,27 @@
 
                             <div>
                                 <label for="">Tên người đặt</label>
-                                <input :disabled="!checkBoxInfo" type="text" :value="bookingData.user?.fullname || bookingData.guestBooking?.fullname " class="input-booking"
-                                  >
+                                <input :disabled="!checkBoxInfo" type="text"
+                                    :value="bookingData.user?.fullname || bookingData.guestBooking?.fullname"
+                                    class="input-booking">
                             </div>
                             <div>
                                 <label for="">Sđt</label>
-                                <input :disabled="!checkBoxInfo" type="text" :value="bookingData.user?.phone || bookingData.guestBooking?.phone" class="input-booking"
-                                   >
+                                <input :disabled="!checkBoxInfo" type="text"
+                                    :value="bookingData.user?.phone || bookingData.guestBooking?.phone"
+                                    class="input-booking">
                             </div>
                             <div>
                                 <label for="">Email</label>
-                                <input :disabled="!checkBoxInfo" type="text" :value="bookingData.user?.email || bookingData.guestBooking?.email" class="input-booking"
-                                 >
+                                <input :disabled="!checkBoxInfo" type="text"
+                                    :value="bookingData.user?.email || bookingData.guestBooking?.email"
+                                    class="input-booking">
                             </div>
                             <div>
                                 <label for="">CCCD</label>
-                                <input :disabled="!checkBoxInfo" type="text" :value="bookingData.user?.cccd || bookingData.guestBooking?.cccd" class="input-booking"
-                                    >
+                                <input :disabled="!checkBoxInfo" type="text"
+                                    :value="bookingData.user?.cccd || bookingData.guestBooking?.cccd"
+                                    class="input-booking">
                             </div>
                         </div>
                         <div>
@@ -197,7 +201,7 @@
 
             <DialogFooter class="p-6 pt-0 flex justify-between">
                 <Button class="justify-self-start">Tổng tiền phải trả dự kiến: <b>{{ formatVND(bookingData.totalAmount)
-                }}</b></Button>
+                        }}</b></Button>
                 <Button @click="handleConfirm(bookingData.id)" :disabled="isDirty"
                     class="bg-muesli-400 hover:bg-muesli-600 disabled:opacity-50 text-white px-3 py-2 rounded-sm">
                     Xác nhận
@@ -400,7 +404,7 @@ const deleteRoomType = (index: number) => {
     bookingData.value.bookingDetails.forEach((detail, i) => {
         result += i
     })
-    console.log(result);
+    // console.log(result);
     if (result == 0) {
         toast.error("Không được xóa loại phòng cuối cùng")
         return
@@ -439,7 +443,7 @@ onMounted(async () => {
     }))
     if (bookingData.value.checkInDate && bookingData.value.checkOutDate) {
         await bookingStore.getAvailableRoomsByDate(bookingData.value.checkInDate, bookingData.value.checkOutDate)
-        console.log("Danh sách phòng trống:", bookingStore.listRoomsAvailable);
+        // console.log("Danh sách phòng trống:", bookingStore.listRoomsAvailable);
 
     }
     const data = cloneDeep(props.Booking)

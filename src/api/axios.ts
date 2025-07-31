@@ -39,11 +39,17 @@ myAxios.interceptors.request.use(
 
 myAxios.interceptors.response.use(
     function (response: any): any {
+        // console.log("Log Response: ");
+        // console.log(response.data.message);
         if (response.data.code || response.data.data) {
             if (response.data.message && response.data.message.length > 0) {
-                toast.success(response.data.message);
+                toast.success(response.data.message, {
+                    action: {
+                        label: "Thoát"
+                    }
+                });
             }
-            toast.success(response.message);
+            // toast.success(response.message);
             return response;
         }
         if (response.data.message && response.data.message.length > 0) {

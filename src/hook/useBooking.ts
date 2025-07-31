@@ -10,6 +10,7 @@ const useBookingsList = () => {
         queryKey: [QUERY_KEY_BOOKING.BOOKING_LIST],
         queryFn: async () => {
             const response = await getBookingsList();
+            // console.log(JSON.stringify(response, null, 2))
             return await response.data.data
         },
         refetchOnWindowFocus: false
@@ -23,7 +24,6 @@ const useCancelBooking = () => {
             return await putCancelBooking(bookingId)
         },
         onSuccess: () => {
-            toast.success('Hủy booking thành công!')
             queryClient.invalidateQueries({
                 queryKey: [QUERY_KEY_BOOKING.BOOKING_LIST]
             })

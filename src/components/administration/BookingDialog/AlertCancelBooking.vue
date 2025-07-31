@@ -38,7 +38,7 @@ import { ref } from 'vue';
 import { toast } from 'vue-sonner';
 import { nextTick } from 'vue';
 import { useCancelBooking } from '@/hook/useBooking';
-import { delay } from 'lodash';
+
 import { resolve } from 'path';
 
 const emit = defineEmits(['update:open'])

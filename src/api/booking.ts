@@ -120,7 +120,7 @@ export const Bookings = defineStore("booking", () => {
       checkin.value = checkinDateF;
       checkout.value = checkoutDateF;
       numberOfPeople.value = numberofpeople;
-      console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate);
+      // console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate);
       const response = await axios.get<AvalableResponse>(`${baseUrl}/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`, {
         withCredentials: true
       });
@@ -139,7 +139,7 @@ export const Bookings = defineStore("booking", () => {
     try {
       const checkinDate = formatDateWitCheckInCheckOutAvailable(checkinDateF, 14, 0, 0)
       const checkoutDate = formatDateWitCheckInCheckOutAvailable(checkoutDateF, 12, 0, 0)
-      console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate, "roomtypeid: ");
+      // console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate, "roomtypeid: ");
       const response = await axios.get<AvalableResponse>(`${baseUrl}/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`, {
         withCredentials: true
       });
@@ -247,8 +247,8 @@ export const Bookings = defineStore("booking", () => {
       bookingFacilityRequest: bookingFacilityRequest,
       stayRequest: [],
     };
-    console.log("Checkout", checkoutDate.value);
-    console.log("Dữ liệu gửi về BE để tạo booking:", JSON.stringify(bookingPayload, null, 2));
+    // console.log("Checkout", checkoutDate.value);
+    // console.log("Dữ liệu gửi về BE để tạo booking:", JSON.stringify(bookingPayload, null, 2));
     const result = await createBooking(bookingPayload);
     if (result) {
 

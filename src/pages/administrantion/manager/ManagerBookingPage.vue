@@ -188,11 +188,11 @@ import {
     ChevronLeft,
     ChevronRight,
 } from "lucide-vue-next";
-import { ref, onMounted, computed, reactive, defineAsyncComponent, Component, Ref, defineComponent } from "vue";
+import { ref, onMounted, computed, reactive, defineAsyncComponent, Component, Ref, defineComponent, nextTick, watch } from "vue";
 import { Button } from "@/components/ui/button";
 import { Bookings } from "@/api/booking";
 import { formatDateWithTimeToUI, customFormatDatePicker } from "@/utils";
-import { vi } from 'date-fns/locale';
+import { is, vi } from 'date-fns/locale';
 import { useRouter } from "vue-router";
 import {
     Booking
@@ -255,15 +255,13 @@ const paginatedRoomTypes = computed(() => {
 });
 // Sort theo ngày mới nhất
 const sortedBookings = ref<Booking[]>([]);
-onMounted(async () => {
-    // await bookings.getBookings();
+watch(() => !isFetchingBookings.value, () => {
     const statusToEnd = 'NOTPAID';
-
     // sortedBookings.value = [...bookings.bookings]
     sortedBookings.value = [...bookingsList.value]
         .filter(b => b.bookingStatus !== 'X')
         .sort((a, b) => {
-            // ---- Logic 1: Ưu tiên kiểm tra status cần đưa xuống cuối ----
+            //Ưu tiên kiểm tra status cần đưa xuống cuối ----
             const aIsEndStatus = a.bookingStatus === statusToEnd;
             const bIsEndStatus = b.bookingStatus === statusToEnd;
 
@@ -274,14 +272,14 @@ onMounted(async () => {
                 return -1; // Đẩy b xuống cuối (giữ a ở trên)
             }
 
-            // ---- Logic 2: Nếu không thuộc trường hợp trên, sắp xếp theo ngày như cũ ----
-            // Logic này chỉ được thực thi khi cả a và b đều là status "bình thường"
-            // hoặc cả hai đều là status cần đưa xuống cuối.
+
             return new Date(b.bookingDate).getTime() - new Date(a.bookingDate).getTime();
         });
-    // const startDate = new Date();
-    // const endDate = new Date(new Date().setDate(startDate.getDate() + 30));
-    // date.value = [startDate, endDate];
+})
+onMounted(async () => {
+    // await bookings.getBookings();
+
+
 });
 
 //Search booking

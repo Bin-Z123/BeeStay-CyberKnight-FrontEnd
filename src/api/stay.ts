@@ -14,7 +14,7 @@ export const Stay = defineStore("stay", () => {
 
     const createStay = async (stay: StayCreateRequest[]) => {
         isLoading.value = true;
-        console.log("Stay Data: ", JSON.stringify(stay));
+        // console.log("Stay Data: ", JSON.stringify(stay));
         try {
             const response = await axios.post(`${baseUrl}/admin/stay/create`, stay);
             stays.value.push(response.data);

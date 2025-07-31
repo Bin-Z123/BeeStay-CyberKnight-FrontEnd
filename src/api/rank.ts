@@ -16,7 +16,7 @@ interface RankResponse {
     data: Rank[]
 }
 
-export const Rank = () =>{
+export const Rank = () => {
     const ranks = ref<Rank[]>([])
     const rank = ref<Rank>({
         id: 0,
@@ -25,12 +25,12 @@ export const Rank = () =>{
         discount_percent: 0
     });
     const getAllRank = async (): Promise<RankResponse> => {
-        try{
-            const response = await axios.get<RankResponse>(`${baseUrl}/admin/rank/list`,{withCredentials: true});
-            console.log("status: "+response.status)
+        try {
+            const response = await axios.get<RankResponse>(`${baseUrl}/admin/rank/list`, { withCredentials: true });
+            // console.log("status: "+response.status)
             ranks.value = response.data.data;
             return response.data
-        }catch(error){
+        } catch (error) {
             throw error
         }
     }
@@ -39,7 +39,7 @@ export const Rank = () =>{
         isLoading.value = true;
         try {
             const response = await axios.post<RankResponse>(`${baseUrl}/admin/rank/create`, rank);
-            
+
             if (response.status === 200) {
                 toast.success('Thông báo', {
                     description: 'Tạo rank thành công!',
@@ -52,8 +52,8 @@ export const Rank = () =>{
                 });
             }
             return response.data;
-        } catch(error){
-            toast.error('Thông báo',{
+        } catch (error) {
+            toast.error('Thông báo', {
                 description: 'Lỗi không xác định ' + error,
             })
             throw error
@@ -71,7 +71,7 @@ export const Rank = () =>{
                     description: 'Cập nhật rank thành công!',
                     action: { label: 'Thoát' },
                 });
-            }else{
+            } else {
                 toast.warning(' thông báo', {
                     description: 'Cập nhật rank thất bại: ' + response.status,
                     action: { label: 'Thoát' },
@@ -79,7 +79,7 @@ export const Rank = () =>{
             }
             return response.data;
         } catch (error) {
-            toast.error(' thông báo',{
+            toast.error(' thông báo', {
                 description: 'Lỗi không xác định ' + error,
             })
             throw error;
@@ -92,12 +92,12 @@ export const Rank = () =>{
         isLoading.value = true;
         try {
             const response = await axios.delete<RankResponse>(`${baseUrl}/admin/rank/${id}`);
-            if(response.status === 200){
+            if (response.status === 200) {
                 toast.success('Thông báo', {
                     description: 'Xóa rank thành công!',
                     action: { label: 'Thoát' },
                 });
-            }else{
+            } else {
                 toast.warning(' thông báo', {
                     description: 'Xóa rank thất bại: ' + response.status,
                     action: { label: 'Thoát' },
@@ -105,7 +105,7 @@ export const Rank = () =>{
             }
             return response.data;
         } catch (error) {
-            toast.error(' thông báo',{
+            toast.error(' thông báo', {
                 description: 'Lỗi không xác định ' + error,
             })
             throw error;
@@ -114,5 +114,5 @@ export const Rank = () =>{
         }
     };
 
-    return { rank, ranks, getAllRank, createRank, updateRank, deleteRank, isLoading}
+    return { rank, ranks, getAllRank, createRank, updateRank, deleteRank, isLoading }
 }
