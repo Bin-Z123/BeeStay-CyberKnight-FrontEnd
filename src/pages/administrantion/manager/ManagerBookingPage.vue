@@ -23,7 +23,7 @@
                             <option value="CONFIRMED">Chờ nhận phòng</option>
                             <option value="CHECKOUT">Đã trả phòng</option>
                             <option value="STAY">Đang ở</option>
-                            <option value="PAID">Đã thanh toán</option>
+                            <option value="PAID">Đã Trả Phòng</option>
                             <option value="PENDING">Chờ thanh toán</option>
                             <option value="CANCEL">Đã Hủy</option>
                             <option value="LATE">Giữ phòng</option>
@@ -33,7 +33,7 @@
                             <ChevronDown class="w-5 h-5 text-gray-400" />
                         </div>
                     </div>
-                    <input type="text" v-model="searchInput"
+                    <input type="search" v-model="searchInput"
                         class="w-2/8 h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center"
                         placeholder="Tìm kiếm">
 
@@ -62,6 +62,7 @@
             <table class="w-full border border-gray-300 text-sm text-center bg-white">
                 <thead class="bg-gradient-to-r from-muesli-200 to-muesli-400 text-white">
                     <tr>
+                        <th class="px-4 py-2 border">ID</th>
                         <th class="px-4 py-2 border">Khách Hàng</th>
                         <th class="px-4 py-2 border">SĐT</th>
                         <th class="px-4 py-2 border">Email</th>
@@ -76,6 +77,7 @@
                     <tr class="hover:bg-muesli-100 focus:bg-muesli-200 transition odd:bg-white even:bg-gray-100"
                         tabindex="0" v-for="booking in paginatedRoomTypes" :key="booking.id"
                         @contextmenu.prevent="openContextMenu($event, booking)">
+                        <td class="py-2">BK - {{ booking.id }}</td>
                         <td class="py-2">{{ booking.user?.fullname || booking.guestBooking.fullname + ' (Guest)' }}</td>
                         <td class="py-2">{{ booking.user?.phone || booking.guestBooking.phone }}</td>
                         <td class="py-2">{{ booking.user?.email || booking.guestBooking.email }}</td>
@@ -101,7 +103,7 @@
                                                 : booking.bookingStatus === 'CHECKOUT'
                                                     ? 'Đã Trả Phòng'
                                                     : booking.bookingStatus === 'PAID'
-                                                        ? 'Đã Thanh Toán'
+                                                        ? 'Đã Trả Phòng'
                                                         : booking.bookingStatus === 'NOTPAID'
                                                             ? 'Đặt Phòng Chưa Cọc'
                                                             : booking.bookingStatus === 'LATE'
@@ -121,6 +123,14 @@
                 </tbody>
             </table>
             <div class="bg-white h-15 mb-4 shadow-lg flex items-center justify-end gap-2 px-5">
+                <select v-model="pageSize" class="w-12 h-8 border border-gray-300 rounded-sm text-center">
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
                 <input type="text" class="w-12 h-8 border border-gray-300 rounded-sm text-center" disabled
                     :value="currentPage" /><span>of {{ totalPages }}</span>
                 <button @click="currentPage--" :disabled="currentPage == 1"
@@ -151,6 +161,12 @@
                     class="w-full  text-left px-4 py-2 hover:bg-gray-100">
                     Hủy phòng
                 </button>
+            </div>
+            <div v-if="menu.data.bookingStatus == 'CANCEL'">
+                <button class="w-full text-left px-4 py-2 hover:bg-gray-100" @click="openTabBooking(menu.data.id)">Xem
+                    Chi
+                    Tiết</button>
+
             </div>
             <div v-if="menu.data.bookingStatus == 'STAY'">
                 <button class="w-full text-left px-4 py-2 hover:bg-gray-100" @click="openTabBooking(menu.data.id)">Trả
@@ -256,6 +272,7 @@ const paginatedRoomTypes = computed(() => {
 // Sort theo ngày mới nhất
 const sortedBookings = ref<Booking[]>([]);
 watch(() => !isFetchingBookings.value, () => {
+
     const statusToEnd = 'NOTPAID';
     // sortedBookings.value = [...bookings.bookings]
     sortedBookings.value = [...bookingsList.value]
@@ -292,6 +309,7 @@ const filteredBookings = computed(() => {
         const user = b.user
         const guest = b.guestBooking
 
+        const idBooking = b.id.toLocaleString().toLowerCase().includes(keyword);
 
         const userMatch = b.user &&
             (user.phone.toLowerCase().includes(keyword) ||
@@ -303,7 +321,7 @@ const filteredBookings = computed(() => {
                 guest.email.toLowerCase().includes(keyword) ||
                 guest.fullname?.toLowerCase().includes(keyword));
 
-        return userMatch || guestMatch;
+        return userMatch || guestMatch || idBooking;
     })
 })
 //Lọc ngày checkin-out

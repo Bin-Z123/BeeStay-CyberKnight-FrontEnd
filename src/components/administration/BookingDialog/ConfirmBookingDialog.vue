@@ -21,10 +21,10 @@
                                 class="justify-self-center">
                         </div>
                         <label class="col-span-2 text-center"><b class="">Thông tin cơ bản</b></label>
-                        <div>
+                        <div v-if="bookingData.guestBooking">
 
                             <div>
-                                <label for="">Tên người đặt</label>
+                                <label for="">Tên người đặt (Guest)</label>
                                 <input :disabled="!checkBoxInfo" type="text"
                                     :value="bookingData.user?.fullname || bookingData.guestBooking?.fullname"
                                     class="input-booking">
@@ -45,6 +45,29 @@
                                 <label for="">CCCD</label>
                                 <input :disabled="!checkBoxInfo" type="text"
                                     :value="bookingData.user?.cccd || bookingData.guestBooking?.cccd"
+                                    class="input-booking">
+                            </div>
+                        </div>
+                        <div v-else-if="bookingData.user">
+
+                            <div>
+                                <label for="">Tên người đặt</label>
+                                <input :disabled="!checkBoxInfo" type="text" :value="bookingData.user?.fullname"
+                                    class="input-booking">
+                            </div>
+                            <div>
+                                <label for="">Sđt</label>
+                                <input :disabled="!checkBoxInfo" type="text" :value="bookingData.user?.phone"
+                                    class="input-booking">
+                            </div>
+                            <div>
+                                <label for="">Email</label>
+                                <input :disabled="!checkBoxInfo" type="text" :value="bookingData.user?.email"
+                                    class="input-booking">
+                            </div>
+                            <div>
+                                <label for="">CCCD</label>
+                                <input :disabled="!checkBoxInfo" type="text" :value="bookingData.user?.cccd"
                                     class="input-booking">
                             </div>
                         </div>
@@ -201,7 +224,7 @@
 
             <DialogFooter class="p-6 pt-0 flex justify-between">
                 <Button class="justify-self-start">Tổng tiền phải trả dự kiến: <b>{{ formatVND(bookingData.totalAmount)
-                        }}</b></Button>
+                }}</b></Button>
                 <Button @click="handleConfirm(bookingData.id)" :disabled="isDirty"
                     class="bg-muesli-400 hover:bg-muesli-600 disabled:opacity-50 text-white px-3 py-2 rounded-sm">
                     Xác nhận

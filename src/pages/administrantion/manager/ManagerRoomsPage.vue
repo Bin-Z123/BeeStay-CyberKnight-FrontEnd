@@ -48,7 +48,7 @@
           <tbody class="text-gray-700">
             <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="room in paginatedRooms"
               :key="room.id">
-              <td class="py-2">{{ room.roomNumber }}</td>
+              <td class="py-2">{{ room.roomNumber }} ({{ room.roomImages.length ?? 0 }})</td>
               <td class="py-2">{{ room.roomType.name }}</td>
               <td class="py-2">{{ room.floor }}</td>
               <td class="py-2" :class="room.roomStatus == 'INACTIVE' ? 'text-green-500' : 'text-red-500'">{{

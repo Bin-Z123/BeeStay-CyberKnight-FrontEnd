@@ -20,7 +20,8 @@
                         <ChartNoAxesCombined class="text-muesli-400 absolute right-0 m-5 w-30 h-30" />
                         <div class="flex flex-col justify-center mx-5 my-10">
                             <h1 class="font-bold">Tổng Doanh Thu</h1>
-                            <h1 class="text-muesli-400 font-bold text-3xl">{{ totalYear.total.toLocaleString("vi-VI") }} VNĐ</h1>
+                            <h1 class="text-muesli-400 font-bold text-3xl">{{ totalYear.total.toLocaleString("vi-VI") }}
+                                VNĐ</h1>
                             <h1 class="text-gray-400">({{ totalYear.year }})</h1>
                         </div>
                     </div>
@@ -32,7 +33,8 @@
                         <h1 class="font-bold pt-6">10 Khách Hàng Nhiều Điểm Nhất</h1>
                         <table class="w-full border border-gray-300 text-sm text-center bg-white my-3">
                             <tbody class="text-gray-700">
-                                <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="(user, index) in sortedUsers" :key="user.id">
+                                <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
+                                    v-for="(user, index) in sortedUsers" :key="user.id">
                                     <td class="py-3.5">{{ index + 1 }}</td>
                                     <td class="py-3.5">{{ user.fullname }}</td>
                                     <td class="py-3.5">{{ user.point }}</td>
@@ -64,17 +66,17 @@ const rawChartData = ref<any[][]>([]);
 const selectYear = ref(new Date().getFullYear().toString());
 
 const chartData = computed(() => {
-  const raw = rawChartData.value;
-  if (!raw || !Array.isArray(raw)) return [];
-  const filtered = raw.filter((item) => {
-    const label = String(item[3] || '').toUpperCase().trim();
-    return label.includes('TOTAL') && label.includes('MONTH') && item[1] !== null;
-  });
-  return filtered.map((item) => ({
-    name: `Tháng ${item[1]}`,
-    total: item[2],
-    predicted: 0,
-  }));
+    const raw = rawChartData.value;
+    if (!raw || !Array.isArray(raw)) return [];
+    const filtered = raw.filter((item) => {
+        const label = String(item[3] || '').toUpperCase().trim();
+        return label.includes('TOTAL') && label.includes('MONTH') && item[1] !== null;
+    });
+    return filtered.map((item) => ({
+        name: `Tháng ${item[1]}`,
+        total: item[2],
+        predicted: 0,
+    }));
 });
 
 const totalYear = computed(() => {
@@ -86,7 +88,7 @@ const sortedUsers = computed(() => {
     return [...user.users].filter(user => user.role.id === 1).sort((a, b) => b.point - a.point).slice(0, 10);
 })
 
-onMounted( async () => {
+onMounted(async () => {
     // await statistic.getChartData(selectYear.value);
     // await booking.getBookings();
     // rawChartData.value = statistic.statisticChart?.data || [];
@@ -94,9 +96,9 @@ onMounted( async () => {
 })
 
 watchEffect(async () => {
-  if (!selectYear.value) return;
-  await statistic.getChartData(selectYear.value);
-  rawChartData.value = statistic.statisticChart?.data || [];
+    if (!selectYear.value) return;
+    await statistic.getChartData(selectYear.value);
+    rawChartData.value = statistic.statisticChart?.data || [];
 });
 
 </script>
