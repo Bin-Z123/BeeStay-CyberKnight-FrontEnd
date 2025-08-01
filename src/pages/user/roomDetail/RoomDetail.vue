@@ -63,10 +63,14 @@
                   </span>
                 </div>
               </div>
+              <!-- <div v-for="(image, index) in getRoomImages">
+                <img :src="getImageUrl(image.url)" alt="Ảnh Phòng" class="rounded-2xl w-full h-full object-cover">
+              </div> -->
 
               <div class="flex flex-col gap-5">
                 <h1 class="text-2xl font-bold">Ảnh</h1>
-                <div ref="roomImages" class="keen-slider rounded-2xl">
+                <ImageRoomSlider :images="getRoomImages" />
+                <!-- <div ref="roomImages" class="keen-slider rounded-2xl">
                   <div class="keen-slider__slide relative"
                     v-for="(image, index) in currentRoomType.availableRoomDTO[0]?.roomImage" :key="image.id">
                     <img :src="getImageUrl(image.url)" alt="Ảnh Phòng" class="rounded-2xl w-full h-full object-cover">
@@ -74,7 +78,7 @@
                       class="absolute top-0 right-0 bg-muesli-400 rounded-tr-2xl rounded-bl-2xl text-white text-2xl p-6 font-bold w-8 h-8 flex items-center justify-center"
                       v-if="currentRoomType.availableRoomDTO[0]?.roomImage.length > 1">{{ index + 1 }}</span>
                   </div>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -161,6 +165,8 @@ import 'keen-slider/keen-slider.min.css';
 import { Bookings } from '@/api/booking';
 import { RoomType } from '@/api/roomtype';
 import { useRoute, useRouter } from "vue-router";
+import ImageRoomSlider from './ImageRoomSlider.vue';
+import { get } from 'lodash';
 
 const bookings = Bookings();
 const roomtypes = RoomType();
@@ -182,6 +188,23 @@ const currentRoomType = computed(() => {
   }
   return bookings.listRoomsAvailable.find(room => room.roomTypeId == roomTypeId);
 });
+
+// Lấy danh sách ảnh phòng
+const getRoomImages = computed(() => {
+  const roomTypeId = route.query.roomTypeId;
+  const roomType = bookings.listRoomsAvailable.find(room => room.roomTypeId == roomTypeId);
+  const rooms = ref([])
+  roomType.availableRoomDTO.forEach(room => {
+    if (!room.roomImage[0]?.url) {
+      return
+    }
+    for (let i = 0; i < room.roomImage.length; i++) {
+      rooms.value.push(room.roomImage[i])
+    }
+
+  })
+  return rooms.value
+})
 
 // Watch slider loại phòng tương tự
 watch(() => bookings.listRoomsAvailable, (newValue) => {
@@ -224,6 +247,7 @@ watch(currentRoomType, (newRoom) => {
 onMounted(async () => {
   checkin.value = new Date();
   await bookings.getAvailableRooms(bookings.checkin, bookings.checkout, bookings.numberOfPeople);
+  console.log(getRoomImages.value);
 });
 
 onUnmounted(() => {
@@ -240,5 +264,7 @@ const checkOutDateText = (night) => {
 };
 const baseUrl = import.meta.env.VITE_CLOUDINARY_IMG_URL;
 const getImageUrl = (image) => `${baseUrl}/${image}`;
+
+// Tìm ảnh room trong roomType
 
 </script>
