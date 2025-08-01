@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import { ro } from "date-fns/locale";
 import { useAuthStore } from "@/stores/auth/login";
 import { useRouter } from "vue-router";
+import { myAxios } from "./axios";
 const router = useRouter();
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -119,7 +120,7 @@ export const Bookings = defineStore("booking", () => {
       checkin.value = checkinDateF;
       checkout.value = checkoutDateF;
       numberOfPeople.value = numberofpeople;
-      console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate);
+      // console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate);
       const response = await axios.get<AvalableResponse>(`${baseUrl}/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`, {
         withCredentials: true
       });
@@ -138,7 +139,7 @@ export const Bookings = defineStore("booking", () => {
     try {
       const checkinDate = formatDateWitCheckInCheckOutAvailable(checkinDateF, 14, 0, 0)
       const checkoutDate = formatDateWitCheckInCheckOutAvailable(checkoutDateF, 12, 0, 0)
-      console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate, "roomtypeid: ");
+      // console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate, "roomtypeid: ");
       const response = await axios.get<AvalableResponse>(`${baseUrl}/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`, {
         withCredentials: true
       });
@@ -246,8 +247,8 @@ export const Bookings = defineStore("booking", () => {
       bookingFacilityRequest: bookingFacilityRequest,
       stayRequest: [],
     };
-    console.log("Checkout", checkoutDate.value);
-    console.log("Dữ liệu gửi về BE để tạo booking:", JSON.stringify(bookingPayload, null, 2));
+    // console.log("Checkout", checkoutDate.value);
+    // console.log("Dữ liệu gửi về BE để tạo booking:", JSON.stringify(bookingPayload, null, 2));
     const result = await createBooking(bookingPayload);
     if (result) {
 
@@ -323,3 +324,14 @@ export const Bookings = defineStore("booking", () => {
     bookingHistory,
   };
 });
+//  NEW API
+const getBookingsList = async () => {
+  return myAxios.get('/admin/booking/list')
+}
+
+const putCancelBooking = async (bookingId: number) => {
+  return myAxios.put(`/cancel/${bookingId}`)
+}
+
+
+export { putCancelBooking, getBookingsList }

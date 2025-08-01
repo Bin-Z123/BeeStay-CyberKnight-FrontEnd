@@ -21,27 +21,54 @@
                                 class="justify-self-center">
                         </div>
                         <label class="col-span-2 text-center"><b class="">Thông tin cơ bản</b></label>
-                        <div>
+                        <div v-if="bookingData.guestBooking">
 
                             <div>
-                                <label for="">Tên người đặt</label>
-                                <input :disabled="!checkBoxInfo" type="text" class="input-booking"
-                                    v-model="bookingData.user.fullname">
+                                <label for="">Tên người đặt (Guest)</label>
+                                <input :disabled="!checkBoxInfo" type="text"
+                                    :value="bookingData.user?.fullname || bookingData.guestBooking?.fullname"
+                                    class="input-booking">
                             </div>
                             <div>
                                 <label for="">Sđt</label>
-                                <input :disabled="!checkBoxInfo" type="text" class="input-booking"
-                                    v-model="bookingData.user.phone">
+                                <input :disabled="!checkBoxInfo" type="text"
+                                    :value="bookingData.user?.phone || bookingData.guestBooking?.phone"
+                                    class="input-booking">
                             </div>
                             <div>
                                 <label for="">Email</label>
-                                <input :disabled="!checkBoxInfo" type="text" class="input-booking"
-                                    v-model="bookingData.user.email">
+                                <input :disabled="!checkBoxInfo" type="text"
+                                    :value="bookingData.user?.email || bookingData.guestBooking?.email"
+                                    class="input-booking">
                             </div>
                             <div>
                                 <label for="">CCCD</label>
-                                <input :disabled="!checkBoxInfo" type="text" class="input-booking"
-                                    v-model="bookingData.user.cccd">
+                                <input :disabled="!checkBoxInfo" type="text"
+                                    :value="bookingData.user?.cccd || bookingData.guestBooking?.cccd"
+                                    class="input-booking">
+                            </div>
+                        </div>
+                        <div v-else-if="bookingData.user">
+
+                            <div>
+                                <label for="">Tên người đặt</label>
+                                <input :disabled="!checkBoxInfo" type="text" :value="bookingData.user?.fullname"
+                                    class="input-booking">
+                            </div>
+                            <div>
+                                <label for="">Sđt</label>
+                                <input :disabled="!checkBoxInfo" type="text" :value="bookingData.user?.phone"
+                                    class="input-booking">
+                            </div>
+                            <div>
+                                <label for="">Email</label>
+                                <input :disabled="!checkBoxInfo" type="text" :value="bookingData.user?.email"
+                                    class="input-booking">
+                            </div>
+                            <div>
+                                <label for="">CCCD</label>
+                                <input :disabled="!checkBoxInfo" type="text" :value="bookingData.user?.cccd"
+                                    class="input-booking">
                             </div>
                         </div>
                         <div>
@@ -219,7 +246,7 @@ import {
 import {
     Booking,
 } from "@/interface/booking.interface";
-import { onMounted, ref, watch, computed, watchEffect } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
 import { formatDateWithTimeToUI, formatVND, formatDateWithTime } from "@/utils";
 import { Bookings } from "@/api/booking";
 import { toast } from "vue-sonner";
@@ -400,7 +427,7 @@ const deleteRoomType = (index: number) => {
     bookingData.value.bookingDetails.forEach((detail, i) => {
         result += i
     })
-    console.log(result);
+    // console.log(result);
     if (result == 0) {
         toast.error("Không được xóa loại phòng cuối cùng")
         return
@@ -439,7 +466,7 @@ onMounted(async () => {
     }))
     if (bookingData.value.checkInDate && bookingData.value.checkOutDate) {
         await bookingStore.getAvailableRoomsByDate(bookingData.value.checkInDate, bookingData.value.checkOutDate)
-        console.log("Danh sách phòng trống:", bookingStore.listRoomsAvailable);
+        // console.log("Danh sách phòng trống:", bookingStore.listRoomsAvailable);
 
     }
     const data = cloneDeep(props.Booking)

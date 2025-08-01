@@ -65,7 +65,7 @@
                                     <input type="text" :value="formatPrice(totalPrice)" disabled class="input-booking ">
                                 </div>
                                 <div class="space-x-1">
-                                    <VueDatePicker class="border border-muesli-300 " :min-date="new Date()"
+                                    <VueDatePicker disabled class="border border-muesli-300 " :min-date="new Date()"
                                         v-model="dateCheckin" teleport="body" multi-calendars :format="'dd/MM/yyyy'"
                                         :format-locale="vi" select-text="Chọn" cancel-text="Hủy" />
                                     <!-- <span>Lúc:</span>
@@ -87,12 +87,12 @@
                         <div class="h-auto w-auto flex items-center">
                             <div class="grid grid-cols-3">
                                 <div class="col-1 pr-2 flex flex-col items-end space-y-1">
-                                    <div>Trả trước: </div>
+                                    <div>Trạng thái: </div>
                                     <div>Ghi chú: </div>
                                 </div>
                                 <div class="col-span-2 flex flex-col space-y-1 pr-2">
                                     <div>
-                                        <input type="text" class="input-booking">
+                                        <input type="text" disabled value="Chưa thanh toán" class="input-booking">
                                     </div>
                                     <div>
                                         <textarea
@@ -155,8 +155,7 @@
                                     </option>
                                 </select>
                                 <!-- <input v-model="stay.roomNumber" class="input" placeholder="Số phòng" /> -->
-                                <select v-model="stay.stayStatus" class="input-booking">
-                                    <option value="PENDING">Chờ</option>
+                                <select v-model="stay.stayStatus" class="input-booking" disabled>
                                     <option value="NOW" selected>Ở ngay</option>
                                     <!-- <option value="DONE">Đã xong</option> -->
                                 </select>
@@ -173,7 +172,7 @@
 
                             <div>
                                 <div class="font-semibold mb-1"> Thông tin khách ở:</div>
-                                <div v-for="(guest, gIndex) in newBooking.stayRequest[sIndex].infoGuests" :key="gIndex"
+                                <div v-for="(guest, gIndex) in newBooking.stayRequest[sIndex]?.infoGuests" :key="gIndex"
                                     class="grid grid-cols-2 gap-4 mb-2">
                                     <input v-model="guest.name" class="input-booking" placeholder="Tên khách" />
                                     <input v-model="guest.phone" class="input-booking" placeholder="Số điện thoại" />
@@ -208,9 +207,9 @@
                 </div>
             </div>
             <DialogFooter class="p-6 pt-0">
-                <Button @click="handleCrateBooking" :disabled="bookingStore.isloading"
+                <Button @click="handleCrateBooking" :disabled="isloading"
                     class="bg-muesli-400 hover:bg-muesli-600 text-white px-3 py-2 rounded-sm disabled:opacity-80 disabled:bg-muesli-600">
-                    <span v-if="!bookingStore.isloading">Đặt Phòng</span>
+                    <span v-if="!isloading">Đặt Phòng</span>
                     <span v-else>
                         <LoaderCircle class="animate-spin" />
                     </span>
@@ -230,7 +229,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { computed, onMounted, ref, watch } from "vue";
-import { de, vi } from "date-fns/locale";
+import { de, is, vi } from "date-fns/locale";
 import { addDays, format } from "date-fns";
 import { LoaderCircle } from 'lucide-vue-next';
 import type {
@@ -247,6 +246,10 @@ import { toast } from "vue-sonner";
 import { Bookings } from "@/api/booking";
 import { formatVND, formatDateWithTime, formatDateWithTimeToSQL } from "@/utils";
 import { RoomAvailabilityResponse } from "@/types";
+import { useRouter } from "vue-router";
+import { resolve } from "path";
+
+const router = useRouter();
 const roomTypes = RoomType();
 const bookingStore = Bookings();
 const formatPrice = (price: number) => formatVND(price);
@@ -255,7 +258,7 @@ onMounted(async () => {
     await roomTypes.getAllRoomType();
     await bookingStore.getAvailableRoomsByDate(dateCheckin.value, dateCheckout.value);
 
-    console.log("Danh sách phòng trống:", bookingStore.listRoomsAvailable);
+    // console.log("Danh sách phòng trống:", bookingStore.listRoomsAvailable);
 })
 // Thông tin đặt phòng
 //Theo dõi ngày check-in check-out để tìm phòng trống
@@ -283,7 +286,7 @@ watch([dateCheckin, dateCheckout], ([checkin, checkout]) => {
         stay.actualCheckOut = formatDateWithTime(checkout, 12, 0, 0);
     })
     bookingStore.getAvailableRoomsByDate(dateCheckin.value, dateCheckout.value);
-    toast.success("Thêm ngày check-in, check-out");
+    // toast.success("Thêm ngày check-in, check-out");
 })
 
 
@@ -519,13 +522,50 @@ const handleDeleteGuest = (stayIndex: number, guestIndex: number) => {
     stayList.value[stayIndex].infoGuests.splice(guestIndex, 1)
 }
 
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+const isloading = ref(false)
 // Xử lý tạo Booking
 const handleCrateBooking = async () => {
-    console.log(totalBookedRoom.value, totalStay.value);
-    if (!validateStayBeforeSubmit()) return
-    await bookingStore.createBooking(newBooking.value);
-    console.log("Booking: ", newBooking.value);
+    // if (!validateStayBeforeSubmit()) return
+    isloading.value = true
+    try {
+        // await bookingStore.createBooking(newBooking.value);
+
+        await delay(2000)
+        router.go(0)
+        // window.location.reload()
+        // console.log("Booking: ", newBooking.value);
+    } catch (error) {
+        console.log(error);
+    } finally {
+        // isloading.value = false
+    }
+
 }
 
+const resetDataNewBooking = () => {
+    newBooking.value = {
+        stayRequest: [],
+        bookingDetailRequest: [{ roomTypeId: 0, quantity: 0 }],
+        guestBookingRequest: {
+            fullname: '',
+            phone: '',
+            email: '',
+            cccd: ''
+        },
+        bookingRequest: {
+            checkInDate: formatDateWithTime(dateCheckin.value, 14, 0, 0),
+            checkOutDate: formatDateWithTime(dateCheckout.value, 12, 0, 0),
+            isDeposit: false,
+            bookingStatus: 'STAY',
+            numGuest: 1,
+            userId: 0,
+            numberOfNights: numberOfNights.value
+        },
+
+        bookingFacilityRequest: [],
+
+    }
+}
 
 </script>

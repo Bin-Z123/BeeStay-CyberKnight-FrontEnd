@@ -23,16 +23,17 @@
                             <option value="CONFIRMED">Chờ nhận phòng</option>
                             <option value="CHECKOUT">Đã trả phòng</option>
                             <option value="STAY">Đang ở</option>
-                            <option value="PAID">Đã thanh toán</option>
+                            <option value="PAID">Đã Trả Phòng</option>
                             <option value="PENDING">Chờ thanh toán</option>
                             <option value="CANCEL">Đã Hủy</option>
                             <option value="LATE">Giữ phòng</option>
+                            <option value="NOTPAID">Chưa Thanh Toán</option>
                         </select>
                         <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                             <ChevronDown class="w-5 h-5 text-gray-400" />
                         </div>
                     </div>
-                    <input type="text" v-model="searchInput"
+                    <input type="search" v-model="searchInput"
                         class="w-2/8 h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center"
                         placeholder="Tìm kiếm">
 
@@ -40,7 +41,7 @@
             </div>
 
             <div class="w-1/3">
-                <div class="flex justify-end px-4">
+                <div class="flex justify-end px-4 space-x-1">
                     <!-- Btn bật dialog -->
                     <Button @click="isOpenBooking = true"
                         class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white px-4 my-3">
@@ -53,11 +54,15 @@
                 </div>
             </div>
         </div>
-
-        <div class="shadow-lg px-4 pb-4 h-[622px]">
+        <div v-if="isFetchingBookings" class="flex justify-center items-center h-200 w-full space-x-1">
+            <div class="loader"></div>
+            <div>Đang tải dữ liệu...</div>
+        </div>
+        <div v-else class="shadow-lg px-4 pb-4 h-[622px]">
             <table class="w-full border border-gray-300 text-sm text-center bg-white">
                 <thead class="bg-gradient-to-r from-muesli-200 to-muesli-400 text-white">
                     <tr>
+                        <th class="px-4 py-2 border">ID</th>
                         <th class="px-4 py-2 border">Khách Hàng</th>
                         <th class="px-4 py-2 border">SĐT</th>
                         <th class="px-4 py-2 border">Email</th>
@@ -72,6 +77,7 @@
                     <tr class="hover:bg-muesli-100 focus:bg-muesli-200 transition odd:bg-white even:bg-gray-100"
                         tabindex="0" v-for="booking in paginatedRoomTypes" :key="booking.id"
                         @contextmenu.prevent="openContextMenu($event, booking)">
+                        <td class="py-2">BK - {{ booking.id }}</td>
                         <td class="py-2">{{ booking.user?.fullname || booking.guestBooking.fullname + ' (Guest)' }}</td>
                         <td class="py-2">{{ booking.user?.phone || booking.guestBooking.phone }}</td>
                         <td class="py-2">{{ booking.user?.email || booking.guestBooking.email }}</td>
@@ -97,7 +103,7 @@
                                                 : booking.bookingStatus === 'CHECKOUT'
                                                     ? 'Đã Trả Phòng'
                                                     : booking.bookingStatus === 'PAID'
-                                                        ? 'Đã Thanh Toán'
+                                                        ? 'Đã Trả Phòng'
                                                         : booking.bookingStatus === 'NOTPAID'
                                                             ? 'Đặt Phòng Chưa Cọc'
                                                             : booking.bookingStatus === 'LATE'
@@ -117,6 +123,14 @@
                 </tbody>
             </table>
             <div class="bg-white h-15 mb-4 shadow-lg flex items-center justify-end gap-2 px-5">
+                <select v-model="pageSize" class="w-12 h-8 border border-gray-300 rounded-sm text-center">
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
                 <input type="text" class="w-12 h-8 border border-gray-300 rounded-sm text-center" disabled
                     :value="currentPage" /><span>of {{ totalPages }}</span>
                 <button @click="currentPage--" :disabled="currentPage == 1"
@@ -143,9 +157,16 @@
 
 
                 <hr>
-                <button class="w-full  text-left px-4 py-2 hover:bg-gray-100">
+                <button @click="() => isOpenAlertCancelBooking = true"
+                    class="w-full  text-left px-4 py-2 hover:bg-gray-100">
                     Hủy phòng
                 </button>
+            </div>
+            <div v-if="menu.data.bookingStatus == 'CANCEL'">
+                <button class="w-full text-left px-4 py-2 hover:bg-gray-100" @click="openTabBooking(menu.data.id)">Xem
+                    Chi
+                    Tiết</button>
+
             </div>
             <div v-if="menu.data.bookingStatus == 'STAY'">
                 <button class="w-full text-left px-4 py-2 hover:bg-gray-100" @click="openTabBooking(menu.data.id)">Trả
@@ -167,6 +188,7 @@
         </div>
 
     </section>
+    <AsyncAlertCancelBooking v-model:open="isOpenAlertCancelBooking" :Booking="menu.data.id"></AsyncAlertCancelBooking>
     <AsyncConfirmBookingDialog v-if="isOpenConfirmBooking" v-model:open="isOpenConfirmBooking" :Booking="menu.data"
         @update:open="handleDialogUpdate" ref="editDialogRef">
     </AsyncConfirmBookingDialog>
@@ -182,26 +204,18 @@ import {
     ChevronLeft,
     ChevronRight,
 } from "lucide-vue-next";
-import { ref, onMounted, computed, reactive, defineAsyncComponent, Component, Ref, defineComponent } from "vue";
+import { ref, onMounted, computed, reactive, defineAsyncComponent, Component, Ref, defineComponent, nextTick, watch } from "vue";
 import { Button } from "@/components/ui/button";
 import { Bookings } from "@/api/booking";
 import { formatDateWithTimeToUI, customFormatDatePicker } from "@/utils";
-import { id, vi } from 'date-fns/locale';
+import { is, vi } from 'date-fns/locale';
 import { useRouter } from "vue-router";
-import NewBookingDialog from "@/components/administration/BookingDialog/NewBookingDialog.vue";
-import ConfirmBookingDialog from "@/components/administration/BookingDialog/ConfirmBookingDialog.vue";
-import LoadingSpinner from "@/components/common/LoadingSpinner.vue";
-import ErrorDisplay from "@/components/common/ErrorDisplay.vue";
 import {
-    Booking,
-    BookingResponse,
-    BookingStatus,
-    BlacklistStatus
+    Booking
 } from "@/interface/booking.interface";
+import { useBookingsList } from "@/hook/useBooking";
 
-import { resolve } from "path";
-import { set } from "lodash";
-
+const { data: bookingsList, isFetching: isFetchingBookings } = useBookingsList();
 const router = useRouter();
 const AsyncConfirmBookingDialog = defineAsyncComponent({
     loader: () => import("@/components/administration/BookingDialog/ConfirmBookingDialog.vue"),
@@ -211,6 +225,9 @@ const AsyncAlertDialog = defineAsyncComponent({
 })
 const AsyncPendingBookingDialog = defineAsyncComponent({
     loader: () => import("@/components/administration/BookingDialog/PendingBookingDialog.vue")
+})
+const AsyncAlertCancelBooking = defineAsyncComponent({
+    loader: () => import("@/components/administration/BookingDialog/AlertCancelBooking.vue")
 })
 const AsyncNewBookingDialog = defineAsyncComponent({
     loader: () => import("@/components/administration/BookingDialog/NewBookingDialog.vue"),
@@ -241,7 +258,7 @@ const isOpenBooking = ref(false);
 const isOpenConfirmBooking = ref(false);
 const isOpenPendingBooking = ref(false);
 const openAlert = ref(false);
-
+const isOpenAlertCancelBooking = ref(false);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const totalPages = computed(() => {
@@ -254,15 +271,32 @@ const paginatedRoomTypes = computed(() => {
 });
 // Sort theo ngày mới nhất
 const sortedBookings = ref<Booking[]>([]);
-onMounted(async () => {
-    await bookings.getBookings();
-    sortedBookings.value = [...bookings.bookings]
-        .filter(b => b.bookingStatus !== 'X')
-        .sort((a, b) => new Date(b.bookingDate).getTime() - new Date(a.bookingDate).getTime());
+watch(() => !isFetchingBookings.value, () => {
 
-    // const startDate = new Date();
-    // const endDate = new Date(new Date().setDate(startDate.getDate() + 30));
-    // date.value = [startDate, endDate];
+    const statusToEnd = 'NOTPAID';
+    // sortedBookings.value = [...bookings.bookings]
+    sortedBookings.value = [...bookingsList.value]
+        .filter(b => b.bookingStatus !== 'X')
+        .sort((a, b) => {
+            //Ưu tiên kiểm tra status cần đưa xuống cuối ----
+            const aIsEndStatus = a.bookingStatus === statusToEnd;
+            const bIsEndStatus = b.bookingStatus === statusToEnd;
+
+            if (aIsEndStatus && !bIsEndStatus) {
+                return 1; // Đẩy a xuống cuối
+            }
+            if (!aIsEndStatus && bIsEndStatus) {
+                return -1; // Đẩy b xuống cuối (giữ a ở trên)
+            }
+
+
+            return new Date(b.bookingDate).getTime() - new Date(a.bookingDate).getTime();
+        });
+})
+onMounted(async () => {
+    // await bookings.getBookings();
+
+
 });
 
 //Search booking
@@ -275,6 +309,8 @@ const filteredBookings = computed(() => {
         const user = b.user
         const guest = b.guestBooking
 
+        const idBooking = b.id.toLocaleString().toLowerCase().includes(keyword);
+
         const userMatch = b.user &&
             (user.phone.toLowerCase().includes(keyword) ||
                 user.email.toLowerCase().includes(keyword) ||
@@ -285,7 +321,7 @@ const filteredBookings = computed(() => {
                 guest.email.toLowerCase().includes(keyword) ||
                 guest.fullname?.toLowerCase().includes(keyword));
 
-        return userMatch || guestMatch;
+        return userMatch || guestMatch || idBooking;
     })
 })
 //Lọc ngày checkin-out

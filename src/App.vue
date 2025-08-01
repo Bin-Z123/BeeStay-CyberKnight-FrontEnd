@@ -2,6 +2,7 @@
 import { RouterView } from "vue-router";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
+import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
 import "vue-sonner/style.css";
 import { toast } from "vue-sonner";
 const toggleDarkMode = () => {
@@ -17,6 +18,7 @@ const toggleDarkMode = () => {
 <template>
   <Toaster richColors position="top-right"></Toaster>
   <RouterView />
+  <VueQueryDevtools />
 </template>
 
 <style scoped></style>

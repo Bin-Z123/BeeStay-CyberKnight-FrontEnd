@@ -189,7 +189,7 @@ onMounted(async () => {
     await roomTypes.getAllRoomType();
     await bookingStore.getAvailableRoomsByDate(dateCheckin.value, dateCheckout.value);
 
-    console.log("Danh sách phòng trống:", bookingStore.listRoomsAvailable);
+    // console.log("Danh sách phòng trống:", bookingStore.listRoomsAvailable);
 })
 // Thông tin đặt phòng
 //Theo dõi ngày check-in check-out để tìm phòng trống
@@ -320,7 +320,7 @@ const validateStayBeforeSubmit = (): boolean => {
 const handleCrateBooking = async () => {
     if (!validateStayBeforeSubmit()) return
     await bookingStore.createBooking(newBooking.value);
-    console.log("Booking: ", newBooking.value);
+    // console.log("Booking: ", newBooking.value);
 }
 
 

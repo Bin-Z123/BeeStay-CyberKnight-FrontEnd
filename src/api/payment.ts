@@ -17,12 +17,12 @@ export const PaymentAPI = defineStore('payment', () => {
     const createPaymentPayOsLink = async (request: CreatePaymentLinkRequest): Promise<PaymentPayOsResponse> => {
         isLoading.value = true;
         try {
-            console.log("Creating Payment Link with Request: ", JSON.stringify(request, null, 2));
+            // console.log("Creating Payment Link with Request: ", JSON.stringify(request, null, 2));
             const response = await axios.post<PaymentPayOsResponse>(`${baseUrl}/orderPayOS/create`, request, {
                 withCredentials: true,
             });
             paymentOsData.value = response.data.data;
-            console.log("Payment Link Data: ", JSON.stringify(paymentOsData.value, null, 2));
+            // console.log("Payment Link Data: ", JSON.stringify(paymentOsData.value, null, 2));
             return response.data;
         } catch (error) {
 
@@ -40,7 +40,7 @@ export const PaymentAPI = defineStore('payment', () => {
                 withCredentials: true
             });
             paymentOsData.value = response.data.data;
-            console.log("Fetched Payment Data: ", JSON.stringify(paymentOsData.value, null, 2));
+            // console.log("Fetched Payment Data: ", JSON.stringify(paymentOsData.value, null, 2));
             return response.data;
         } catch (error: unknown) {
             toast.error("Failed to fetch payment data");

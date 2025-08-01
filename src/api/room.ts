@@ -1,9 +1,10 @@
 import { Rooms } from "@/components/administration/RoomDialog/Room";
 import axios from "axios";
-import { ref } from "vue";
+import { Ref, ref } from "vue";
 import { toast } from "vue-sonner";
 import { defineStore } from "pinia";
 import { Room } from "@/interface/booking.interface";
+import { myAxios } from "./axios";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const isLoading = ref(false);
@@ -73,7 +74,7 @@ export const RoomAPI = defineStore('room', () => {
         try {
             const response = await axios.get<ResponseRoom>(`${baseUrl}/admin/rooms`, { withCredentials: true });
             listRooms.value = response.data.data;
-            console.log("Danh sach phong: ", listRooms.value);
+            // console.log("Danh sach phong: ", listRooms.value);
             return response.data;
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
@@ -94,8 +95,8 @@ export const RoomAPI = defineStore('room', () => {
     const createRoom = async (room: RoomCreateRequest, files: File[]): Promise<RoomResponse> => {
         isLoading.value = true;
         try {
-            console.log("Room:", room);
-            console.log("Files:", files);
+            // console.log("Room:", room);
+            // console.log("Files:", files);
             const formData = new FormData();
             const roomBlob = new Blob([JSON.stringify(room)], { type: "application/json" });
             formData.append("rooms", roomBlob);
@@ -103,7 +104,7 @@ export const RoomAPI = defineStore('room', () => {
             files.forEach((file) => {
                 formData.append("file", file);
             })
-            console.log("Form Data:", formData.getAll("rooms"));
+            // console.log("Form Data:", formData.getAll("rooms"));
             const response = await axios.post<RoomResponse>(`${baseUrl}/admin/rooms`, formData, { withCredentials: true });
             toast.success("Thông báo", {
                 description: "Tạo phòng " + response.data.roomNumber + " thành công!",
@@ -124,8 +125,8 @@ export const RoomAPI = defineStore('room', () => {
     const updateRoom = async (room: RoomUpdateRequest, files: File[]): Promise<RoomResponse> => {
         isLoading.value = true;
         try {
-            console.log("Room to update:", room);
-            console.log("Files to upload:", files);
+            // console.log("Room to update:", room);
+            // console.log("Files to upload:", files);
             const formData = new FormData();
             const roomBlob = new Blob([JSON.stringify(room)], { type: "application/json" });
             formData.append("rooms", roomBlob);
@@ -157,7 +158,7 @@ export const RoomAPI = defineStore('room', () => {
         try {
             const response = await axios.get<ResponseRoom>(`${baseUrl}/admin/rooms/${id}`, { withCredentials: true });
             room.value = response.data.data;
-            console.log("Room details:", room.value);
+            // console.log("Room details:", room.value);
             return response.data;
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
@@ -181,3 +182,19 @@ export const RoomAPI = defineStore('room', () => {
         isLoading,
     };
 });
+
+// NEW AIXOS
+
+const getRoomsList = () => {
+    return myAxios.get('/admin/rooms')
+}
+
+const getRoomProfile = (roomId: Ref<number | undefined>) => {
+    return myAxios.get(`/admin/rooms/${roomId.value}`)
+
+}
+
+export {
+    getRoomsList,
+    getRoomProfile
+}

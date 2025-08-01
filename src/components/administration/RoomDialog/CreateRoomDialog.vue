@@ -172,7 +172,7 @@ const onFileChange = (e: Event) => {
       description: fileList.map((file) => file.name).join(", "),
     });
   }
-  console.log("File Images:", selectFiles.value);
+  // console.log("File Images:", selectFiles.value);
 };
 // Xử lý roomType
 const roomTypesData = ref({ ...props.roomTypes });

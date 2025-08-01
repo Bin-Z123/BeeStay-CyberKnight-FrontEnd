@@ -1,5 +1,9 @@
 <template>
-  <section>
+  <div v-if="isFetchingRooms" class="flex justify-center items-center h-200 w-full space-x-1">
+    <div class="loader"></div>
+    <div>Đang tải dữ liệu...</div>
+  </div>
+  <section v-else>
     <div>
       <div class="flex relative">
         <div class="w-1/2">
@@ -44,11 +48,12 @@
           <tbody class="text-gray-700">
             <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="room in paginatedRooms"
               :key="room.id">
-              <td class="py-2">{{ room.roomNumber }}</td>
+              <td class="py-2">{{ room.roomNumber }} ({{ room.roomImages.length ?? 0 }})</td>
               <td class="py-2">{{ room.roomType.name }}</td>
               <td class="py-2">{{ room.floor }}</td>
-              <td class="py-2" :class="room.roomStatus == 'INACTIVE' ? 'text-red-500' : 'text-green-500'">{{
-                room.roomStatus }}</td>
+              <td class="py-2" :class="room.roomStatus == 'INACTIVE' ? 'text-green-500' : 'text-red-500'">{{
+                room.roomStatus == 'INACTIVE' ? 'Đang sử dụng' : room.roomStatus == 'FIX' ? 'Đang sửa chữa' : 'Lỗi' }}
+              </td>
               <td class="py-2 flex justify-center items-center gap-5 h-full">
                 <button
                   class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
@@ -95,6 +100,9 @@ import DialogUpdateRoom from "@/components/administration/RoomDialog/UpdateRoomD
 import { Rooms } from "@/components/administration/RoomDialog/Room";
 import { RoomAPI } from "@/api/room";
 import { RoomType } from "@/api/roomtype";
+import { useGetRoomList } from "@/hook/useRoom";
+
+const { data: roomsList, isFetching: isFetchingRooms, isPending: isPendingRooms } = useGetRoomList();
 const { rooms } = Rooms();
 const roomStore = RoomAPI();
 const roomTypeStore = RoomType();

@@ -1,6 +1,9 @@
 <template>
     <h1>Booking Detail {{ props.id }}</h1>
-    <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 printable-area">
+    <div v-if="isLoading" class="flex justify-center items-center h-200 w-full space-x-2">
+        <div class="loader"> </div><span>Đang tải dữ liệu...</span>
+    </div>
+    <div v-else class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 printable-area">
         <div class="bg-white rounded-lg  overflow-hidden ">
             <div class="p-6 sm:p-8">
                 <!-- Header: Logo, Title, Booking ID & Status -->
@@ -12,7 +15,17 @@
                         <p class="text-sm text-gray-500">Ngày đặt: 14/07/2025</p>
                     </div>
                     <div class="mt-4 sm:mt-0">
-                        <span
+                        <span :class="BookingStore.bookingTicket?.bookingStatus === 'CONFIRMED'
+                            ? 'text-green-800 bg-green-100'
+                            : BookingStore.bookingTicket?.bookingStatus === 'CANCEL'
+                                ? 'text-red-800 bg-red-100'
+                                : BookingStore.bookingTicket?.bookingStatus === 'STAY'
+                                    ? 'text-blue-800 bg-blue-100'
+                                    : BookingStore.bookingTicket?.bookingStatus === 'COMPLETED'
+                                        ? 'text-green-900 bg-green-100'
+                                        : BookingStore.bookingTicket?.bookingStatus === 'LATE'
+                                            ? 'text-yellow-900 bg-yellow-100'
+                                            : 'Chờ Thanh Toán'"
                             class="inline-block px-3 py-1 text-sm font-semibold text-green-800 bg-green-100 rounded-full">{{
                                 BookingStore.bookingTicket?.bookingStatus === 'CONFIRMED'
                                     ? 'Chờ Nhận Phòng'
@@ -192,19 +205,35 @@
                             <div class="flex justify-between text-xl font-bold">
                                 <span class="text-gray-900">Tổng Cộng</span>
                                 <span class="text-blue-600">{{ formatVND(BookingStore.bookingTicket?.totalAmount ?? 0)
-                                    }}</span>
+                                }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Đã thanh toán </span>
-                                <span class="font-medium text-gray-800">{{ formatVND(paymentPaid) }}</span>
+                                <span class="font-medium text-gray-800">{{ formatVND(paymentPaid ?? 0) }}</span>
                             </div>
                             <div class="flex justify-between  text-lg font-bold bg-yellow-100 p-3 rounded-lg  ">
                                 <span class="text-yellow-800 my-auto w-48">Cần thanh toán: </span>
                                 <span class="text-yellow-800 my-auto"> {{
-                                    formatVND(paymentOsdata.amount) }}</span>
+                                    formatVND(paymentOsdata.amount ?? 0) }}</span>
                             </div>
                             <!-- STAFF ONLY SECTION -->
-                            <div id="staff-payment-section" class="mt-6 pt-6 border-t border-dashed printable-hidden">
+                            <div v-if="BookingStore.bookingTicket?.bookingStatus === 'CANCEL'"
+                                class="outline outline-red-200  p-2 rounded-xl bg-red-100/30">
+                                <div class="text-center my-2 font-bold text-red-600">Đơn đặt phòng đã hủy
+                                </div>
+                                <div class=" mx-auto bg-red-100 rounded-full w-24 h-24 flex items-center
+                                justify-center">
+                                    <svg class="w-16 h-16 text-red-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12">
+                                        </path>
+                                    </svg>
+                                </div>
+
+                            </div>
+                            <div v-else-if="BookingStore.bookingTicket?.bookingStatus === 'CONFIRMED' || BookingStore.bookingTicket?.bookingStatus === 'STAY'"
+                                id="staff-payment-section" class="mt-6 pt-6 border-t border-dashed printable-hidden">
                                 <h4 class="font-bold text-gray-700 text-center mb-4">Ghi nhận thanh toán</h4>
 
                                 <!-- Payment Method Radio Buttons -->
@@ -413,47 +442,65 @@ const paymentMethod = ref('qr'); // Phương thức thanh toán mặc định l�
 const printBookingTicket = () => {
     window.print();
 };
+const isLoading = ref(false)
 onMounted(async () => {
-    if (!props.id) {
-        toast.error('Booking ID is required!');
-        return;
-    }
-    await paymentStore.getPaymentPaidByBookingId(props.id);
-    await BookingStore.updatePriceForBooking(props.id);
-    await BookingStore.updatePriceBookingStay(props.id);
-    // Tải thông tin booking bằng ID
-    await BookingStore.getBookingbyId(props.id)
-    await paymentStore.createPaymentPayOsLink(paymentPayOs.value);
-    paymentOsdata.value = await paymentStore.paymentOsData.data
-    paymentPaid.value = paymentStore.paymentPaid
-    if (BookingStore.bookingTicket?.stay) {
-        try {
-            BookingStore.bookingTicket.stay.forEach(async (stay) => {
-                await roomStore.getRoomById(stay.roomId)
-
-                if (roomStore.room) {
-                    const roomData = JSON.parse(JSON.stringify(roomStore.room));
-                    roomMap.value.set(stay.roomId, roomData);
-                }
-            })
-        } catch (error) {
-            toast.error('Error fetching booking details: ' + error);
-            console.error('Error fetching booking details:', error);
+    isLoading.value = true
+    try {
+        if (!props.id) {
+            toast.error('Booking ID is required!');
+            return;
         }
+        await BookingStore.getBookingbyId(props.id)
+
+        if (BookingStore.bookingTicket?.bookingStatus !== 'CANCEL') {
+            await paymentStore.getPaymentPaidByBookingId(props.id);
+            await BookingStore.updatePriceForBooking(props.id);
+            await BookingStore.updatePriceBookingStay(props.id);
+            await BookingStore.getBookingbyId(props.id)
+        }
+
+        // Tải thông tin booking bằng ID
+
+        if (BookingStore.bookingTicket?.bookingStatus === 'CONFIRMED' || BookingStore.bookingTicket?.bookingStatus === 'STAY') {
+            await paymentStore.createPaymentPayOsLink(paymentPayOs.value);
+            paymentOsdata.value = await paymentStore.paymentOsData.data
+
+        }
+        paymentPaid.value = paymentStore.paymentPaid
+        if (BookingStore.bookingTicket?.stay) {
+            try {
+                BookingStore.bookingTicket.stay.forEach(async (stay) => {
+                    await roomStore.getRoomById(stay.roomId)
+
+                    if (roomStore.room) {
+                        const roomData = JSON.parse(JSON.stringify(roomStore.room));
+                        roomMap.value.set(stay.roomId, roomData);
+                    }
+                })
+            } catch (error) {
+                toast.error('Error fetching booking details: ' + error);
+                console.error('Error fetching booking details:', error);
+            }
+        }
+
+        // await paymentStore.getPaymentOsData(props.id);
+
+
+        console.log('Booking Detail Page Mounted with ID:', JSON.stringify(BookingStore.bookingTicket, null, 2));
+        // console.log("QR Code:", paymentStore.paymentOsData.data.qrCode ?? 0);
+        // Fetch booking details using props.id
+        toast.success(`Booking với ID: ${props.id} đã tạo thành công!`);
+        calculateNumberOfNights();
+        calculateGuestCount();
+        getRoomCount();
+        calculateTotalPriceByRoomAndQuantity();
+        calculateTotalPriceByFacility();
+
+    } catch (error) {
+        console.log(error)
+    } finally {
+        isLoading.value = false
     }
-
-    // await paymentStore.getPaymentOsData(props.id);
-
-
-    console.log('Booking Detail Page Mounted with ID:', JSON.stringify(BookingStore.bookingTicket, null, 2));
-    console.log("QR Code:", paymentStore.paymentOsData.data.qrCode ?? 0);
-    // Fetch booking details using props.id
-    toast.success(`Booking với ID: ${props.id} đã tạo thành công!`);
-    calculateNumberOfNights();
-    calculateGuestCount();
-    getRoomCount();
-    calculateTotalPriceByRoomAndQuantity();
-    calculateTotalPriceByFacility();
 
 });
 

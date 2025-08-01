@@ -1,50 +1,58 @@
 <template>
   <Dialog :open="open" @update:open="emit('update:open', $event)">
     <DialogContent class="sm:max-w-[1400px]" @pointer-down-outside.prevent>
-      <div class="grid grid-cols-4 gap-4">
+      <div v-if="isFetchingRoom" class="h-96 flex justify-center items-center space-x-1">
+        <div class="loader"></div>
+        <div>Đang tải dữ liệu...</div>
+      </div>
+      <div v-else class="grid grid-cols-4 gap-4">
         <form action="" class="flex flex-col gap-3">
           <DialogHeader>
-            <DialogTitle class="font-bold text-muesli-400">Cập Nhật Phòng
+            <DialogTitle class="font-bold text-muesli-400">Cập Nhật Phòng {{ roomProfile.roomNumber }}
             </DialogTitle>
             <hr class="text-muesli-400 bg-muesli-400 h-[2px]" />
           </DialogHeader>
+
+
           <div>
-            <label class="text-muesli-400">Số Phòng</label><br />
-            <input type="text"
-              class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm disabled:bg-gray-100 disabled:shadow-gray-300 shadow-muesli-300 px-5 text-center"
-              placeholder="Nhập số phòng" v-model="roomData.roomNumber" />
-          </div>
-          <div>
-            <label class="text-muesli-400">Tầng</label><br />
-            <input type="number"
-              class="w-full h-10 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:shadow-gray-300 focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
-              v-model="roomData.floor" disabled />
-          </div>
-          <div>
-            <label class="text-muesli-400">Loại Phòng</label><br />
-            <div class="relative">
-              <select v-model="roomData.roomType.id" name="" id=""
-                class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 text-center">
-                <option v-for="roomType in roomTypesData" :key="roomType.id" :value="roomType.id">
-                  {{ roomType.name }}
-                </option>
-              </select>
-              <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                <ChevronDown class="w-5 h-5 text-gray-400" />
+            <div>
+              <label class="text-muesli-400">Số Phòng</label><br />
+              <input type="text"
+                class="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm disabled:bg-gray-100 disabled:shadow-gray-300 shadow-muesli-300 px-5 text-center"
+                placeholder="Nhập số phòng" v-model="roomData.roomNumber" />
+            </div>
+            <div>
+              <label class="text-muesli-400">Tầng</label><br />
+              <input type="number"
+                class="w-full h-10 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:shadow-gray-300 focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center"
+                v-model="roomData.floor" disabled />
+            </div>
+            <div>
+              <label class="text-muesli-400">Loại Phòng</label><br />
+              <div class="relative">
+                <select v-model="roomData.roomType.id" name="" id=""
+                  class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 text-center">
+                  <option v-for="roomType in roomTypesData" :key="roomType.id" :value="roomType.id">
+                    {{ roomType.name }}
+                  </option>
+                </select>
+                <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                  <ChevronDown class="w-5 h-5 text-gray-400" />
+                </div>
               </div>
             </div>
-          </div>
-          <div>
-            <label class="text-muesli-400">Trạng Thái</label><br />
-            <div class="relative">
-              <select v-model="roomData.roomStatus" name="" id=""
-                class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 text-center">
-                <option value="INACTIVE" selected>Đang sử dụng</option>
-                <option value="FIX">Đang bảo trì</option>
+            <div>
+              <label class="text-muesli-400">Trạng Thái</label><br />
+              <div class="relative">
+                <select v-model="roomData.roomStatus" name="" id=""
+                  class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 text-center">
+                  <option value="INACTIVE" selected>Đang sử dụng</option>
+                  <option value="FIX">Đang bảo trì</option>
 
-              </select>
-              <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                <ChevronDown class="w-5 h-5 text-gray-400" />
+                </select>
+                <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                  <ChevronDown class="w-5 h-5 text-gray-400" />
+                </div>
               </div>
             </div>
           </div>
@@ -57,6 +65,7 @@
               <span v-else>Lưu</span>
             </Button>
             <!-- <img :src="imageUrl + '/home-1.1_x5mdyb.jpg'" alt="ảnh 1" /> -->
+
           </DialogFooter>
         </form>
         <div
@@ -124,10 +133,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, toRef, watch } from "vue";
 import { toast } from "vue-sonner";
 import { RoomAPI } from "@/api/room";
 import { identity } from "@vueuse/core";
+import { useGetRoomProfile } from "@/hook/useRoom";
+
 
 const { updateRoom, isLoading } = RoomAPI();
 const emit = defineEmits<{
@@ -164,6 +175,13 @@ const props = defineProps<{
   }[];
 }>();
 const imageUrl = import.meta.env.VITE_CLOUDINARY_IMG_URL;
+
+const roomID = computed(() => {
+  return props.room.id
+})
+const isOpen = toRef(props, "open");
+const { data: roomProfile, isFetching: isFetchingRoom, isPending: isPendingRoom } = useGetRoomProfile(roomID, isOpen)
+
 
 const roomData = ref({ ...props.room });
 watch(
@@ -257,6 +275,12 @@ const onSubmitUpdateRoom = async () => {
     isThum: img.isThum,
   }));
   roomData.value.roomImages = [...keptOldImages, ...newImages];
-  await updateRoom(roomData.value, selectFiles.value);
+  try {
+    await updateRoom(roomData.value, selectFiles.value);
+    imagePreview.value = [];
+  } catch (error) {
+    throw error;
+  }
+
 };
 </script>

@@ -43,7 +43,6 @@ import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { Bookings } from '@/api/booking';
 import { toast } from 'vue-sonner';
-import { resolve } from 'path';
 
 const bookingStore = Bookings()
 const router = useRouter()
@@ -91,7 +90,7 @@ const openTabBooking = async (id: number) => {
 const isActionDisabled = ref(true); // 1. Bắt đầu với trạng thái khóa
 const countdown = ref(3); // 2. Thời gian đếm ngược
 let intervalId: number | undefined = undefined;
-;
+
 
 // --- Computed property cho nội dung nút ---
 const actionButtonText = computed(() => {
@@ -105,6 +104,7 @@ const actionButtonText = computed(() => {
 watch(() => props.open, (isOpen) => {
     // Khi dialog được MỞ
     if (isOpen) {
+
         // Reset lại trạng thái ban đầu
         isActionDisabled.value = true;
         countdown.value = 3;
@@ -112,6 +112,7 @@ watch(() => props.open, (isOpen) => {
         // Bắt đầu đếm ngược
         intervalId = window.setInterval(() => {
             countdown.value -= 1;
+            // console.log(countdown.value);
             if (countdown.value <= 0) {
                 clearInterval(intervalId);
                 isActionDisabled.value = false; // Mở khóa nút
