@@ -4,6 +4,7 @@ import { toast } from "vue-sonner";
 import { ref } from "vue";
 
 import { BookingDetailRequestUpdate } from "@/types";
+import { BookingResponse, BookingTicketResponse, Booking } from "@/interface/booking.interface";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -42,10 +43,28 @@ export const BookingDetails = defineStore("bookingDetail", () => {
             isLoading.value = false;
         }
     };
+
+    const bookingdetails = ref<BookingResponse[]>([]);
+    const fetchBookingDetails = async (bookingId: number) => {
+        isLoading.value = true;
+        try {
+            const response = await axios.get<BookingResponse[]>(`${baseUrl}/user/booking/${bookingId}`, { withCredentials: true });
+            bookingdetails.value = response.data;
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                toast.error(`Lấy thông tin chi tiết đặt phòng thất bại: ${error.response?.data.message || error.message}`);
+            }
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
     return {
         isLoading,
         bookingDetails,
         bookingDetail,
-        updateBookingDetail
+        bookingdetails,
+        updateBookingDetail,
+        fetchBookingDetails,
     }
 })

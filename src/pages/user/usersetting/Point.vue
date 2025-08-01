@@ -32,7 +32,7 @@
       </div>
 
 
-      <div class="bg-white h-30 w-full my-15 shadow-2xl rounded-2xl p-6 mb-8 keen-slider" ref="ranks">
+      <!-- <div class="bg-white h-30 w-full my-15 shadow-2xl rounded-2xl p-6 mb-8 keen-slider" ref="ranks">
         <div class="keen-slider__slide">
           1
         </div>
@@ -42,7 +42,7 @@
         <div class="keen-slider__slide">
           3
         </div>
-      </div>
+      </div> -->
 
       <!-- Phần Tabs Điều Hướng -->
       <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-2 sm:p-4">

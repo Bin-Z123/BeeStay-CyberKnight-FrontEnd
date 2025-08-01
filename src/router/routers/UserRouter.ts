@@ -62,6 +62,11 @@ const userRouter: RouteRecordRaw = {
             }
         },
         {
+            path: "booking-details/:id",
+            name: "booking-detail",
+            component: () => import("../../pages/user/booking/BookingDetail.vue"),
+        },
+        {
             path: "setting",
             name: "setting",
             component: () => import("../../layouts/user/UserLayoutSetting.vue"),
