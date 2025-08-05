@@ -29,7 +29,7 @@
                     exact-active-class="bg-muesli-300 text-white hover:bg-muesli-300">
                     <ClipboardList class="w-4 h-4 inline-block" /> Đặt Chổ Của Tôi
                 </RouterLink>
-                <RouterLink to="/user/setting/historytransaction"
+                <RouterLink to="/user/setting/historypayment"
                     class="flex items-center gap-3 py-2 px-4 text-gray-700 hover:bg-muesli-100"
                     exact-active-class="bg-muesli-300 text-white hover:bg-muesli-300">
                     <ScrollText class="w-4 h-4 inline-block" /> Lịch Sử Giao Dịch

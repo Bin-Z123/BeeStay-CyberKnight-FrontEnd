@@ -359,7 +359,8 @@ onMounted(async () => {
     await bookings.getAvailableRooms(bookings.checkin, bookings.checkout, bookings.numberOfPeople);
     // console.log("Phòng Còn Trống Nè Hehehe", JSON.stringify(bookings.listRoomsAvailable, null, 2));
 });
-const numberOfNights = ref(1);
+
+const numberOfNights = ref(null);
 const checkOutDateText = (night) => {
     if (!checkin.value) return "";
     const date = addDays(checkin.value, night);
