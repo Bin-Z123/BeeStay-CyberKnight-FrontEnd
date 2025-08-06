@@ -34,7 +34,7 @@
                     exact-active-class="bg-muesli-300 text-white hover:bg-muesli-300">
                     <ScrollText class="w-4 h-4 inline-block" /> Lịch Sử Giao Dịch
                 </RouterLink>
-                <RouterLink to="/user/setting/refund"
+                <RouterLink :to="`/user/setting/refund/${bookingId}`"
                     class="flex items-center gap-3 py-2 px-4 text-gray-700 hover:bg-muesli-100"
                     exact-active-class="bg-muesli-300 text-white hover:bg-muesli-300">
                     <Wallet class="w-4 h-4 inline-block" /> Hoàn Tiền
@@ -64,7 +64,11 @@
 import { ChevronRight, Router, User, CircleDollarSign, Wallet, Bell, TicketPercent, LogOut, ClipboardList, Settings, ScrollText } from 'lucide-vue-next';
 import { useAuthStore } from '@/stores/auth/login';
 import { onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+
 const authStore = useAuthStore();
+const route = useRoute();
+const bookingId = Number(route.params.id);
 
 const handleLogout = async () => {
   await authStore.logout();

@@ -111,6 +111,10 @@
                   <p class="text-2xl font-bold text-indigo-600">{{ formatCurrency(booking.totalAmount) }}</p>
                </div>
             </div>
+
+            <div class="flex justify-end">
+              <button class="bg-muesli-400 text-white py-2 px-4 rounded-md hover:bg-muesli-500" @click.prevent="handleRefund(booking.id)">Hoàn Tiền</button>
+            </div>
           </div>
         </div>
       </div>
@@ -131,8 +135,10 @@ import { onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { BookingDetails } from '@/api/bookingdetail';
 import { Facilities } from '@/api/facilities';
+import { useRouter } from 'vue-router';
 
 const route = useRoute();
+const router = useRouter();
 const bookingDetails = BookingDetails();
 const facilities = Facilities();
 
@@ -183,6 +189,14 @@ function formatCurrency(amount) {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency', currency: 'VND'
   }).format(amount);
+}
+
+const handleRefund = (id) => {
+  const routerData = router.resolve({
+      name: 'refund',
+      params: { id: id }
+  })
+  window.open(routerData.href, '_blank');
 }
 
 onMounted(async () => {

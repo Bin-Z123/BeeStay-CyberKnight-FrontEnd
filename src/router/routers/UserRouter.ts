@@ -92,7 +92,7 @@ const userRouter: RouteRecordRaw = {
                     component: () => import("../../pages/user/usersetting/HistoryPayment.vue"),
                 },
                 {
-                    path: "refund",
+                    path: "refund/:id",
                     name: "refund",
                     component: () => import("../../pages/user/usersetting/RefundPayment.vue"),
                 },
