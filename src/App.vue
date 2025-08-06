@@ -13,6 +13,7 @@ const toggleDarkMode = () => {
     htmlElement.classList.contains("dark") ? "enabled" : "disabled"
   );
 };
+
 </script>
 
 <template>
@@ -21,4 +22,4 @@ const toggleDarkMode = () => {
   <VueQueryDevtools />
 </template>
 
-<style scoped></style>
+<style></style>

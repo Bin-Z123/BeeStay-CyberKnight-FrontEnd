@@ -8,7 +8,8 @@
             </div>
             <div class="md:w-1/2 md:mt-0 mt-10 flex items-center justify-center md:justify-start px-4">
                 <div class="relative w-full md:w-3/5">
-                    <input type="email" class="w-full h-14 rounded-sm bg-white focus:outline-none px-5 shadow-sm pr-32 focus:ring-2 focus:ring-muesli-200"
+                    <input type="email"
+                        class="w-full h-14 rounded-sm bg-white focus:outline-none px-5 shadow-sm pr-32 focus:ring-2 focus:ring-muesli-200"
                         placeholder="Nhập email" />
                     <button
                         class="absolute top-1.5 right-1.5 h-11 px-4 rounded-sm bg-muesli-400 hover:bg-muesli-600 text-white">
@@ -20,8 +21,8 @@
         <div class="flex md:flex-row flex-col container md:mx-auto md:px-0 px-4 mb-10 gap-5">
             <div class="md:w-4/10 md:mx-auto mx-1">
                 <img src="@/assets/images/LogoBeeStay2.svg" alt="" class="w-1/3">
-                <h1 class="md:ps-6 md:pe-40 text-gray-500">Each room features plush bedding, high-quality linens, and a
-                    selection of ensure a restful night's sleep.</h1>
+                <h1 class="md:ps-6 md:pe-40 text-gray-500">Mỗi phòng đều có giường nệm êm ái, ga trải giường chất lượng
+                    cao và một lựa chọn để đảm bảo giấc ngủ ngon.</h1>
             </div>
             <div class="md:w-2/10">
                 <h1>Liên Kết</h1>

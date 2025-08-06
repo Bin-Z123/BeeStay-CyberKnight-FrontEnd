@@ -33,6 +33,14 @@ const userRouter: RouteRecordRaw = {
             }
         },
         {
+            path: "gsap",
+            name: "gsap",
+            component: () => import("../../pages/user/TestGsap.vue"),
+            meta: {
+                title: "GSAP",
+            }
+        },
+        {
             path: "roomdetail",
             name: "roomdetail",
             component: () => import("../../pages/user/roomDetail/RoomDetail.vue"),
