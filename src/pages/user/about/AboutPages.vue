@@ -18,12 +18,12 @@
                         <p class="text-2xl text-muesli-400">Thông Tin Chúng Tôi</p>
                         <h1 class="lg:text-5xl md:text-4xl text-3xl font-bold">Chào Mừng Bạn Đến Với Khách Sạn BEESTAY
                         </h1>
-                        <p class="text-gray-500 text-lg mt-6">Welcome to Bokinn, where luxury meets comfort in the heart
-                            of canada. Since 1999, we have
-                            been dedicated to providing an exceptional stay for our guests, blending modern amenities
-                            with timeless elegance.Our beautifully designed rooms and suites offer stunning views and
-                            plush accommodations, ensuring a restful retreat whether you're here for business or
-                            leisure.</p>
+                        <p class="text-gray-500 text-lg mt-6">Chào mừng bạn đến với Boking, nơi sang trọng gặp gỡ sự
+                            thoải mái ngay tại trung tâm Canada. Kể từ năm 1999, chúng tôi đã tận tâm mang đến một trải
+                            nghiệm lưu trú tuyệt vời cho khách hàng, kết hợp tiện nghi hiện đại với vẻ đẹp vượt thời
+                            gian. Các phòng và suite được thiết kế đẹp mắt của chúng tôi cung cấp tầm nhìn tuyệt đẹp và
+                            chỗ ở sang trọng, đảm bảo một kỳ nghỉ thư giãn cho dù bạn đến đây vì công việc hay giải trí.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -35,27 +35,27 @@
                     <div class="grid lg:grid-cols-2 gap-10 mb-10 lg:mb-0">
                         <div class="sm:w-auto flex flex-col justify-center rounded-2xl pe-10 gap-3">
                             <BedDouble class="w-14 h-14 text-muesli-400" />
-                            <h1 class="font-bold text-xl">Room And Suite</h1>
-                            <h1 class="text-sm text-gray-500">Varied types of rooms, from standard to luxury suites,
-                                equipped with essentials like beds.</h1>
+                            <h1 class="font-bold text-xl">Phòng và Suite</h1>
+                            <h1 class="text-sm text-gray-500">Các loại phòng đa dạng, từ tiêu chuẩn đến phòng sang
+                                trọng, được trang bị những tiện nghi cần thiết như giường.</h1>
                         </div>
                         <div class="sm:w-auto flex flex-col justify-center rounded-2xl pe-10 gap-3">
                             <ShieldCheck class="w-14 h-14 text-muesli-400" />
-                            <h1 class="font-bold text-xl">Room And Suite</h1>
-                            <h1 class="text-sm text-gray-500">Varied types of rooms, from standard to luxury suites,
-                                equipped with essentials like beds.</h1>
+                            <h1 class="font-bold text-xl">Phòng và Suite</h1>
+                            <h1 class="text-sm text-gray-500">Các loại phòng đa dạng, từ tiêu chuẩn đến phòng sang
+                                trọng, được trang bị những tiện nghi cần thiết như giường.</h1>
                         </div>
                         <div class="sm:w-auto flex flex-col justify-center rounded-2xl pe-10 gap-3">
                             <Monitor class="w-14 h-14 text-muesli-400" />
-                            <h1 class="font-bold text-xl">Room And Suite</h1>
-                            <h1 class="text-sm text-gray-500">Varied types of rooms, from standard to luxury suites,
-                                equipped with essentials like beds.</h1>
+                            <h1 class="font-bold text-xl">Phòng và Suite</h1>
+                            <h1 class="text-sm text-gray-500">Các loại phòng đa dạng, từ tiêu chuẩn đến phòng sang
+                                trọng, được trang bị những tiện nghi cần thiết như giường.</h1>
                         </div>
                         <div class="sm:w-auto flex flex-col justify-center rounded-2xl pe-10 gap-3">
                             <WavesLadder class="w-14 h-14 text-muesli-400" />
-                            <h1 class="font-bold text-xl">Room And Suite</h1>
-                            <h1 class="text-sm text-gray-500">Varied types of rooms, from standard to luxury suites,
-                                equipped with essentials like beds.</h1>
+                            <h1 class="font-bold text-xl">Phòng và Suite</h1>
+                            <h1 class="text-sm text-gray-500">Các loại phòng đa dạng, từ tiêu chuẩn đến phòng sang
+                                trọng, được trang bị những tiện nghi cần thiết như giường.</h1>
                         </div>
                     </div>
                     <div

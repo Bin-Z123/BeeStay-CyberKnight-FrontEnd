@@ -78,7 +78,8 @@
                         tabindex="0" v-for="booking in paginatedRoomTypes" :key="booking.id"
                         @contextmenu.prevent="openContextMenu($event, booking)">
                         <td class="py-2">BK - {{ booking.id }}</td>
-                        <td class="py-2">{{ booking.user?.fullname || booking.guestBooking.fullname + ' (Guest)' }}</td>
+                        <td class="py-2">{{ booking.user?.fullname ||
+                            booking.guestBooking.fullname + ' (Guest)' }}</td>
                         <td class="py-2">{{ booking.user?.phone || booking.guestBooking.phone }}</td>
                         <td class="py-2">{{ booking.user?.email || booking.guestBooking.email }}</td>
                         <td class="py-2">{{ formatDateWithTimeToUI(booking.checkInDate) }}</td>
@@ -110,10 +111,6 @@
                                                                 ? 'Giữ phòng'
                                                                 : 'Chưa Nhận Phòng' }}</td>
                         <td class="py-2 flex justify-center items-center gap-5 h-full">
-                            <button
-                                class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
-                                <LockKeyhole class="w-4 h-4" />
-                            </button>
                             <Button
                                 class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white">
                                 <SquarePen />
@@ -124,12 +121,12 @@
             </table>
             <div class="bg-white h-15 mb-4 shadow-lg flex items-center justify-end gap-2 px-5">
                 <select v-model="pageSize" class="w-12 h-8 border border-gray-300 rounded-sm text-center">
-                    <option value="10" selected>10</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                    <option value="40">40</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
+                    <option :value="10" selected>10</option>
+                    <option :value="20">20</option>
+                    <option :value="30">30</option>
+                    <option :value="40">40</option>
+                    <option :value="50">50</option>
+                    <option :value="100">100</option>
                 </select>
                 <input type="text" class="w-12 h-8 border border-gray-300 rounded-sm text-center" disabled
                     :value="currentPage" /><span>of {{ totalPages }}</span>
@@ -265,6 +262,7 @@ const totalPages = computed(() => {
     return Math.ceil(filteredBookings.value.length / pageSize.value);
 });
 const paginatedRoomTypes = computed(() => {
+    console.log(pageSize.value, currentPage.value, totalPages.value);
     const startIndex = (currentPage.value - 1) * pageSize.value;
     const endIndex = startIndex + pageSize.value;
     return fillterselectedStatus.value.slice(startIndex, endIndex);

@@ -26,15 +26,17 @@
                         <div class="flex mb-4">
                             <div class="w-1/2 flex items-center">
                                 <div class="text-sm flex justify-center items-center gap-1">
-                                    <span class="text-gray-500">Nhấn vào đây để <ArrowRight class="inline-block w-3 h-3"/></span>
-                                    <button class="hover:underline text-muesli-400 disabled:opacity-50" :disabled="timeOut"
-                                        @click.prevent="getOTP">
+                                    <span class="text-gray-500">Nhấn vào đây để
+                                        <ArrowRight class="inline-block w-3 h-3" />
+                                    </span>
+                                    <button class="hover:underline text-muesli-400 disabled:opacity-50"
+                                        :disabled="timeOut" @click.prevent="getOTP">
                                         Lấy OTP?
                                     </button>
                                 </div>
                             </div>
                             <div class="w-1/2 text-right">
-                                
+
                             </div>
                         </div>
                         <div>
@@ -89,7 +91,7 @@ const getOTP = async () => {
     }
     handleTimeOut();
     await useForgetPassword.getOTP(form.value.email);
-    
+
 }
 
 const handleForgetPassword = async () => {
@@ -103,6 +105,6 @@ const handleForgetPassword = async () => {
     }
 
     await useForgetPassword.forgotPassword(form.value.email, form.value.otp, form.value.password);
-    router.push("/auth/login");
+    router.push("/login");
 }
 </script>

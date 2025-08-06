@@ -44,7 +44,7 @@ router.beforeEach(async (to, from, next) => {
             await authStore.fetchUser();
         } catch (error) {
             toast.error("Vui lòng đăng nhập!");
-            return next("/auth/login");
+            return next("/login");
         }
     }
 
