@@ -11,7 +11,7 @@
   "dependencies": {
     "@stomp/stompjs": "^7.1.1",
     "@tailwindcss/vite": "^4.1.7",
-    "@tanstack/vue-query": "^5.83.0",
+    "@tanstack/vue-query": "^5.83.1",
     "@tanstack/vue-query-devtools": "^5.83.0",
     "@types/node": "^22.15.30",
     "@vuepic/vue-datepicker": "^11.0.2",

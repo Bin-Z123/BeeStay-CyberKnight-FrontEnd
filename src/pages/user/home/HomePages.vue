@@ -1,5 +1,8 @@
 <template>
-    <HeroSection />
+    <div class="relative w-screen">
+        <HeroSection />
+    </div>
+
     <!-- SEARCH BOX -->
     <div class="relative z-10">
         <div class="px-4 lg:mx-0 mx-auto xl:container absolute lg:left-1/2 lg:transform lg:-translate-x-1/2 w-full">
@@ -260,7 +263,7 @@ import { vi } from "date-fns/locale";
 import { addDays, format } from "date-fns";
 import { useKeenSlider } from 'keen-slider/vue'
 import KeenSlider from 'keen-slider';
-import 'keen-slider/keen-slider.min.css';
+// import 'keen-slider/keen-slider.min.css';
 import { useRouter } from "vue-router";
 import { RoomType } from "@/api/roomtype";
 import { Bookings } from "@/api/booking";
@@ -297,7 +300,8 @@ onMounted(async () => {
     await bookings.getAvailableRooms(bookings.checkin, bookings.checkout, bookings.numberOfPeople);
     // console.log("Phòng Còn Trống Nè Hehehe", JSON.stringify(bookings.listRoomsAvailable, null, 2));
 });
-const numberOfNights = ref(1);
+
+const numberOfNights = ref(null);
 const checkOutDateText = (night) => {
     if (!checkin.value) return "";
     const date = addDays(checkin.value, night);

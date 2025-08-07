@@ -116,7 +116,7 @@
               class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400">
               <User class="w-4 h-4 inline-block" />Chỉnh sửa hồ sơ
             </RouterLink>
-            <RouterLink to=""
+            <RouterLink to="/user/setting/refund/NaN"
               class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400">
               <Wallet class="w-4 h-4 inline-block" />Hoàn tiền
             </RouterLink>
