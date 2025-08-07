@@ -1,17 +1,19 @@
 <template>
     <SidebarProvider>
-        <div class="flex h-screen w-full overflow-hidden">
+        <div class="flex h-screen  overflow-hidden w-full">
             <div class="py-5">
                 <Sidebar class="lg:hidden md:hidden" />
             </div>
-            <div class="flex-1 flex flex-col overflow-hidden bg-white">
+            <div class="flex-1 flex flex-col  overflow-hidden  bg-white">
                 <div ref="scrollContainer" class="flex-1 overflow-y-auto flex flex-col">
+                    <!-- <div class="flex-1 flex flex-col"> -->
                     <HeaderUser />
                     <div class="sticky top-0 z-30 bg-white shadow-md">
                         <HeaderUserTwo />
                     </div>
                     <div class="flex-1 bg-gray-100">
                         <RouterView />
+                        <Chatbot />
                     </div>
                     <div class="flex-1">
                         <Footer></Footer>
@@ -34,6 +36,9 @@ import Footer from '@/components/user/Footer.vue';
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { onMounted, ref, onUnmounted } from "vue";
 import { ArrowUp } from 'lucide-vue-next';
+import AOS from 'aos';
+import Chatbot from '@/pages/user/Chatbot.vue';
+
 
 const scrollContainer = ref(null);
 const showScrollButton = ref(false);
@@ -45,12 +50,14 @@ const handleScroll = () => {
 onMounted(() => {
     if (scrollContainer.value) {
         scrollContainer.value.addEventListener('scroll', handleScroll);
+        scrollContainer.value.addEventListener('scroll', AOS.refresh); // 👉 Gắn thủ công
     }
 });
 
 onUnmounted(() => {
     if (scrollContainer.value) {
         scrollContainer.value.removeEventListener('scroll', handleScroll);
+        scrollContainer.value.removeEventListener('scroll', AOS.refresh)
     }
 });
 

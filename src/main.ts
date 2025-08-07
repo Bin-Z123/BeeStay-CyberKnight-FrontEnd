@@ -8,6 +8,8 @@ import { VueQueryPlugin, VueQueryPluginOptions } from "@tanstack/vue-query";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import "keen-slider/keen-slider.min.css";
+import 'aos/dist/aos.css'
+import AOS from 'aos'
 
 
 const app = createApp(App);
@@ -21,3 +23,10 @@ app.use(
 }
 )
 app.mount("#app");
+// ..
+
+AOS.init({
+    duration: 1000,
+    // once: true,
+    // easing: 'ease-in-out',
+});

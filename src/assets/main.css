@@ -17,10 +17,6 @@
     -moz-osx-font-smoothing: grayscale;
     
   }
-  body {
-    font-family: 'Lora', serif !important;
-  }
-
 
   @layer base {
     * {
