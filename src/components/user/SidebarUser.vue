@@ -3,8 +3,8 @@
     <Sidebar>
       <SidebarContent class="bg-muesli-400 text-white">
         <div>
-          <RouterLink to="/auth/login"><img class="w-85 pt-6" src="/src/assets/images/LogoBeeStay.svg"
-              cusorhover="pointer" alt="" />
+          <RouterLink to="/login"><img class="w-85 pt-6" src="/src/assets/images/LogoBeeStay.svg" cusorhover="pointer"
+              alt="" />
           </RouterLink>
         </div>
         <div>
@@ -154,7 +154,7 @@
               <RouterLink to="/user/setting/point"
                 class="flex items-center gap-1 text-sm px-3 py-1 rounded hover:bg-muesli-50 hover:text-muesli-800"
                 exact-active-class="text-muesli-800 font-semibold bg-muesli-100">
-                <CircleDollarSign class="w-4 h-4 inline-block"/> 0 Điểm
+                <CircleDollarSign class="w-4 h-4 inline-block" /> 0 Điểm
               </RouterLink>
             </div>
           </div>

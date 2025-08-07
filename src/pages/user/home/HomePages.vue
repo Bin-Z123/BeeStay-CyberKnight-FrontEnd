@@ -1,27 +1,8 @@
 <template>
-    <section class="">
-        <div class="relative w-full lg:h-[900px] md:h-[700px] h-96 overflow-hidden group">
-            <div
-                class="absolute inset-0 bg-[url('/src/assets/images/home-1.1.png')] brightness-50 z-0 bg-fixed bg-cover bg-center flex items-center">
-            </div>
-            <div class="relative z-10 flex flex-col items-center justify-center h-full text-white">
-                <p class="text-2xl font-bold" data-aos="fade-up">Wellcome to BeeStay</p>
-                <p class="text-5xl lg:text-6xl lg:w-[800px] md:w-[600px] text-center w-[400px]">
-                    Discover the best places to stay, from hotels to vacation rentals.
-                </p>
-                <div class="absolute z-10 w-full flex justify-between items-center px-6">
-                    <button type="button"
-                        class="py-2 px-4 bg-muesli-400/10 text-white rounded-lg top-1/2 hidden md:group-hover:block">
-                        <MoveLeft class="size-[48px]" />
-                    </button>
-                    <button type="button"
-                        class="py-2 px-4 bg-muesli-400/10 text-white top-1/2 rounded-lg md:group-hover:block hidden">
-                        <MoveRight class="size-[48px]" />
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
+    <div class="relative w-screen">
+        <HeroSection />
+    </div>
+
     <!-- SEARCH BOX -->
     <div class="relative z-10">
         <div class="px-4 lg:mx-0 mx-auto xl:container absolute lg:left-1/2 lg:transform lg:-translate-x-1/2 w-full">
@@ -79,14 +60,14 @@
     <section class=" relative w-full bg-white lg:p-[120px] p-[180px] px-4">
         <div class="lg:grid lg:grid-cols-2 gap-[30px] items-center lg:mt-0 md:mt-20 sm:mt-40 mt-80">
             <!-- Image -->
-            <div class="scroll-container lg:grid relative items-center justify-items-center">
+            <div class=" lg:grid relative items-center justify-items-center">
                 <div
-                    class="relative rounded-2xl lg:h-[580px] lg:w-[485px] h-100 w-115 inset-0 bg-[url('/src/assets/images/about.png')] bg-cover bg-center z-1">
-                    <div ref="square"
-                        class="square absolute lg:block hidden w-78 h-54 -top-5 -right-10 ring-8 bg-[url('/src/assets/images/bg_auth1.png')] bg-cover bg-center rounded-2xl z-20 ring-white">
+                    class=" relative rounded-2xl lg:h-[580px] lg:w-[485px] h-100 w-115 inset-0 bg-[url('/src/assets/images/about.png')] bg-cover bg-center z-1">
+                    <div ref="square" data-speed="1"
+                        class="square box absolute lg:block hidden w-78 h-54 -top-5 -right-10 ring-8 bg-[url('/src/assets/images/bg_auth1.png')] bg-cover bg-center rounded-2xl z-20 ring-white">
                     </div>
-                    <div
-                        class="square2 absolute w-60 h-30 bottom-8 lg:-left-14 bg-white shadow-2xl rounded-2xl z-20 flex items-center justify-center">
+                    <div data-speed="1"
+                        class="square2 box absolute w-60 h-30 bottom-8 lg:-left-14 bg-white shadow-2xl rounded-2xl z-20 flex items-center justify-center">
                         <div class="w-1/2 flex items-center justify-center">
                             <div class="bg-gray-200/60 w-20 h-20 rounded-2xl">
                                 <Users class="w-full h-full p-4 text-muesli-400" />
@@ -99,20 +80,20 @@
                     </div>
                 </div>
             </div>
+
             <!-- Content -->
             <div class="w-full md:mt-0 mt-10">
-                <h2 class="text-3xl font-bold mb-4">About Us {{ time }} - {{ count }}</h2>
-                <p class="text-lg mb-6" data-aos="fade-up">
-                    Welcome to Bokinn, where luxury meets comfort in the heart of canada.
-                    Since 1999, we have been dedicated to providing an exceptional stay
-                    for our guests, blending modern amenities with timeless elegance.Our
-                    beautifully designed rooms and suites offer stunning views and plush
-                    accommodations, ensuring a restful retreat whether you're here for
-                    business or leisure.
+                <h2 class="text-3xl font-bold mb-4">Về Chúng Tôi {{ time }} {{ count }}</h2>
+                <p class="text-lg mb-6">
+                    Chào mừng đến với Boking, nơi sang trọng gặp gỡ sự thoải mái tại trung tâm Canada. Kể từ năm 1999,
+                    chúng tôi đã tận tâm mang đến một trải nghiệm nghỉ ngơi tuyệt vời cho khách hàng của mình, kết hợp
+                    các tiện nghi hiện đại với vẻ đẹp vượt thời gian. Những căn phòng và suite được thiết kế đẹp mắt của
+                    chúng tôi cung cấp tầm nhìn tuyệt đẹp và tiện nghi sang trọng, đảm bảo một chốn nghỉ ngơi thật sự
+                    thoải mái cho dù bạn đến đây vì công việc hay giải trí.
                 </p>
                 <p class="text-lg">
-                    Our platform connects you with a wide range of properties, ensuring
-                    that you find the perfect place to stay for your next trip.
+                    Nền tảng của chúng tôi kết nối bạn với nhiều loại bất động sản, đảm bảo rằng bạn sẽ tìm thấy nơi ở
+                    hoàn hảo cho chuyến đi tiếp theo của mình.
                 </p>
             </div>
         </div>
@@ -145,12 +126,10 @@
                         <h1 class="text-4xl font-bold">Phòng Của Chúng Tôi</h1>
                     </div>
                     <div class="md:w-1/2">
-                        <h1 class="text-gray-400">Our rooms offer a harmonious blend of comfort and elegance, designed
-                            to
-                            provide an exceptional stay
-                            for every guest. Each room features plush bedding, high-quality linens, and a selection of
-                            pillows
-                            to ensure a restful night's sleep.</h1>
+                        <h1 class="text-gray-400">Các phòng của chúng tôi mang đến sự kết hợp hài hòa giữa sự thoải mái
+                            và vẻ sang trọng, được thiết kế để cung cấp một kỳ nghỉ đặc biệt cho mỗi khách. Mỗi phòng
+                            đều có giường nệm êm ái, ga trải giường chất lượng cao và một bộ gối để đảm bảo một giấc ngủ
+                            yên bình.</h1>
                     </div>
                 </div>
                 <div ref="container" class="keen-slider mt-10 rounded-2xl" v-if="bookings.listRoomsAvailable.length">
@@ -273,49 +252,7 @@
     </section>
 
     <section>
-        <div class="flex flex-col justify-center items-center px-4 pt-25 gap-3 bg-white pb-25">
-            <h1 class="text-2xl text-muesli-400">Dịch Vụ</h1>
-            <h1 class="text-4xl font-bold mb-10">Dịch Vụ Của Khách Sạn</h1>
-            <!-- <div ref="post" class="keen-slider rounded-2xl">
-                <div class="keen-slider__slide rounded-2xl" v-for="facility in facilities.facilities" :key="facility.id">
-                    <div v-if="facility.publicId">
-                        <img :src="getImageUrl(facility.publicId)" alt="Ảnh Dịch Vụ">
-                    </div>
-                </div>
-            </div> -->
-            <div ref="post" class="keen-slider rounded-2xl">
-                <div class="keen-slider__slide rounded-2xl">
-                    <div>
-                        <img src="@/assets/images/bin.png" alt="">
-                    </div>
-                </div>
-                <div class="keen-slider__slide rounded-2xl">
-                    <div>
-                        <img src="@/assets/images/bin.png" alt="">
-                    </div>
-                </div>
-                <div class="keen-slider__slide rounded-2xl">
-                    <div>
-                        <img src="@/assets/images/bin.png" alt="">
-                    </div>
-                </div>
-                <div class="keen-slider__slide rounded-2xl">
-                    <div>
-                        <img src="@/assets/images/bin.png" alt="">
-                    </div>
-                </div>
-                <div class="keen-slider__slide rounded-2xl">
-                    <div>
-                        <img src="@/assets/images/bin.png" alt="">
-                    </div>
-                </div>
-                <div class="keen-slider__slide rounded-2xl">
-                    <div>
-                        <img src="@/assets/images/bin.png" alt="">
-                    </div>
-                </div>
-            </div>
-        </div>
+        <CoreTeam />
     </section>
 </template>
 <script setup>
@@ -325,11 +262,17 @@ import { sr, vi } from "date-fns/locale";
 import { addDays, format } from "date-fns";
 import { useKeenSlider } from 'keen-slider/vue'
 import KeenSlider from 'keen-slider';
-import 'keen-slider/keen-slider.min.css';
+// import 'keen-slider/keen-slider.min.css';
 import { useRouter } from "vue-router";
 import { RoomType } from "@/api/roomtype";
 import { Bookings } from "@/api/booking";
 import { Facilities } from "@/api/facilities";
+import HeroSection from "./HeroSection.vue";
+import CoreTeam from "./CoreTeam.vue";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+// ScrollSmoother requires ScrollTrigger
+import { ScrollSmoother } from "gsap/ScrollSmoother";
 // ###
 const roomTypes = RoomType();
 const bookings = Bookings();
@@ -351,7 +294,12 @@ const formatDate = (date) => {
     return date ? format(date, "dd/MM/yyyy") : "";
 };
 onMounted(async () => {
-
+    // GSAP
+    // const smoother = ScrollSmoother.create({
+    //     smooth: 1.5,
+    //     effects: true
+    // })
+    // smoother.effects(".box")
     // ###
     checkin.value = new Date();
     // await roomTypes.getAllRoomType();

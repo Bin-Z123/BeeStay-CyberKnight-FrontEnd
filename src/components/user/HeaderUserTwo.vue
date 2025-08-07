@@ -54,10 +54,10 @@
           </div>
         </div>
         <div class="relative group">
-          <div class="flex items-center gap-1 text-base font-semibold cursor-pointer group-hover:text-muesli-500">
+          <!-- <div class="flex items-center gap-1 text-base font-semibold cursor-pointer group-hover:text-muesli-500">
             Blog
             <ChevronDown class="w-4 h-4" />
-          </div>
+          </div> -->
           <div
             class="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
             <RouterLink to="/"
@@ -81,7 +81,7 @@
       </div>
       <div class="md:w-5/12 2-1/3 flex justify-end gap-3 items-center">
         <div class="lg:flex hidden gap-3" v-if="!authStore.user">
-          <RouterLink to="/auth/login"
+          <RouterLink to="/login"
             class="py-2 px-4 hover:bg-muesli-400/10 text-gray-400 hover:text-muesli-400 rounded-lg border hover:border-muesli-400 transition-all duration-300 hover:scale-105 hover:shadow-md">
             Đăng Nhập
           </RouterLink>

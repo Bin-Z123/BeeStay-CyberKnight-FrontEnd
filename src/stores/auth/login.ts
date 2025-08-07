@@ -51,18 +51,18 @@ export const useAuthStore = defineStore("auth", () => {
     }
   };
 
-const logout = async () => {
-  try {
-    await axios.post(`${baseUrl}/logout`, {}, { withCredentials: true });
-    toast.success("Đăng xuất thành công!");
-    router.push("/auth/login");
-  } catch (e) {
-    toast.error("Đăng xuất thất bại!");
-  } finally {
-    user.value = null;
-    isAuthenticated.value = false;
-  }
-};
+  const logout = async () => {
+    try {
+      await axios.post(`${baseUrl}/logout`, {}, { withCredentials: true });
+      toast.success("Đăng xuất thành công!");
+      router.push("/login");
+    } catch (e) {
+      toast.error("Đăng xuất thất bại!");
+    } finally {
+      user.value = null;
+      isAuthenticated.value = false;
+    }
+  };
 
   return { user, isAuthenticated, fetchUser, logout };
 })

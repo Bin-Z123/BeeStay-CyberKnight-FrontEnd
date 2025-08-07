@@ -2,18 +2,34 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @custom-variant dark (&:where(.dark, .dark *));
-.scrollbar-hidden {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.scrollbar-hidden::-webkit-scrollbar {
-  display: none;
-}
-body {
-  font-family: 'Lora', serif !important;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+
+  .scrollbar-hidden {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+  body {
+
+    font-family: 'Lora', serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+  }
+  body {
+    font-family: 'Lora', serif !important;
+  }
+
+
+  @layer base {
+    * {
+      @apply border-border outline-ring/50;
+    }
+    body {
+      @apply bg-background text-foreground;
+    }
+  }
 /* Loader */
 .loader {
   width: 48px;
@@ -227,16 +243,4 @@ body {
   --sidebar-ring: oklch(0.439 0 0);
 }
 
-body {
-  font-family: 'Lora', serif !important;
-}
 
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}

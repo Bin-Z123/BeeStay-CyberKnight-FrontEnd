@@ -85,10 +85,10 @@ const isOtpComplete = computed(() => {
 const submitOtp = async () => {
     if (isOtpComplete.value) {
         try {
-            console.log('OTP:', fullOtp.value,"Email", registerStore.email);
+            console.log('OTP:', fullOtp.value, "Email", registerStore.email);
             await auth.verifyOTP(registerStore.email, fullOtp.value);
             toast.success('Xác nhận OTP, đăng ký thành công!');
-            router.push('/auth/login');
+            router.push('/login');
         } catch (error) {
             toast.error('Đăng ký thất bại!');
         }

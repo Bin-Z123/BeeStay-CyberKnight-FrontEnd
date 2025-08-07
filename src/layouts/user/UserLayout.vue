@@ -4,16 +4,16 @@
             <div class="py-5">
                 <Sidebar class="lg:hidden md:hidden" />
             </div>
-            <div class="flex-1 flex flex-col  bg-white">
-                <div  class="flex-1  flex flex-col">
+            <div class="flex-1 flex flex-col bg-white">
+                <div class="flex-1  flex flex-col">
                     <HeaderUser />
                     <div class="sticky top-0 z-30 bg-white shadow-md">
                         <HeaderUserTwo />
                     </div>
-                    <div class="flex-1 bg-gray-100">
+                    <div class="flex-1 bg-gray-100 over">
                         <RouterView />
                     </div>
-                    <div class="flex-1">
+                    <div>
                         <Footer></Footer>
                     </div>
                 </div>
