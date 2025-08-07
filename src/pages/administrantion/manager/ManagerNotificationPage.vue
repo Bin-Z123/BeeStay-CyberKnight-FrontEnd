@@ -24,7 +24,7 @@
                             <div class=" justify-self-end"><span class=" text-gray-600 font-bold p-1 rounded">{{
                                 new
                                     Date(msg.timestamp).toLocaleTimeString()
-                            }}</span></div>
+                                    }}</span></div>
                         </div>
                         <!-- CONTENT -->
                         <div v-else
@@ -35,7 +35,7 @@
                             <div class="  justify-self-end "><span class="text-gray-600 font-bold p-1 rounded">{{
                                 new
                                     Date(msg.timestamp).toLocaleTimeString()
-                                    }}</span></div>
+                            }}</span></div>
                         </div>
                     </div>
 

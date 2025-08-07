@@ -9,7 +9,8 @@
                     :style="{ backgroundImage: `url(${slide.image})` }">
                 </div>
 
-                <div class="relative z-10 flex flex-col items-center justify-center h-full text-white text-center">
+                <div data-aos="fade-up"
+                    class="relative z-10 flex flex-col items-center justify-center h-full text-white text-center">
                     <p class="text-2xl font-bold">{{ slide.title }}</p>
                     <p class="text-5xl lg:text-6xl lg:w-[800px] md:w-[600px] w-[400px]">
                         {{ slide.description }}

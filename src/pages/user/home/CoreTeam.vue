@@ -1,5 +1,6 @@
 <template>
-    <div class="flex flex-col container mx-auto py-25 gap-5 items-center justify-center px-4 lg:px-0">
+    <div class="flex flex-col container mx-auto py-25 gap-5 items-center justify-center px-4 lg:px-0"
+        data-aos="fade-up">
         <p class="text-2xl text-muesli-400">Nhóm Chúng Tôi</p>
         <h1 class="text-4xl font-bold">Đội Ngũ Phát Triển</h1>
         <div ref="users" class="keen-slider">

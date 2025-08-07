@@ -1,5 +1,5 @@
 <template>
-    <section class="bg-gray-100">
+    <section class="bg-gray-100" data-aos="fade-up">
         <div class="py-20 flex md:flex-row flex-col">
             <div class="md:w-1/2">
                 <h1 class="text-4xl font-bold md:text-right mx-4 text-center">

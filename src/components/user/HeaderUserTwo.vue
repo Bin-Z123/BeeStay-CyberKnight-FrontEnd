@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <div class="container mx-auto flex justify-center items-center text-gray-500" data-aos="fade-up">
+    <div class="container mx-auto flex justify-center items-center text-gray-500">
       <div class="w-5/12 lg:flex hidden items-center gap-5">
         <div class="relative group">
           <div class="flex items-center gap-1 text-base font-semibold cursor-pointer group-hover:text-muesli-500">
