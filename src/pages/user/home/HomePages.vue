@@ -61,9 +61,9 @@
         <div class="lg:grid lg:grid-cols-2 gap-[30px] items-center lg:mt-0 md:mt-20 sm:mt-40 mt-80">
             <!-- Image -->
             <div class=" lg:grid relative items-center justify-items-center">
-                <div
+                <div data-aos="fade-up"
                     class=" relative rounded-2xl lg:h-[580px] lg:w-[485px] h-100 w-115 inset-0 bg-[url('/src/assets/images/about.png')] bg-cover bg-center z-1">
-                    <div ref="square" data-speed="1"
+                    <div ref="square" data-aos="fade-up"
                         class="square box absolute lg:block hidden w-78 h-54 -top-5 -right-10 ring-8 bg-[url('/src/assets/images/bg_auth1.png')] bg-cover bg-center rounded-2xl z-20 ring-white">
                     </div>
                     <div data-speed="1"
