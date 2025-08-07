@@ -526,10 +526,10 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 const isloading = ref(false)
 // Xử lý tạo Booking
 const handleCrateBooking = async () => {
-    // if (!validateStayBeforeSubmit()) return
+    if (!validateStayBeforeSubmit()) return
     isloading.value = true
     try {
-        // await bookingStore.createBooking(newBooking.value);
+        await bookingStore.createBooking(newBooking.value);
 
         await delay(2000)
         router.go(0)

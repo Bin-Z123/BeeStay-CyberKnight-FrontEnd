@@ -16,7 +16,8 @@
                 <div class="lg:w-3/5 px-4 lg:px-0">
                     <div class="flex flex-col justify-center h-full lg:gap-8 gap-4">
                         <p class="text-2xl text-muesli-400">Thông Tin Chúng Tôi</p>
-                        <h1 class="lg:text-5xl md:text-4xl text-3xl font-bold">Chào Mừng Bạn Đến Với Khách Sạn BEESTAY
+                        <h1 class="lg:text-5xl md:text-4xl text-3xl font-bold">Chào Mừng Bạn Đến Với
+                            Khách Sạn BEESTAY
                         </h1>
                         <p class="text-gray-500 text-lg mt-6">Chào mừng bạn đến với Boking, nơi sang trọng gặp gỡ sự
                             thoải mái ngay tại trung tâm Canada. Kể từ năm 1999, chúng tôi đã tận tâm mang đến một trải
@@ -194,6 +195,7 @@
 <script setup lang="ts">
 import { MoveRight, MoveLeft, BedDouble, ShieldCheck, WavesLadder, Monitor, Star, Users } from "lucide-vue-next";
 import { useKeenSlider } from 'keen-slider/vue'
+
 // Slider reviews
 const [reviews] = useKeenSlider({
     loop: true,

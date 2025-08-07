@@ -7,14 +7,15 @@ import tailwindcss from "@tailwindcss/vite";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue(), vueDevTools(), tailwindcss()],
+  define: {
+    global: "globalThis",
+  },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
   server: {
-    allowedHosts: [
-      'f6f4c7ef15dd.ngrok-free.app',
-    ],
+    allowedHosts: ["f6f4c7ef15dd.ngrok-free.app"],
   },
 });

@@ -83,7 +83,8 @@
 
             <!-- Content -->
             <div class="w-full md:mt-0 mt-10">
-                <h2 class="text-3xl font-bold mb-4">Về Chúng Tôi {{ time }} {{ count }}</h2>
+                <h2 class="text-3xl font-bold mb-4">Về Chúng
+                    Tôi</h2>
                 <p class="text-lg mb-6">
                     Chào mừng đến với Boking, nơi sang trọng gặp gỡ sự thoải mái tại trung tâm Canada. Kể từ năm 1999,
                     chúng tôi đã tận tâm mang đến một trải nghiệm nghỉ ngơi tuyệt vời cho khách hàng của mình, kết hợp
@@ -257,8 +258,8 @@
 </template>
 <script setup>
 import { MoveRight, MoveLeft, BedDouble, ShieldCheck, WavesLadder, Monitor, Star, Users, Square, User } from "lucide-vue-next";
-import { ref, onMounted, watch, computed, nextTick, } from "vue";
-import { sr, vi } from "date-fns/locale";
+import { ref, onMounted, watch, computed, nextTick } from "vue";
+import { vi } from "date-fns/locale";
 import { addDays, format } from "date-fns";
 import { useKeenSlider } from 'keen-slider/vue'
 import KeenSlider from 'keen-slider';
@@ -269,11 +270,9 @@ import { Bookings } from "@/api/booking";
 import { Facilities } from "@/api/facilities";
 import HeroSection from "./HeroSection.vue";
 import CoreTeam from "./CoreTeam.vue";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-// ScrollSmoother requires ScrollTrigger
-import { ScrollSmoother } from "gsap/ScrollSmoother";
-// ###
+
+
+
 const roomTypes = RoomType();
 const bookings = Bookings();
 const router = useRouter();
@@ -295,12 +294,6 @@ const formatDate = (date) => {
 };
 onMounted(async () => {
     // GSAP
-    // const smoother = ScrollSmoother.create({
-    //     smooth: 1.5,
-    //     effects: true
-    // })
-    // smoother.effects(".box")
-    // ###
     checkin.value = new Date();
     // await roomTypes.getAllRoomType();
     await facilities.getAllFacilities();

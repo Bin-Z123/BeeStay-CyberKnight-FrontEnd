@@ -12,6 +12,7 @@
                     </div>
                     <div class="flex-1 bg-gray-100 over">
                         <RouterView />
+                        <Chatbot />
                     </div>
                     <div>
                         <Footer></Footer>
