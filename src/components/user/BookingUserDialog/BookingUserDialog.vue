@@ -106,6 +106,10 @@ const handleConfirmBooking = async () => {
             params: { id: response.data.id }
         })
         window.open(routerData.href, '_blank');
+
+        toast.success("Yêu cầu đặt phòng đã được tạo. Vui lòng hoàn tất thanh toán.");
+        router.push({ path: '/user/home' });
+        // location.reload();
     } catch (error) {
         console.error("Lỗi khi xác nhận đặt phòng:", error);
     }

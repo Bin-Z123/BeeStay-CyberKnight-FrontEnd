@@ -1,28 +1,28 @@
 <template>
     <SidebarProvider>
-        <div class="flex h-screen w-full overflow-hidden">
+        <div class="flex h-screen w-full ">
             <div class="py-5">
                 <Sidebar class="lg:hidden md:hidden" />
             </div>
-            <div class="flex-1 flex flex-col overflow-hidden bg-white">
-                <div ref="scrollContainer" class="flex-1 overflow-y-auto flex flex-col">
+            <div class="flex-1 flex flex-col bg-white">
+                <div class="flex-1  flex flex-col">
                     <HeaderUser />
                     <div class="sticky top-0 z-30 bg-white shadow-md">
                         <HeaderUserTwo />
                     </div>
-                    <div class="flex-1 bg-gray-100">
+                    <div class="flex-1 bg-gray-100 over">
                         <RouterView />
                     </div>
-                    <div class="flex-1">
+                    <div>
                         <Footer></Footer>
                     </div>
                 </div>
             </div>
         </div>
-        <button v-if="showScrollButton" @click.prevent="scrollToTop"
+        <!-- <button v-if="showScrollButton" @click.prevent="scrollToTop"
             class="fixed bottom-5 right-5 bg-muesli-400 hover:bg-muesli-600 text-white p-3 rounded-full">
             <ArrowUp />
-        </button>
+        </button> -->
     </SidebarProvider>
 </template>
 
@@ -35,31 +35,31 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { onMounted, ref, onUnmounted } from "vue";
 import { ArrowUp } from 'lucide-vue-next';
 
-const scrollContainer = ref(null);
-const showScrollButton = ref(false);
+// const scrollContainer = ref(null);
+// const showScrollButton = ref(false);
 
-const handleScroll = () => {
-    showScrollButton.value = scrollContainer.value.scrollTop > 300;
-};
+// const handleScroll = () => {
+//     showScrollButton.value = scrollContainer.value.scrollTop > 300;
+// };
 
-onMounted(() => {
-    if (scrollContainer.value) {
-        scrollContainer.value.addEventListener('scroll', handleScroll);
-    }
-});
+// onMounted(() => {
+//     if (scrollContainer.value) {
+//         scrollContainer.value.addEventListener('scroll', handleScroll);
+//     }
+// });
 
-onUnmounted(() => {
-    if (scrollContainer.value) {
-        scrollContainer.value.removeEventListener('scroll', handleScroll);
-    }
-});
+// onUnmounted(() => {
+//     if (scrollContainer.value) {
+//         scrollContainer.value.removeEventListener('scroll', handleScroll);
+//     }
+// });
 
-const scrollToTop = () => {
-    if (scrollContainer.value) {
-        scrollContainer.value.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-        });
-    }
-};
+// const scrollToTop = () => {
+//     if (scrollContainer.value) {
+//         scrollContainer.value.scrollTo({
+//             top: 0,
+//             behavior: 'smooth',
+//         });
+//     }
+// };
 </script>

@@ -70,6 +70,11 @@ const userRouter: RouteRecordRaw = {
             }
         },
         {
+            path: "booking-details/:id",
+            name: "booking-detail",
+            component: () => import("../../pages/user/booking/BookingDetail.vue"),
+        },
+        {
             path: "setting",
             name: "setting",
             component: () => import("../../layouts/user/UserLayoutSetting.vue"),
@@ -88,6 +93,21 @@ const userRouter: RouteRecordRaw = {
                     path: "point",
                     name: "point",
                     component: () => import("../../pages/user/usersetting/Point.vue"),
+                },
+                {
+                    path: "historypayment",
+                    name: "historypayment",
+                    component: () => import("../../pages/user/usersetting/HistoryPayment.vue"),
+                },
+                {
+                    path: "refund/:id",
+                    name: "refund",
+                    component: () => import("../../pages/user/usersetting/RefundPayment.vue"),
+                },
+                {
+                    path: "notification",
+                    name: "notification",
+                    component: () => import("../../pages/user/usersetting/NotificationUser.vue"),
                 }
             ]
         }
