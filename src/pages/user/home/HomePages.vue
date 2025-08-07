@@ -5,7 +5,7 @@
                 class="absolute inset-0 bg-[url('/src/assets/images/home-1.1.png')] brightness-50 z-0 bg-fixed bg-cover bg-center flex items-center">
             </div>
             <div class="relative z-10 flex flex-col items-center justify-center h-full text-white">
-                <p class="text-2xl font-bold">Wellcome to BeeStay</p>
+                <p class="text-2xl font-bold" data-aos="fade-up">Wellcome to BeeStay</p>
                 <p class="text-5xl lg:text-6xl lg:w-[800px] md:w-[600px] text-center w-[400px]">
                     Discover the best places to stay, from hotels to vacation rentals.
                 </p>
@@ -102,7 +102,7 @@
             <!-- Content -->
             <div class="w-full md:mt-0 mt-10">
                 <h2 class="text-3xl font-bold mb-4">About Us {{ time }} - {{ count }}</h2>
-                <p class="text-lg mb-6">
+                <p class="text-lg mb-6" data-aos="fade-up">
                     Welcome to Bokinn, where luxury meets comfort in the heart of canada.
                     Since 1999, we have been dedicated to providing an exceptional stay
                     for our guests, blending modern amenities with timeless elegance.Our
