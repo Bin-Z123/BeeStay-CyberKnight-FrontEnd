@@ -25,7 +25,7 @@
               </div>
               <div class="w-1/2 text-right">
                 <div class="text-sm text-muesli-400 hover:underline">
-                  <RouterLink to="/auth/forgot-password">Quên mật khẩu?</RouterLink>
+                  <RouterLink to="/forgot-password">Quên mật khẩu?</RouterLink>
                 </div>
               </div>
             </div>
@@ -41,7 +41,7 @@
             <div>
               <p class="text-center text-gray-500 mt-4">
                 Bạn chưa có tài khoản?
-                <RouterLink to="/auth/register" class="text-muesli-400 hover:underline">Đăng ký</RouterLink>
+                <RouterLink to="/register" class="text-muesli-400 hover:underline">Đăng ký</RouterLink>
               </p>
             </div>
           </form>
