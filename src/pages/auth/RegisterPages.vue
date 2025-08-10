@@ -40,7 +40,7 @@
               </div>
               <div class="w-1/2 text-right">
                 <div class="text-sm text-muesli-400 hover:underline">
-                  <RouterLink to="/auth/forgot-password">Quên mật khẩu?</RouterLink>
+                  <RouterLink to="/forgot-password">Quên mật khẩu?</RouterLink>
                 </div>
               </div>
             </div>
@@ -54,7 +54,7 @@
             <div>
               <p class="text-center text-gray-500 mt-4">
                 Tôi đã có tài khoản?
-                <RouterLink to="/auth/login" class="text-muesli-400 hover:underline">Đăng nhập</RouterLink>
+                <RouterLink to="/login" class="text-muesli-400 hover:underline">Đăng nhập</RouterLink>
               </p>
             </div>
           </form>
@@ -128,7 +128,7 @@ const handleRegister = async () => {
   try {
     await auth.register(formData);
     registerStore.setRegister(formData);
-    router.push("/auth/otp");
+    router.push("/otp");
   } catch (err) {
     console.error(err);
   }

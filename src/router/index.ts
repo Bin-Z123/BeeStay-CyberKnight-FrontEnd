@@ -58,6 +58,7 @@ router.beforeEach(async (to, from, next) => {
         toast.error("Không có quyền truy cập!");
         return next("/user/home");
     }
+    
     next();
 })
 

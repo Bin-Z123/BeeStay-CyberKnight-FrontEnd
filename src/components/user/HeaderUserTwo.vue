@@ -108,22 +108,22 @@
               </p>
             </div>
             <hr>
-            <RouterLink to="/user/setting/point"
+            <!-- <RouterLink to="/user/setting/point"
               class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400">
               <CircleDollarSign class="w-4 h-4 inline-block" /> {{ authStore.user.point }} Điểm
-            </RouterLink>
+            </RouterLink> -->
             <RouterLink to="/user/setting/profile"
               class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400">
               <User class="w-4 h-4 inline-block" />Chỉnh sửa hồ sơ
             </RouterLink>
-            <RouterLink to="/user/setting/refund/NaN"
+            <!-- <RouterLink to="/user/setting/refund/NaN"
               class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400">
               <Wallet class="w-4 h-4 inline-block" />Hoàn tiền
-            </RouterLink>
-            <RouterLink to=""
+            </RouterLink> -->
+            <!-- <RouterLink to=""
               class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400">
               <TicketPercent class="w-4 h-4 inline-block" />Khuyến mãi
-            </RouterLink>
+            </RouterLink> -->
             <button to="" @click.prevent="handleLogout"
               class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400 hover:rounded-b-lg w-full">
               <LogOut class="w-4 h-4 inline-block" />Đăng xuất

@@ -12,7 +12,7 @@
 
 
     <div v-if="open" ref="chatbotWindow" style="box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgb(0 0 0 / 0.05);"
-        class="fixed z-11 bottom-[calc(4rem+1.5rem)] right-0 mr-4 bg-white p-6 rounded-lg border border-[#e5e7eb] w-[440px] h-[634px]">
+        class="fixed z-30 bottom-[calc(4rem+1.5rem)] right-0 mr-4 bg-white p-6 rounded-lg border border-[#e5e7eb] w-[440px] h-[634px]">
 
         <!-- Heading -->
         <div class="flex flex-col space-y-1.5 pb-6">

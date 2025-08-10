@@ -15,14 +15,14 @@
                 </div>
             </div>
             <hr>
-            <div class="py-2 flex flex-col gap-2">
+            <!-- <div class="py-2 flex flex-col gap-2">
                 <RouterLink to="/user/setting/point"
                     class="flex items-center gap-3 py-2 px-4 text-gray-700 hover:bg-muesli-100"
                     exact-active-class="bg-muesli-300 text-white hover:bg-muesli-300">
                     <CircleDollarSign class="w-4 h-4 inline-block" /> {{ authStore.user.point }} Điểm
                 </RouterLink>
             </div>
-            <hr>
+            <hr> -->
             <div class="py-2 flex flex-col gap-2">
                 <RouterLink to="/user/setting/historybooking"
                     class="flex items-center gap-3 py-2 px-4 text-gray-700 hover:bg-muesli-100"
@@ -34,7 +34,7 @@
                     exact-active-class="bg-muesli-300 text-white hover:bg-muesli-300">
                     <ScrollText class="w-4 h-4 inline-block" /> Lịch Sử Giao Dịch
                 </RouterLink>
-                <RouterLink :to="`/user/setting/refund/${bookingId}`"
+                <!-- <RouterLink :to="`/user/setting/refund/${bookingId}`"
                     class="flex items-center gap-3 py-2 px-4 text-gray-700 hover:bg-muesli-100"
                     exact-active-class="bg-muesli-300 text-white hover:bg-muesli-300">
                     <Wallet class="w-4 h-4 inline-block" /> Hoàn Tiền
@@ -43,7 +43,7 @@
                     class="flex items-center gap-3 py-2 px-4 text-gray-700 hover:bg-muesli-100"
                     exact-active-class="bg-muesli-300 text-white hover:bg-muesli-300">
                     <Bell class="w-4 h-4 inline-block" /> Thông Báo
-                </RouterLink>
+                </RouterLink> -->
             </div>
             <hr>
             <div class="pt-2 flex flex-col gap-2">

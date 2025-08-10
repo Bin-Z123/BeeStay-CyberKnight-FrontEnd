@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section v-if="currentRoomType">
     <div class="bg-white">
       <div class="w-full lg:h-[700px] md:h-[600px] h-96 relative">
         <div class="bg-[url('@/assets/images/header__bg.webp')] bg-cover bg-center h-full w-full"></div>
@@ -8,7 +8,14 @@
       <div class="container mx-auto pt-20">
         <div class="flex lg:flex-row flex-col">
 
-          <div v-if="currentRoomType" class="lg:w-2/3 flex flex-col gap-4 md:pe-5 px-4 md:px-0">
+          <div class="lg:w-2/3 flex flex-col gap-4 md:pe-5 px-4 md:px-0">
+            <div class="flex flex-col gap-5">
+              <ImageRoomSlider :images="getRoomImages" />
+            </div>
+          </div>
+
+          <div class="lg:w-1/3 px-4 md:px-0 mt-8 md:mt-0">
+
             <div class="flex flex-col gap-5">
               <div class="flex flex-col gap-2">
                 <h1 class="text-4xl font-bold">{{ currentRoomType.nameRoomType }}</h1>
@@ -67,60 +74,7 @@
                 <img :src="getImageUrl(image.url)" alt="Ảnh Phòng" class="rounded-2xl w-full h-full object-cover">
               </div> -->
 
-              <div class="flex flex-col gap-5">
-                <h1 class="text-2xl font-bold">Ảnh</h1>
-                <ImageRoomSlider :images="getRoomImages" />
-                <!-- <div ref="roomImages" class="keen-slider rounded-2xl">
-                  <div class="keen-slider__slide relative"
-                    v-for="(image, index) in currentRoomType.availableRoomDTO[0]?.roomImage" :key="image.id">
-                    <img :src="getImageUrl(image.url)" alt="Ảnh Phòng" class="rounded-2xl w-full h-full object-cover">
-                    <span
-                      class="absolute top-0 right-0 bg-muesli-400 rounded-tr-2xl rounded-bl-2xl text-white text-2xl p-6 font-bold w-8 h-8 flex items-center justify-center"
-                      v-if="currentRoomType.availableRoomDTO[0]?.roomImage.length > 1">{{ index + 1 }}</span>
-                  </div>
-                </div> -->
-              </div>
-            </div>
-          </div>
 
-          <div class="lg:w-1/3 px-4 md:px-0 mt-8 md:mt-0">
-            <div class="bg-gray-100 rounded-2xl">
-              <form action="" class="p-2">
-                <p class="text-2xl font-bold text-center pt-4">Đặt Phòng Của Chúng Tôi</p>
-                <div class="flex flex-col justify-between items-center py-4 px-6 gap-5">
-                  <div class="space-y-2 flex flex-col border-gray-200 w-full">
-                    <label>Ngày Đến</label>
-                    <VueDatePicker v-model="checkin" :format-locale="vi" :format="'dd/MM/yyyy'" :min-date="new Date()"
-                      multi-calendars class="" />
-                  </div>
-                  <div class="relative space-y-2 flex flex-col border-gray-200 w-full">
-                    <label>Ngày Đi</label><select
-                      class="block w-full rounded-[4px]  bg-white px-3 py-[4px] text-gray-400 text-[17px]" name="" id=""
-                      :disabled="!checkin" v-model="numberOfNights">
-                      <option :value="null" selected disabled>Chọn số đêm</option>
-                      <option :value="i" v-for="i in 30" :key="i">
-                        {{ i }} đêm - {{ checkOutDateText(i) }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="space-y-2 flex flex-col border-gray-200 w-full">
-                    <label>Loại Phòng</label><select type="text"
-                      class="px-3 py-[4px] rounded-[4px] text-gray-400 text-[17px] bg-white">
-                      <option value="all">Tất Cả Loại Phòng</option>
-                    </select>
-                  </div>
-                  <div class="space-y-2 flex flex-col border-gray-200 w-full">
-                    <label>Số Người</label><input type="text"
-                      class="px-3 py-[4px] rounded-[4px] text-gray-400 text-[17px] bg-white"
-                      placeholder="Nhập số người" />
-                  </div>
-                  <div class="flex items-center justify-end border-gray-400 w-full">
-                    <button class="w-full px-4 py-3 bg-muesli-400 text-white rounded-lg">
-                      Kiểm Tra
-                    </button>
-                  </div>
-                </div>
-              </form>
             </div>
           </div>
         </div>
@@ -194,6 +148,7 @@ const getRoomImages = computed(() => {
   const roomTypeId = route.query.roomTypeId;
   const roomType = bookings.listRoomsAvailable.find(room => room.roomTypeId == roomTypeId);
   const rooms = ref([])
+  // await nextTick();
   roomType.availableRoomDTO.forEach(room => {
     if (!room.roomImage[0]?.url) {
       return
