@@ -45,8 +45,7 @@
               </div>
             </div>
             <div>
-              <button
-                type="submit"
+              <button type="submit"
                 class="bg-muesli-400 hover:bg-white hover:text-muesli-400 border border-muesli-400 text-white font-bold py-2 px-4 w-full rounded duration-300">
                 Đăng Ký
               </button>
