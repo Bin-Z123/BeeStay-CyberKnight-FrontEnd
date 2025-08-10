@@ -64,7 +64,7 @@ const administrationRouter: RouteRecordRaw = {
         },
         {
             path: "bookingmanager/:id",
-            name: "booking-detail",
+            name: "booking-detail-manager",
             component: () => import("../../pages/administrantion/manager/BookingDetailPage.vue"),
             props: true,
             meta: {
