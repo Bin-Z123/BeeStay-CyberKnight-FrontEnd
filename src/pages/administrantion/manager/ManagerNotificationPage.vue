@@ -4,7 +4,7 @@
         <main class="flex-1 flex flex-col">
             <!-- Nội dung chat -->
             <div class="flex-1 overflow-y-auto p-4">
-                <h1 class="justify-self-center">Chat</h1>
+                <h1 class="justify-self-center font-bold text-2xl mb-2">BeeStay Chat</h1>
                 <div v-for="(msg, i) in messages" :key="i" class="mb-2">
                     <div v-if="msg.type == 'JOIN'"
                         class="justify-self-center italic text-sm -mb-1 bg-gray-200 rounded p-1"><span
@@ -53,7 +53,7 @@
                 <label class="flex gap-2">
                     <input v-model="message" @keyup.enter="sendMessage()" placeholder="Nhắn tin..."
                         class="flex-1 h-10 px-4 border rounded" />
-                    <button class="px-4 bg-blue-500 text-white rounded" @click="sendMessage()">Gửi</button>
+                    <button class="px-4 bg-muesli-500 text-white rounded" @click="sendMessage()">Gửi</button>
                 </label>
             </div>
         </main>

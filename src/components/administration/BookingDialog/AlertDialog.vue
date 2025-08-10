@@ -73,7 +73,7 @@ const openTabBooking = async (id: number) => {
         await delay(2000)
 
         const routerData = router.resolve({
-            name: 'booking-detail',
+            name: 'booking-detail-manager',
             params: { id: id }
         })
         window.open(routerData.href, '_blank');
