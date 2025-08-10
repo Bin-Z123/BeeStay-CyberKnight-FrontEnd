@@ -57,6 +57,9 @@
             </RouterLink>
           </div>
         </div>
+        <div>
+          <RouterLink to="/administration/dashboard" v-if="authStore.user?.role?.roleName === 'ADMIN'" class="text-base font-semibold hover:text-muesli-500">Admin</RouterLink>
+        </div>
         <div class="relative group">
           <!-- <div class="flex items-center gap-1 text-base font-semibold cursor-pointer group-hover:text-muesli-500">
             Blog
