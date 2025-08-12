@@ -1,5 +1,5 @@
 <template>
-    <DialogContent class="sm:max-w-[80rem] sm:max-h-[60rem]">
+    <DialogContent class="sm:max-w-[70rem] sm:max-h-[50rem]">
         <div>
             <img class="w-full h-full" :src="getImageUrl(imagePayload)" alt="">
         </div>
