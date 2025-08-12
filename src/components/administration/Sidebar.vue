@@ -5,22 +5,18 @@
         <div>
           <RouterLink to="/user/home"><img class="w-85 pt-6" src="/src/assets/images/LogoBeeStay.svg"
               cusorhover="pointer" alt="" />
-          <RouterLink to="/user/home"><img class="w-85 pt-6" src="/src/assets/images/LogoBeeStay.svg"
-              cusorhover="pointer" alt="" />
           </RouterLink>
         </div>
         <div>
           <div class="flex items-center mx-5 pt-5">
             <RouterLink to="/administration/dashboard"
-            <RouterLink to="/administration/dashboard"
               class="w-full px-4 py-2 rounded-md transition-all duration-300 ease-in-out hover:text-muesli-800 hover:bg-muesli-50 font-bold"
               exact-active-class="text-muesli-800 bg-muesli-100">
-              exact-active-class="text-muesli-800 bg-muesli-100">
+
               <LayoutDashboard class="inline-block h-5 w-5" /> Bảng Điều Khiển
             </RouterLink>
           </div>
           <div class="mx-5 pt-1">
-            <button @click="isManagerOpen = !isManagerOpen"
             <button @click="isManagerOpen = !isManagerOpen"
               class="w-full px-4 py-2 rounded-md transition-all duration-300 ease-in-out hover:text-muesli-800 hover:bg-muesli-50 font-bold flex items-center gap-2"
               :class="[
@@ -30,7 +26,7 @@
                 '/administration/statistics',
 
                 '/administration/promotions',
-                
+
                 '/administration/facilities',
               ].some((link) => route.path.startsWith(link))
                 ? 'text-muesli-800 bg-muesli-100'
@@ -48,20 +44,15 @@
               <RouterLink to="/administration/roomtypes"
                 class="block text-sm px-3 py-1 rounded hover:bg-muesli-50 hover:text-muesli-800"
                 exact-active-class="text-muesli-800 font-semibold bg-muesli-100">
-                exact-active-class="text-muesli-800 font-semibold bg-muesli-100">
                 <LayoutGrid class="inline-block h-4 w-4" /> Quản Lý Loại Phòng
               </RouterLink>
               <RouterLink to="/administration/rooms"
-              <RouterLink to="/administration/rooms"
                 class="block text-sm px-3 py-1 rounded hover:bg-muesli-50 hover:text-muesli-800"
-                exact-active-class="text-muesli-800 font-semibold bg-muesli-100">
                 exact-active-class="text-muesli-800 font-semibold bg-muesli-100">
                 <BedDouble class="inline-block h-4 w-4" /> Quản Lý Phòng
               </RouterLink>
               <RouterLink to="/administration/facilities"
-              <RouterLink to="/administration/facilities"
                 class="block text-sm px-3 py-1 rounded hover:bg-muesli-50 hover:text-muesli-800"
-                exact-active-class="text-muesli-800 font-semibold bg-muesli-100">
                 exact-active-class="text-muesli-800 font-semibold bg-muesli-100">
                 <ClipboardList class="inline-block h-4 w-4" /> Quản Lý Dịch Vụ
               </RouterLink>
@@ -76,13 +67,12 @@
                 exact-active-class="text-muesli-800 font-semibold bg-muesli-100">
                 <TicketPercent class="inline-block h-4 w-4" /> Khuyến Mãi
               </RouterLink>
-              
+
             </div>
           </div>
 
           <!-- Lễ Tân -->
           <div class="mx-5 pt-1">
-            <button @click="isReceptionistOpen = !isReceptionistOpen"
             <button @click="isReceptionistOpen = !isReceptionistOpen"
               class="w-full px-4 py-2 rounded-md transition-all duration-300 ease-in-out hover:text-muesli-800 hover:bg-muesli-50 font-bold flex items-center gap-2"
               :class="[

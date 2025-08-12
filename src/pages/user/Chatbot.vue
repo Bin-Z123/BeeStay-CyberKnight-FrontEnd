@@ -66,10 +66,10 @@
         <!-- Input box  -->
         <div class="flex items-center pt-3">
             <div class="flex items-center justify-center w-full space-x-2" @submit.prevent>
-                <input v-model="message" @keyup.enter="sendMessage()"
+                <input v-model="message" @keyup.enter="sendPrivateMessage()"
                     class="flex h-10 w-full rounded-md border border-[#e5e7eb] px-3 py-2 text-sm placeholder-[#6b7280] focus:outline-none focus:ring-2 focus:ring-muesli-200 disabled:cursor-not-allowed disabled:opacity-50 text-[#030712] focus-visible:ring-offset-2"
                     placeholder="Nhập nội dung của bạn" value="">
-                <button @click="sendMessage()" type="button"
+                <button @click="sendPrivateMessage()" type="button"
                     class="inline-flex items-center justify-center rounded-md text-sm font-medium text-[#f9fafb] disabled:pointer-events-none disabled:opacity-50 bg-muesli-400 hover:bg-muesli-700 h-10 px-4 py-2">
                     Gửi</button>
             </div>
@@ -100,22 +100,33 @@ const client = new Client({
         Authorization: `Bearer ${token}`,
     },
     reconnectDelay: 5000,
+    // onConnect: () => {
+    //     stompClient = client
+    //     toast.success('Kết nối Socket thành công!')
+    //     message.value = ' đã tham gia'
+    //     joinChat()
+    //     console.log(client)
+    //     client.subscribe('/topic/messages', (message) => {
+    //         const chatMessage = JSON.parse(message.body);
+    //         console.log(chatMessage)
+    //         messages.value.push(chatMessage)
+    //     })
+    // },
     onConnect: () => {
         stompClient = client
         toast.success('Kết nối Socket thành công!')
-        message.value = ' đã tham gia'
-        joinChat()
-        console.log(client)
-        client.subscribe('/topic/messages', (message) => {
+        client.subscribe('/user/queue/messages', (message) => {
             const chatMessage = JSON.parse(message.body);
+
+            console.log("Tin Nhắn Private")
             console.log(chatMessage)
             messages.value.push(chatMessage)
         })
     },
-    onDisconnect: () => {
-        message.value = ' đã rời khỏi'
-        sendMessage()
-    },
+    // onDisconnect: () => {
+    //     message.value = ' đã rời khỏi'
+    //     sendMessage()
+    // },
     onStompError: (frame) => {
         console.error('Lỗi Socket', frame)
     },
@@ -128,17 +139,34 @@ onMounted(() => {
     client.activate()
     // console.log('Token:', token)
 })
-
-const sendMessage = () => {
-    if (message.value.trim() && stompClient) {
-        // stompClient.send('/app/chat', {}, message.value)
-        stompClient?.publish({
-            destination: '/app/chat',
-            body: message.value
-        });
+const currentRecipientId = ref(1001)
+const sendPrivateMessage = () => {
+    if (message.value.trim() && stompClient && client.active && currentRecipientId.value) {
+        const payload = {
+            content: message.value,
+            recipientId: currentRecipientId.value
+        }
+        client.publish({
+            destination: "/app/private-chat",
+            body: JSON.stringify(payload)
+        })
         message.value = ''
+    } else {
+        toast.error('Vui lòng chọn người nhắn!')
     }
+
 }
+
+// const sendMessage = () => {
+//     if (message.value.trim() && stompClient) {
+//         // stompClient.send('/app/chat', {}, message.value)
+//         stompClient?.publish({
+//             destination: '/app/chat',
+//             body: message.value
+//         });
+//         message.value = ''
+//     }
+// }
 const joinChat = () => {
     if (message.value.trim() && stompClient) {
         // stompClient.send('/app/chat', {}, message.value)
