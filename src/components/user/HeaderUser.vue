@@ -4,7 +4,7 @@
       <span class="text-sm flex items-center gap-2">
         <Phone class="w-4 h-4 inline-block" />0123456789
       </span>
-      <span class="text-sm flex items-center gap-2" data-aos="fade-up">
+      <span class="text-sm flex items-center gap-2">
         <Mail class="w-4 h-4 inline-block" />email@gmail.com
       </span>
     </div>

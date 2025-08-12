@@ -61,12 +61,12 @@
         <div class="lg:grid lg:grid-cols-2 gap-[30px] items-center lg:mt-0 md:mt-20 sm:mt-40 mt-80">
             <!-- Image -->
             <div class=" lg:grid relative items-center justify-items-center">
-                <div
+                <div data-aos="fade-up"
                     class=" relative rounded-2xl lg:h-[580px] lg:w-[485px] h-100 w-115 inset-0 bg-[url('/src/assets/images/about.png')] bg-cover bg-center z-1">
-                    <div ref="square" data-speed="1"
+                    <div ref="square" data-aos="fade-up"
                         class="square box absolute lg:block hidden w-78 h-54 -top-5 -right-10 ring-8 bg-[url('/src/assets/images/bg_auth1.png')] bg-cover bg-center rounded-2xl z-20 ring-white">
                     </div>
-                    <div data-speed="1"
+                    <div data-aos="fade-up"
                         class="square2 box absolute w-60 h-30 bottom-8 lg:-left-14 bg-white shadow-2xl rounded-2xl z-20 flex items-center justify-center">
                         <div class="w-1/2 flex items-center justify-center">
                             <div class="bg-gray-200/60 w-20 h-20 rounded-2xl">
@@ -83,16 +83,16 @@
 
             <!-- Content -->
             <div class="w-full md:mt-0 mt-10">
-                <h2 class="text-3xl font-bold mb-4">Về Chúng
+                <h2 class="text-3xl font-bold mb-4" data-aos="fade-up">Về Chúng
                     Tôi</h2>
-                <p class="text-lg mb-6">
+                <p class="text-lg mb-6" data-aos="fade-up" data-aos-delay="100">
                     Chào mừng đến với Boking, nơi sang trọng gặp gỡ sự thoải mái tại trung tâm Canada. Kể từ năm 1999,
                     chúng tôi đã tận tâm mang đến một trải nghiệm nghỉ ngơi tuyệt vời cho khách hàng của mình, kết hợp
                     các tiện nghi hiện đại với vẻ đẹp vượt thời gian. Những căn phòng và suite được thiết kế đẹp mắt của
                     chúng tôi cung cấp tầm nhìn tuyệt đẹp và tiện nghi sang trọng, đảm bảo một chốn nghỉ ngơi thật sự
                     thoải mái cho dù bạn đến đây vì công việc hay giải trí.
                 </p>
-                <p class="text-lg">
+                <p class="text-lg" data-aos="fade-up" data-aos-delay="100">
                     Nền tảng của chúng tôi kết nối bạn với nhiều loại bất động sản, đảm bảo rằng bạn sẽ tìm thấy nơi ở
                     hoàn hảo cho chuyến đi tiếp theo của mình.
                 </p>
@@ -102,9 +102,9 @@
 
     <section>
         <div class="flex flex-col justify-center items-center px-4 py-25 gap-3 w-full">
-            <h2 class="text-2xl text-muesli-400">Dịch Vụ</h2>
-            <p class="text-4xl font-bold mb-10">Dịch Vụ Của Khách Sạn</p>
-            <div class="lg:container lg:mx-auto">
+            <h2 class="text-2xl text-muesli-400" data-aos="fade-up">Dịch Vụ</h2>
+            <p class="text-4xl font-bold mb-10" data-aos="fade-up">Dịch Vụ Của Khách Sạn</p>
+            <div class="lg:container lg:mx-auto" data-aos="fade-up" data-aos-delay="100">
                 <div ref="facilitys" class="keen-slider rounded-2xl">
                     <div class="keen-slider__slide sm:w-auto bg-white flex flex-col justify-center items-center rounded-2xl h-70 p-10 gap-3"
                         v-for="facility in facilities.facilities" :key="facility.id">
@@ -122,11 +122,11 @@
         <div class="bg-white px-4 py-25">
             <div class="container mx-auto">
                 <div class="flex md:flex-row flex-col gap-8">
-                    <div class="md:w-1/2">
+                    <div class="md:w-1/2" data-aos="fade-right">
                         <h1 class="text-2xl text-muesli-400">Phòng</h1>
                         <h1 class="text-4xl font-bold">Phòng Của Chúng Tôi</h1>
                     </div>
-                    <div class="md:w-1/2">
+                    <div class="md:w-1/2" data-aos="fade-left">
                         <h1 class="text-gray-400">Các phòng của chúng tôi mang đến sự kết hợp hài hòa giữa sự thoải mái
                             và vẻ sang trọng, được thiết kế để cung cấp một kỳ nghỉ đặc biệt cho mỗi khách. Mỗi phòng
                             đều có giường nệm êm ái, ga trải giường chất lượng cao và một bộ gối để đảm bảo một giấc ngủ
@@ -136,7 +136,7 @@
                 <div ref="container" class="keen-slider mt-10 rounded-2xl" v-if="bookings.listRoomsAvailable.length">
                     <div class="keen-slider__slide h-[500px] flex items-center justify-center relative"
                         v-for="room in bookings.listRoomsAvailable" :key="room.roomTypeId">
-                        <img v-if="room.availableRoomDTO[0]?.roomImage[0]?.url"
+                        <img data-aos="flip-left" v-if="room.availableRoomDTO[0]?.roomImage[0]?.url"
                             :src="getImageUrl(room.availableRoomDTO[0].roomImage[0].url)" alt="Ảnh Phòng"
                             class="h-full w-full object-cover">
                         <div class="absolute inset-0 bg-black opacity-40"></div>
@@ -161,11 +161,11 @@
     <section>
         <div class="bg-white px-4 pb-15">
             <div class="container mx-auto">
-                <div>
+                <div data-aos="fade-right">
                     <h1 class="text-2xl text-muesli-400">Minh Chứng</h1>
                     <h1 class="text-4xl font-bold">Những Đánh Giá Tốt Của Khách Hàng</h1>
                 </div>
-                <div ref="reviews" class="keen-slider">
+                <div ref="reviews" class="keen-slider" data-aos="fade-up">
                     <div class="keen-slider__slide flex flex-col md:flex-row items-center justify-center">
                         <div class="md:w-1/5 py-10 w-70">
                             <img src="@/assets/images/bin.png" alt="" class="rounded-full border-6 border-gray-400/15">
@@ -301,7 +301,7 @@ onMounted(async () => {
     // console.log("Phòng Còn Trống Nè Hehehe", JSON.stringify(bookings.listRoomsAvailable, null, 2));
 });
 
-const numberOfNights = ref(null);
+const numberOfNights = ref(1);
 const checkOutDateText = (night) => {
     if (!checkin.value) return "";
     const date = addDays(checkin.value, night);

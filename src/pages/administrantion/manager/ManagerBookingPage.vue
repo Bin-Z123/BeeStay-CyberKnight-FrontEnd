@@ -377,7 +377,7 @@ window.addEventListener("click", () => {
 
 const openTabBooking = (id: number) => {
     const routerData = router.resolve({
-        name: 'booking-detail',
+        name: 'booking-detail-manager',
         params: { id: id }
     })
     window.open(routerData.href, '_blank');

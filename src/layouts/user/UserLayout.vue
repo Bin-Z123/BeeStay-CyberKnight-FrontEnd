@@ -12,13 +12,14 @@
                     </div>
                     <div class="flex-1 bg-gray-100 over">
                         <RouterView />
-                        <Chatbot />
+
                     </div>
                     <div>
                         <Footer></Footer>
                     </div>
                 </div>
             </div>
+            <Chatbot v-if="authStore.user" />
         </div>
         <!-- <button v-if="showScrollButton" @click.prevent="scrollToTop"
             class="fixed bottom-5 right-5 bg-muesli-400 hover:bg-muesli-600 text-white p-3 rounded-full">
@@ -35,6 +36,9 @@ import Footer from '@/components/user/Footer.vue';
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { onMounted, ref, onUnmounted } from "vue";
 import { ArrowUp } from 'lucide-vue-next';
+import Chatbot from '@/pages/user/Chatbot.vue';
+import { useAuthStore } from '@/stores/auth/login';
+const authStore = useAuthStore();
 
 // const scrollContainer = ref(null);
 // const showScrollButton = ref(false);

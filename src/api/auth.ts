@@ -4,6 +4,8 @@ import { toast } from "vue-sonner";
 import { useAuthStore } from "@/stores/auth/login";
 import { useRouter } from "vue-router";
 import { defineStore } from "pinia";
+import { log } from "console";
+import { a } from "@tanstack/vue-query/build/legacy/queryClient-CAHOJcvF";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -58,9 +60,15 @@ export const Auth = () => {
 
   const getUserInfoByToken = async (): Promise<User> => {
     try {
-      const response = await axios.get<{ data: User }>(`${baseUrl}/me`, {
+       const response = await axios.get<{ data: User }>(`${baseUrl}/me`, {
         withCredentials: true,
       });
+      console.log("Thông tin người dùng", JSON.stringify(response.data.data, null, 2));
+
+      if (response.data.data.eblacklist == 2) {
+        toast.error("Tài khoản của bạn đã bị khoá, vui lòng liên hệ với quản trị viên.");
+        authStore.logout();
+      }
       return response.data.data;
     } catch (error) {
       console.error("Lỗi lấy thông tin người dùng", error);
@@ -78,31 +86,39 @@ export const Auth = () => {
       }, {
         withCredentials: true
       });
-      //Lấy thông tin sau khi login
+
       const user = await getUserInfoByToken();
-      authStore.user = user;
-      authStore.isAuthenticated = true;
 
-      toast.success("Thông báo", {
-        description: "Đăng nhập thành công!",
-        action: { label: "Thoát" },
-      });
-
-      const role = user.role.roleName.toUpperCase();
-      console.log("role: " + role);
-      if (role === "ADMIN") {
-        router.push("/administration/dashboard");
+      if (user.eblacklist === 2) {
+        toast.error("Tài khoản của bạn đã bị khoá, vui lòng liên hệ với quản trị viên.");
+        await authStore.logout();
+        throw new Error("User is banned");
       } else {
-        router.push("/user/home");
+        authStore.user = user;
+        authStore.isAuthenticated = true;
+
+        toast.success("Thông báo", {
+          description: "Đăng nhập thành công!",
+        });
+
+        const role = user.role.roleName.toUpperCase();
+        if (role === "ADMIN") {
+          router.push("/administration/dashboard");
+        } else {
+          router.push("/user/home");
+        }
+      }
+      return response.data;
+
+    } catch (error: any) {
+      if (error.message !== "User is banned") {
+        toast.error("Thông báo", {
+          description: "Lỗi: " + (error?.response?.data?.message || error.message),
+        });
       }
 
-      return response.data;
-    } catch (error: any) {
-      console.error("Đăng Nhập Thất Bại!", error);
-      toast.error("Thông báo", {
-        description: "Lỗi: " + (error?.response?.data?.message || error.message),
-      });
       throw error;
+
     } finally {
       setTimeout(() => {
         isLoading.value = false;

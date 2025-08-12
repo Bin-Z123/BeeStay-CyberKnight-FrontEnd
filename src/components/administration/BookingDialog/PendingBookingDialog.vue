@@ -15,35 +15,35 @@
                         <div class="absolute -top-4 left-3 bg-muesli-300 text-white px-2 py-0.5 rounded-xs">Thông tin
                             người đặt phòng</div>
                         <div class="h-36  grid grid-cols-3 items-center">
-                            <div class="col-1 pr-2 flex flex-col items-end space-y-1">
-                                <div>Họ & tên: </div>
-                                <div>Sđt: </div>
+                            <div class="col-1 pr-2 flex flex-col items-end space-y-1 gap-2">
+                                <div :class="['', error.fullname ? 'text-red-600' : '']">Họ & tên: </div>
+                                <div :class="['', error.phone ? 'text-red-600' : '']">Sđt: </div>
                             </div>
-                            <div class="col-span-2 flex flex-col space-y-1 pr-2">
+                            <div class="col-span-2 flex flex-col space-y-1 pr-2 gap-2">
                                 <div>
                                     <input type="text" v-model="newBooking.guestBookingRequest.fullname"
-                                        class="input-booking disabled:border-gray-300 disabled:bg-gray-50 disabled:text-gray-600">
+                                        :class="['input-booking disabled:border-gray-300 disabled:bg-gray-50 disabled:text-gray-600', error.fullname? 'border-red-500 ring-2 ring-red-300 shadow-red-200 text-red-600' : '']">
                                 </div>
                                 <div>
                                     <input type="text" v-model="newBooking.guestBookingRequest.phone"
-                                        class="input-booking disabled:border-gray-300 disabled:bg-gray-50 disabled:text-gray-600">
+                                        :class="['input-booking disabled:border-gray-300 disabled:bg-gray-50 disabled:text-gray-600', error.phone ? 'border-red-500 ring-2 ring-red-300 shadow-red-200 text-red-600' : '']">
                                 </div>
                             </div>
                         </div>
                         <!-- TT Phải -->
                         <div class="h-36  grid grid-cols-3 items-center">
-                            <div class="col-1 pr-2 flex flex-col items-end space-y-1">
-                                <div>Email: </div>
-                                <div>CCCD: </div>
+                            <div class="col-1 pr-2 flex flex-col items-end space-y-1 gap-2">
+                                <div :class="['', error.email ? 'text-red-600' : '']">Email: </div>
+                                <div :class="['', error.cccd ? 'text-red-600' : '']">CCCD: </div>
                             </div>
-                            <div class="col-span-2 flex flex-col space-y-1 pr-2">
+                            <div class="col-span-2 flex flex-col space-y-1 pr-2 gap-2">
                                 <div>
                                     <input type="email" v-model="newBooking.guestBookingRequest.email"
-                                        class="input-booking ">
+                                        :class="['input-booking', error.email ? 'border-red-500 ring-2 ring-red-300 shadow-red-200 text-red-600' : ''] ">
                                 </div>
                                 <div>
                                     <input type="text" v-model="newBooking.guestBookingRequest.cccd"
-                                        class="input-booking ">
+                                        :class="['input-booking', error.cccd ? 'border-red-500 ring-2 ring-red-300 shadow-red-200 text-red-600' : ''] ">
                                 </div>
                             </div>
                         </div>
@@ -313,11 +313,34 @@ const validateStayBeforeSubmit = (): boolean => {
     return true
 }
 
+const error = ref({ fullname: '', phone: '', email: '', cccd: '' })
 
+const validateForm = () => {
+    const fullname = (newBooking.value.guestBookingRequest.fullname ?? '').toString().trim();
+    const phone = (newBooking.value.guestBookingRequest.phone ?? '').toString().trim();
+    const email = (newBooking.value.guestBookingRequest.email ?? '').toString().trim();
+    const cccd = (newBooking.value.guestBookingRequest.cccd ?? '').toString().trim();
+
+    if (!fullname) {
+        error.value.fullname = "1"
+    }
+    if (!phone) {
+        error.value.phone = "2"
+    }
+    if (!email) {
+        error.value.email = "3"
+    }
+    if (!cccd) {
+        error.value.cccd = "4"
+    }
+    toast.error("Vui lòng nhập đày đủ thông tin!")
+    return fullname && phone && email && cccd
+}
 
 // Validate Khách ở
 // Xử lý tạo Booking
 const handleCrateBooking = async () => {
+    if (!validateForm()) return
     if (!validateStayBeforeSubmit()) return
     await bookingStore.createBooking(newBooking.value);
     // console.log("Booking: ", newBooking.value);
