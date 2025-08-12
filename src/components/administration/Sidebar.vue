@@ -106,7 +106,7 @@
               <RouterLink to="/administration/notification"
                 class="block text-sm px-3 py-1 rounded hover:bg-muesli-50 hover:text-muesli-800"
                 exact-active-class="text-muesli-800 font-semibold bg-muesli-100">
-                <BellRing class="inline-block h-4 w-4" /> Thông Báo/Tin Tức
+                <BellRing class="inline-block h-4 w-4" /> BeeStay Chat
               </RouterLink>
               <!-- <RouterLink
                 to="/administration/dashboard"
