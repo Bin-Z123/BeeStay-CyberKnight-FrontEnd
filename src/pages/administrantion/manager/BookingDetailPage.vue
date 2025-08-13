@@ -107,7 +107,7 @@
                                     <td class="p-3">
                                         <p class="font-semibold text-gray-800"> {{
                                             bkdt.roomType.name }}</p>
-                                        <p class="text-sm text-gray-500">{{ bkdt.roomType.size }}m², 1 giường King, tối
+                                        <p class="text-sm text-gray-500">{{ bkdt.roomType.size }}m², giường King, tối
                                             đa {{ bkdt.roomType.peopleAbout }} người</p>
                                     </td>
                                     <td class="p-3 text-center">{{ bkdt.quantity }}</td>
@@ -140,9 +140,9 @@
                                         <p class="font-semibold text-gray-800"> {{
                                             service.facilities[0].facilityName }}</p>
                                     </td>
-                                    <td class="p-3 text-center">{{ formatVND(service.facilities[0].price) }}
+                                    <td class="p-3 text-center">{{ formatVND(service.facilities[0].price) ?? 0 }}
                                     </td>
-                                    <td class="p-3 text-right">{{ formatVND(service.facilities[0].price) }}</td>
+                                    <td class="p-3 text-right">{{ formatVND(service.facilities[0].price) ?? 0 }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -158,12 +158,12 @@
                             <h4 class="font-semibold text-gray-700">{{
                                 getRoomByIdForStay(stay.roomId) }} - {{ stay.numberOfNights }} Đêm</h4>
                             <p class="text-sm text-gray-600">Ngày nhận phòng: <span>{{ formatDateWithTimeToTicket(new
-                                Date(stay.actualCheckIn)) }}</span></p>
+                                Date(stay?.actualCheckIn)) }}</span></p>
                             <p class="text-sm text-gray-600">Ngày trả phòng: <span>{{ formatDateWithTimeToTicket(new
-                                Date(stay.actualCheckOut)) }}</span></p>
+                                Date(stay?.actualCheckOut)) }}</span></p>
                             <ul class="mt-2 text-sm text-gray-600 list-disc list-inside"
                                 v-for="guest in stay.infoGuests" :key="guest.id">
-                                <li>{{ guest.name }} (CCCD: {{ guest.cccd }})</li>
+                                <li>{{ guest.name }} (CCCD: {{ guest?.cccd }})</li>
                             </ul>
                         </div>
 
