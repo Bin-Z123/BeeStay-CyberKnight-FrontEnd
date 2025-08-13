@@ -107,7 +107,7 @@
                                     <td class="p-3">
                                         <p class="font-semibold text-gray-800"> {{
                                             bkdt.roomType.name }}</p>
-                                        <p class="text-sm text-gray-500">{{ bkdt.roomType.size }}m², 1 giường King, tối
+                                        <p class="text-sm text-gray-500">{{ bkdt.roomType.size }}m², giường King, tối
                                             đa {{ bkdt.roomType.peopleAbout }} người</p>
                                     </td>
                                     <td class="p-3 text-center">{{ bkdt.quantity }}</td>
@@ -140,9 +140,9 @@
                                         <p class="font-semibold text-gray-800"> {{
                                             service.facilities[0].facilityName }}</p>
                                     </td>
-                                    <td class="p-3 text-center">{{ formatVND(service.facilities[0].price) }}
+                                    <td class="p-3 text-center">{{ formatVND(service.facilities[0].price) ?? 0 }}
                                     </td>
-                                    <td class="p-3 text-right">{{ formatVND(service.facilities[0].price) }}</td>
+                                    <td class="p-3 text-right">{{ formatVND(service.facilities[0].price) ?? 0 }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -158,12 +158,12 @@
                             <h4 class="font-semibold text-gray-700">{{
                                 getRoomByIdForStay(stay.roomId) }} - {{ stay.numberOfNights }} Đêm</h4>
                             <p class="text-sm text-gray-600">Ngày nhận phòng: <span>{{ formatDateWithTimeToTicket(new
-                                Date(stay.actualCheckIn)) }}</span></p>
+                                Date(stay?.actualCheckIn)) }}</span></p>
                             <p class="text-sm text-gray-600">Ngày trả phòng: <span>{{ formatDateWithTimeToTicket(new
-                                Date(stay.actualCheckOut)) }}</span></p>
+                                Date(stay?.actualCheckOut)) }}</span></p>
                             <ul class="mt-2 text-sm text-gray-600 list-disc list-inside"
                                 v-for="guest in stay.infoGuests" :key="guest.id">
-                                <li>{{ guest.name }} (CCCD: {{ guest.cccd }})</li>
+                                <li>{{ guest.name }} (CCCD: {{ guest?.cccd }})</li>
                             </ul>
                         </div>
 
@@ -205,7 +205,7 @@
                             <div class="flex justify-between text-xl font-bold">
                                 <span class="text-gray-900">Tổng Cộng</span>
                                 <span class="text-blue-600">{{ formatVND(BookingStore.bookingTicket?.totalAmount ?? 0)
-                                }}</span>
+                                    }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Đã thanh toán </span>
@@ -232,8 +232,9 @@
                                 </div>
 
                             </div>
-                            <div v-else-if="BookingStore.bookingTicket?.bookingStatus === 'CONFIRMED' || BookingStore.bookingTicket?.bookingStatus === 'STAY'"
-                                id="staff-payment-section" class="mt-6 pt-6 border-t border-dashed printable-hidden">
+                            <!-- <div v-else-if="BookingStore.bookingTicket?.bookingStatus === 'CONFIRMED' || BookingStore.bookingTicket?.bookingStatus === 'STAY'" -->
+                            <div v-else-if="(paymentOsdata.amount ?? 0) > 0" id="staff-payment-section"
+                                class="mt-6 pt-6 border-t border-dashed printable-hidden">
                                 <h4 class="font-bold text-gray-700 text-center mb-4">Ghi nhận thanh toán</h4>
 
                                 <!-- Payment Method Radio Buttons -->
@@ -289,6 +290,8 @@
                                     class="hidden mt-3 text-center text-sm font-semibold text-green-600">Đã ghi nhận
                                     thanh toán thành công!</p>
                             </div>
+                            <div v-else>
+                                Đã thanh toán số tiền đã trả</div>
                         </div>
                     </div>
                 </div>
@@ -461,7 +464,9 @@ onMounted(async () => {
 
         // Tải thông tin booking bằng ID
 
-        if (BookingStore.bookingTicket?.bookingStatus === 'CONFIRMED' || BookingStore.bookingTicket?.bookingStatus === 'STAY') {
+        if (BookingStore.bookingTicket?.bookingStatus === 'CONFIRMED' ||
+            BookingStore.bookingTicket?.bookingStatus === 'STAY' ||
+            BookingStore.bookingTicket?.bookingStatus === 'PENDING') {
             await paymentStore.createPaymentPayOsLink(paymentPayOs.value);
             paymentOsdata.value = await paymentStore.paymentOsData.data
 

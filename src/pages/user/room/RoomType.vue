@@ -119,13 +119,13 @@
               <hr>
               <div class="flex flex-col gap-2">
                 <p class="text-gray-500">Ngày Đến: <span class="font-bold text-black float-end">{{ formatDate(checkin)
-                }}</span>
+                    }}</span>
                 </p>
                 <p class="text-gray-500">Ngày Đi: <span class="font-bold text-black float-end">{{
                   formatDate(checkOutDate) }}</span>
                 </p>
                 <p class="text-gray-500">Số Người: <span class="font-bold text-black float-end">{{ numberOfPeople
-                }}</span></p>
+                    }}</span></p>
                 <p class="font-bold">Tổng Số Đêm: <span class="font-bold float-end">{{ numberOfNights || 0 }}</span></p>
               </div>
               <hr>
