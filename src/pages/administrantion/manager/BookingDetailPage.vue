@@ -219,7 +219,7 @@
                             <div class="flex justify-between text-xl font-bold">
                                 <span class="text-gray-900">Tổng Cộng</span>
                                 <span class="text-blue-600">{{ formatVND(BookingStore.bookingTicket?.totalAmount ?? 0)
-                                    }}</span>
+                                }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Đã thanh toán </span>
