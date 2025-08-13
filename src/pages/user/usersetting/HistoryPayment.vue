@@ -30,7 +30,7 @@
                     </div>
                 </form>
                 <div class="px-5">
-                    <table class="w-full text-sm">
+                    <table class="w-full text-sm" v-if="paginatedUsers.length > 0">
                         <thead>
                             <tr class="bg-gray-200">
                                 <th class="text-left p-5">Ngày Giao Dịch</th>
@@ -62,6 +62,7 @@
                             </tr>
                         </tbody>
                     </table>
+                    <h1 v-else class="text-center text-gray-500 mt-8">Hiện tại không có lịch sử giao dịch nào.</h1>
                     <div class="bg-white flex items-center justify-end gap-2 px-5 py-2">
                         <input type="text" class="w-12 h-8 border border-gray-300 rounded-sm text-center" disabled
                             :value="currentPage" /><span>of {{ totalPages }}</span>
