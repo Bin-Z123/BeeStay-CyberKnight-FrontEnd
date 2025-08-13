@@ -232,8 +232,9 @@
                                 </div>
 
                             </div>
-                            <div v-else-if="BookingStore.bookingTicket?.bookingStatus === 'CONFIRMED' || BookingStore.bookingTicket?.bookingStatus === 'STAY'"
-                                id="staff-payment-section" class="mt-6 pt-6 border-t border-dashed printable-hidden">
+                            <!-- <div v-else-if="BookingStore.bookingTicket?.bookingStatus === 'CONFIRMED' || BookingStore.bookingTicket?.bookingStatus === 'STAY'" -->
+                            <div v-else-if="(paymentOsdata.amount ?? 0) > 0" id="staff-payment-section"
+                                class="mt-6 pt-6 border-t border-dashed printable-hidden">
                                 <h4 class="font-bold text-gray-700 text-center mb-4">Ghi nhận thanh toán</h4>
 
                                 <!-- Payment Method Radio Buttons -->
@@ -289,6 +290,8 @@
                                     class="hidden mt-3 text-center text-sm font-semibold text-green-600">Đã ghi nhận
                                     thanh toán thành công!</p>
                             </div>
+                            <div v-else>
+                                Đã thanh toán số tiền đã trả</div>
                         </div>
                     </div>
                 </div>
@@ -461,7 +464,9 @@ onMounted(async () => {
 
         // Tải thông tin booking bằng ID
 
-        if (BookingStore.bookingTicket?.bookingStatus === 'CONFIRMED' || BookingStore.bookingTicket?.bookingStatus === 'STAY') {
+        if (BookingStore.bookingTicket?.bookingStatus === 'CONFIRMED' ||
+            BookingStore.bookingTicket?.bookingStatus === 'STAY' ||
+            BookingStore.bookingTicket?.bookingStatus === 'PENDING') {
             await paymentStore.createPaymentPayOsLink(paymentPayOs.value);
             paymentOsdata.value = await paymentStore.paymentOsData.data
 

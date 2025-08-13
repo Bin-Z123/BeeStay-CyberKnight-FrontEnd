@@ -80,10 +80,10 @@
                         <td class="py-2">BK - {{ booking.id }}</td>
                         <td class="py-2">{{ booking.user?.fullname ||
                             booking.guestBooking.fullname + ' (Guest)' }}</td>
-                        <td class="py-2">{{ booking.user?.phone || booking.guestBooking.phone }}</td>
-                        <td class="py-2">{{ booking.user?.email || booking.guestBooking.email }}</td>
-                        <td class="py-2">{{ formatDateWithTimeToUI(booking.checkInDate) }}</td>
-                        <td class="py-2">{{ formatDateWithTimeToUI(booking.checkOutDate) }}</td>
+                        <td class="py-2">{{ booking.user?.phone || booking.guestBooking?.phone }}</td>
+                        <td class="py-2">{{ booking.user?.email || booking.guestBooking?.email }}</td>
+                        <td class="py-2">{{ formatDateWithTimeToUI(booking?.checkInDate) }}</td>
+                        <td class="py-2">{{ formatDateWithTimeToUI(booking?.checkOutDate) }}</td>
                         <!-- <td class="py-2">{{ booking.user?.email || booking.guestBooking.email }}</td>
                         <td class="py-2">{{ booking.user?.phone || booking.guestBooking.phone }}</td> -->
                         <td class="py-2">{{ booking.totalAmount }}</td>
