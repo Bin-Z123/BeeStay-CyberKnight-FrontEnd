@@ -22,7 +22,7 @@
             <!-- Error details section (optional) -->
             <div class="mt-8 text-left bg-red-50 p-4 rounded-lg border border-red-200">
                 <h3 class="text-lg font-semibold text-red-800">Thông tin lỗi</h3>
-                <p class="text-red-700 mt-2">Lý do: <span class="font-medium">Thông tin thẻ không hợp lệ.</span></p>
+                <p class="text-red-700 mt-2">Lý do: <span class="font-medium">Thông tin không hợp lệ.</span></p>
             </div>
 
             <!-- Try again button -->

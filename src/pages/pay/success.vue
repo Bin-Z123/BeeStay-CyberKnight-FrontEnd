@@ -20,8 +20,8 @@
             <!-- Order details section (optional) -->
             <div class="mt-8 text-left bg-gray-50 p-4 rounded-lg">
                 <h3 class="text-lg font-semibold text-gray-700">Chi tiết đơn hàng</h3>
-                <p class="text-gray-600 mt-2">Mã đơn hàng: <span class="font-medium text-gray-800">#123456</span></p>
-                <p class="text-gray-600">Tổng cộng: <span class="font-medium text-gray-800">500,000 VNĐ</span></p>
+                <p class="text-gray-600 mt-2">Mã đơn hàng: <span class="font-medium text-gray-800">####</span></p>
+                <p class="text-gray-600">Tổng cộng: <span class="font-medium text-gray-800">******** VNĐ</span></p>
             </div>
 
             <!-- Back to home button -->
