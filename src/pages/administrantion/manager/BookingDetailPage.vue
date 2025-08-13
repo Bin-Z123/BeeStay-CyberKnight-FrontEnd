@@ -169,9 +169,23 @@
 
                     </div>
                 </div>
+                <div v-if="BookingStore.bookingTicket?.bookingStatus === 'CANCEL'"
+                    class="outline outline-red-200  p-2 rounded-xl bg-red-100/30">
+                    <div class="text-center my-2 font-bold text-red-600">Đơn đặt phòng đã hủy
+                    </div>
+                    <div class=" mx-auto bg-red-100 rounded-full w-24 h-24 flex items-center
+                                justify-center">
+                        <svg class="w-16 h-16 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12">
+                            </path>
+                        </svg>
+                    </div>
 
+                </div>
                 <!-- Payment Summary -->
-                <div class="pt-6 flex justify-end">
+                <div v-else class="pt-6 flex justify-end">
                     <div class="w-full max-w-sm">
                         <h3 class="text-lg font-bold text-gray-800 mb-4">Tổng Kết Thanh Toán</h3>
                         <div class="space-y-3">
@@ -217,24 +231,9 @@
                                     formatVND(paymentOsdata.amount ?? 0) }}</span>
                             </div>
                             <!-- STAFF ONLY SECTION -->
-                            <div v-if="BookingStore.bookingTicket?.bookingStatus === 'CANCEL'"
-                                class="outline outline-red-200  p-2 rounded-xl bg-red-100/30">
-                                <div class="text-center my-2 font-bold text-red-600">Đơn đặt phòng đã hủy
-                                </div>
-                                <div class=" mx-auto bg-red-100 rounded-full w-24 h-24 flex items-center
-                                justify-center">
-                                    <svg class="w-16 h-16 text-red-600" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12">
-                                        </path>
-                                    </svg>
-                                </div>
 
-                            </div>
                             <!-- <div v-else-if="BookingStore.bookingTicket?.bookingStatus === 'CONFIRMED' || BookingStore.bookingTicket?.bookingStatus === 'STAY'" -->
-                            <div v-else-if="(paymentOsdata.amount ?? 0) > 0" id="staff-payment-section"
-                                class="mt-6 pt-6 border-t border-dashed printable-hidden">
+                            <div id="staff-payment-section" class="mt-6 pt-6 border-t border-dashed printable-hidden">
                                 <h4 class="font-bold text-gray-700 text-center mb-4">Ghi nhận thanh toán</h4>
 
                                 <!-- Payment Method Radio Buttons -->
@@ -290,8 +289,6 @@
                                     class="hidden mt-3 text-center text-sm font-semibold text-green-600">Đã ghi nhận
                                     thanh toán thành công!</p>
                             </div>
-                            <div v-else>
-                                Đã thanh toán số tiền đã trả</div>
                         </div>
                     </div>
                 </div>
@@ -449,27 +446,39 @@ const isLoading = ref(false)
 onMounted(async () => {
     isLoading.value = true
     try {
+        // 1. Kiểm tra điều kiện đầu vào: Phải có booking ID
         if (!props.id) {
             toast.error('Booking ID is required!');
             return;
         }
-        await BookingStore.getBookingbyId(props.id)
 
-        if (BookingStore.bookingTicket?.bookingStatus !== 'CANCEL') {
-            await paymentStore.getPaymentPaidByBookingId(props.id);
-            await BookingStore.updatePriceForBooking(props.id);
-            await BookingStore.updatePriceBookingStay(props.id);
-            await BookingStore.getBookingbyId(props.id)
+        // 2. Lấy thông tin booking một lần duy nhất
+        await BookingStore.getBookingbyId(props.id);
+        const booking = BookingStore.bookingTicket;
+
+        // Kiểm tra xem booking có tồn tại không
+        if (!booking) {
+            toast.error('Booking not found!');
+            return;
         }
 
-        // Tải thông tin booking bằng ID
+        // 3. Xử lý logic chính: Nếu đã hủy thì dừng lại ngay
+        if (booking.bookingStatus === 'CANCEL') {
+            toast.info('Không thể tạo hóa đơn cho booking đã bị hủy.');
+            return; // Dừng hàm tại đây
+        }
 
-        if (BookingStore.bookingTicket?.bookingStatus === 'CONFIRMED' ||
-            BookingStore.bookingTicket?.bookingStatus === 'STAY' ||
-            BookingStore.bookingTicket?.bookingStatus === 'PENDING') {
+        // 4. Nếu booking không bị hủy, thực hiện các bước cập nhật cần thiết
+        await paymentStore.getPaymentPaidByBookingId(props.id);
+        await BookingStore.updatePriceForBooking(props.id);
+        await BookingStore.updatePriceBookingStay(props.id);
+
+        // 5. Chỉ tạo hóa đơn cho các trạng thái cho phép
+        const allowedStatuses = ['CONFIRMED', 'STAY', 'PENDING'];
+        if (allowedStatuses.includes(booking.bookingStatus)) {
             await paymentStore.createPaymentPayOsLink(paymentPayOs.value);
-            paymentOsdata.value = await paymentStore.paymentOsData.data
-
+            paymentOsdata.value = paymentStore.paymentOsData.data;
+            toast.success('Tạo link thanh toán thành công!');
         }
         paymentPaid.value = paymentStore.paymentPaid
         if (BookingStore.bookingTicket?.stay) {
