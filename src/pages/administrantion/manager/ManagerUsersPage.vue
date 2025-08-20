@@ -19,7 +19,7 @@
                     </TabsList>
                 </div>
                 <div class="w-1/2 flex justify-end px-4 mt-2">
-                    <input type="text" placeholder="Tìm kiếm"
+                    <input type="text" placeholder="Tìm kiếm" v-model="searchQuery"
                         class="h-9 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 px-5 text-center">
                 </div>
             </div>
@@ -47,19 +47,20 @@
                                 <td class="py-2">{{ user.gender == true ? 'Nam' : 'Nữ' }}</td>
                                 <td class="py-2">{{ user.birthday }}</td>
                                 <td class="py-2">{{ user.email }}</td>
-                                <td class="py-2" :class="getBlacklistClass(user.eblacklist)">{{ user.eblacklist == 0 ? 'Normal' : 'Blacklist' }}</td>
-                                <td class="py-2">{{ user.rank && user.rank.nameRank ? user.rank.nameRank : 'Không có' }}</td>
+                                <td class="py-2" :class="getBlacklistClass(user.eblacklist)">{{ user.eblacklist == 0 ?
+                                    'Normal' : 'Blacklist' }}</td>
+                                <td class="py-2">{{ user.rank && user.rank.nameRank ? user.rank.nameRank : 'Không có' }}
+                                </td>
                                 <td class="py-2">{{ user.point }}</td>
                                 <td class="py-2 flex justify-center items-center gap-5 h-full">
                                     <button @click.prevent="handleUpdateEblacklist(user)"
                                         class="text-green-500 hover:text-green-700 m-1.5">
                                         <LockKeyholeOpen class="w-5.5 h-5.5" />
                                     </button>
-                                    <button @click="openUpdateUser(user)"
-                                        class="text-blue-400 hover:text-blue-700">
-                                        <SquarePen class="w-5.5 h-5.5"/>
+                                    <button @click="openUpdateUser(user)" class="text-blue-400 hover:text-blue-700">
+                                        <SquarePen class="w-5.5 h-5.5" />
                                     </button>
-                                    <button @click="openUpdatePassword  (user)" class="text-red-500">
+                                    <button @click.prevent="openUpdatePassword(user)" class="text-red-500">
                                         <KeyRound class="w-5.5 h-5.5" />
                                     </button>
                                 </td>
@@ -88,27 +89,27 @@
                                 <th class="px-4 py-2 border">Email</th>
                                 <th class="px-4 py-2 border">CCCD</th>
                                 <th class="px-4 py-2 border">Ngày Đặt Đầu Tiên</th>
-                                <th class="px-4 py-2 border">Tùy Chọn</th>
+                                <!-- <th class="px-4 py-2 border">Tùy Chọn</th> -->
                             </tr>
                         </thead>
                         <tbody class="text-gray-700">
-                            <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="guest in Guests.guest"
-                                :key="guest.id">
+                            <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
+                                v-for="guest in filteredGuests" :key="guest.id">
                                 <td class="py-2">{{ guest.fullname }}</td>
                                 <td class="py-2">{{ guest.phone }}</td>
                                 <td class="py-2">{{ guest.email }}</td>
                                 <td class="py-2">{{ guest.cccd }}</td>
                                 <td class="py-2">{{ guest.createAt }}</td>
-                                <td class="py-2 flex justify-center items-center gap-5 h-full">
+                                <!-- <td class="py-2 flex justify-center items-center gap-5 h-full">
                                     <button
-                                        class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
-                                        <LockKeyhole class="w-4 h-4" />
+                                        class="hover:text-red-700 m-1.5 text-red-500">
+                                        <LockKeyhole class="w-5.5 h-5.5" />
                                     </button>
-                                    <Button
-                                        class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white">
-                                        <SquarePen />
-                                    </Button>
-                                </td>
+                                    <button
+                                        class="text-blue-400 hover:text-blue-700">
+                                        <SquarePen class="w-5.5 h-5.5"/>
+                                    </button>
+                                </td> -->
                             </tr>
                         </tbody>
                     </table>
@@ -146,8 +147,10 @@
                                 <td class="py-2">{{ blacklist.gender == true ? 'Nam' : 'Nữ' }}</td>
                                 <td class="py-2">{{ blacklist.birthday }}</td>
                                 <td class="py-2">{{ blacklist.email }}</td>
-                                <td class="py-2" :class="getBlacklistClass(blacklist.eblacklist)">{{ blacklist.eblacklist == 0 ? 'Normal' : 'Blacklist' }}</td>
-                                <td class="py-2">{{ blacklist.rank && blacklist.rank.nameRank ? blacklist.rank.nameRank : 'Không có' }}</td>
+                                <td class="py-2" :class="getBlacklistClass(blacklist.eblacklist)">{{
+                                    blacklist.eblacklist == 0 ? 'Normal' : 'Blacklist' }}</td>
+                                <td class="py-2">{{ blacklist.rank && blacklist.rank.nameRank ? blacklist.rank.nameRank
+                                    : 'Không có' }}</td>
                                 <td class="py-2">{{ blacklist.point }}</td>
                                 <td class="py-2 flex justify-center items-center gap-5 h-full">
                                     <button @click.prevent="handleUpdateEblacklistAgain(blacklist)"
@@ -156,7 +159,7 @@
                                     </button>
                                     <button @click.prevent="openUpdateUser(blacklist)"
                                         class="text-blue-400 hover:text-blue-700">
-                                        <SquarePen class="w-5.5 h-5.5"/>
+                                        <SquarePen class="w-5.5 h-5.5" />
                                     </button>
                                 </td>
                             </tr>
@@ -193,7 +196,7 @@ import {
     LockKeyhole,
     ChevronLeft,
     ChevronRight,
-    KeyRound 
+    KeyRound
 } from "lucide-vue-next";
 import UpdateCustomerDialog from "@/components/administration/UserDialog/UpdateCustomerDialog.vue";
 import UpdatePasswordUser from '@/components/administration/UserDialog/UpdatePasswordUser.vue';
@@ -207,12 +210,18 @@ const Guests = Guest();
 const openUpdateUserDialog = ref(false);
 const openUpdatePasswordDialog = ref(false);
 
+const searchQuery = ref('');
+
 const filteredUsers = computed(() =>
-    Users.users.filter(user => user.role?.id === 1 && user.eblacklist !== 2)
+    Users.users.filter(user => user.role?.id === 1 && user.eblacklist !== 2 && (user.fullname.toLowerCase().includes(searchQuery.value.toLowerCase()) || user.email.toLowerCase().includes(searchQuery.value.toLowerCase()) || user.phone.toLowerCase().includes(searchQuery.value.toLowerCase())))
 );
 
 const filteredBlackList = computed(() =>
-    Users.users.filter(user => user.eblacklist == 2 && user.role?.id === 1)
+    Users.users.filter(user => user.eblacklist == 2 && user.role?.id === 1 && (user.fullname.toLowerCase().includes(searchQuery.value.toLowerCase()) || user.email.toLowerCase().includes(searchQuery.value.toLowerCase()) || user.phone.toLowerCase().includes(searchQuery.value.toLowerCase())))
+);
+
+const filteredGuests = computed(() =>
+    Guests.guest.filter(guest => (guest.fullname.toLowerCase().includes(searchQuery.value.toLowerCase()) || guest.email.toLowerCase().includes(searchQuery.value.toLowerCase()) || guest.phone.toLowerCase().includes(searchQuery.value.toLowerCase())))
 );
 
 const getBlacklistClass = (blacklist: number) => {

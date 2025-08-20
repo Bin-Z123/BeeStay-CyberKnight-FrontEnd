@@ -100,21 +100,24 @@
 
         <div class="relative group lg:block hidden" v-if="authStore.user">
           <div
-            class="flex items-center gap-1 text-base font-semibold cursor-pointer group-hover:text-muesli-500 border-2 border-gray-500 hover:border-muesli-400 py-2 px-4 rounded-lg">
-            <RouterLink to="">{{ authStore.user.fullname }} | {{ authStore.user.point }} Điểm
+            class="min-w-[165px] flex items-center justify-center gap-1 text-base font-semibold cursor-pointer group-hover:text-muesli-500 border-2 border-gray-500 hover:border-muesli-400 py-2 px-4 rounded-lg">
+            <!-- <RouterLink to="">{{ authStore.user.fullname }} | {{ authStore.user.point }} Điểm
+              <ChevronDown class="w-4 h-4 inline-block" />
+            </RouterLink> -->
+            <RouterLink to="">{{ authStore.user.fullname }}
               <ChevronDown class="w-4 h-4 inline-block" />
             </RouterLink>
           </div>
           <div
             class="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-            <div class="bg-muesli-400 py-2 px-4 rounded-t-lg min-w-[165px]">
+            <!-- <div class="bg-muesli-400 py-2 px-4 rounded-t-lg min-w-[165px]">
               <p class="text-lg text-white font-bold rounded-t-lg">{{ authStore.user.fullname }}</p>
               <p class="text-sm text-white flex gap-2" v-if="authStore.user.point !== 0">Bạn là thành viên <span
                   class="font-bold">Đồng</span>
                 <ChevronRight class="ml-auto" />
               </p>
             </div>
-            <hr>
+            <hr> -->
             <!-- <RouterLink to="/user/setting/point"
               class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-muesli-100 hover:text-muesli-400">
               <CircleDollarSign class="w-4 h-4 inline-block" /> {{ authStore.user.point }} Điểm

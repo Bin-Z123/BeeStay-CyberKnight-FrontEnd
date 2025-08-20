@@ -112,9 +112,9 @@
                </div>
             </div>
 
-            <div class="flex justify-end">
+            <!-- <div class="flex justify-end">
               <button class="bg-muesli-400 text-white py-2 px-4 rounded-md hover:bg-muesli-500" @click.prevent="handleRefund(booking.id)">Hoàn Tiền</button>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-  <template>
+  <!-- <template>
     <section>
       <div class="bg-white my-3">
         <div class="flex flex-col lg:flex-row mx-5 gap-2 items-center justify-center py-3">
@@ -118,10 +118,10 @@
     rawChartData.value = statistic.statisticChart?.data || [];
     console.log("Chart Data:", rawChartData.value);
   });
-  </script>
+  </script> -->
 
 
-<!-- <template>
+<template>
   <section class="bg-gray-100/50 p-4 sm:p-6 lg:p-8 font-sans">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
       <div>
@@ -202,12 +202,12 @@
             </nav>
           </div>
           <div class="mt-6">
-              <ul v-if="activeTab === 'Khách đến'" class="space-y-3 max-h-64 overflow-y-auto pr-2">
-                <li v-for="guest in arrivals" :key="guest.id" class="flex items-center justify-between p-3 transition-colors duration-200 hover:bg-gray-50 rounded-lg">
-                  <div><p class="font-medium text-gray-700">{{ guest.name }}</p><p class="text-sm text-gray-500">Phòng {{ guest.room }}</p></div>
-                  <div class="text-sm text-green-700 font-semibold flex items-center gap-1.5"><LogIn class="w-4 h-4" /><span>{{ guest.time }}</span></div>
+              <ul v-if="bookingsStartDate" class="space-y-3 max-h-64 overflow-y-auto pr-2">
+                <li v-for="guest in bookingsStartDate" :key="guest.id" class="flex items-center justify-between p-3 transition-colors duration-200 hover:bg-gray-50 rounded-lg">
+                  <div><p class="font-medium text-gray-700">{{ guest.user.fullname }}</p><p class="text-sm text-gray-500">Phòng {{ guest.bookingDetails[0].roomType.name }}</p></div>
+                  <div class="text-sm text-green-700 font-semibold flex items-center gap-1.5"><LogIn class="w-4 h-4" /><span>{{ formatDateWithTime(guest.checkInDate) }}</span></div>
                 </li>
-                <li v-if="!arrivals.length" class="text-center text-gray-500 py-4">Không có khách đến.</li>
+                <li v-if="!bookingsStartDate" class="text-center text-gray-500 py-4">Không có khách đến.</li>
               </ul>
               <ul v-if="activeTab === 'Khách đi'" class="space-y-3 max-h-64 overflow-y-auto pr-2">
                  <li v-for="guest in departures" :key="guest.id" class="flex items-center justify-between p-3 transition-colors duration-200 hover:bg-gray-50 rounded-lg">
@@ -238,11 +238,31 @@ import {
   LogIn, LogOut, BedDouble, KeyRound, Calendar,
 } from "lucide-vue-next";
 import { statistics } from "@/api/statistic";
+import { Bookings } from "@/api/booking";
+import { formatVND, formatDateWithTime, formatDateWithTimeToSQL } from "@/utils";
 
+const booking = Bookings();
 const statistic = statistics();
 const rawChartData = ref<any[][]>([]);
 const isLoading = ref(true);
 const activeTab = ref('Khách đến');
+
+const today = new Date();
+const todayFormatted = formatDateWithTime(today);
+
+const bookingsStartDate = computed(() => {
+  return booking.bookings.filter(b => {
+    const startDate = formatDateWithTime(new Date(b.checkInDate));
+    return startDate === todayFormatted;
+  });
+});
+
+const bookingsEndDate = computed(() => {
+  return booking.bookings.filter(b => {
+    const endDate = formatDateWithTime(new Date(b.checkOutDate));
+    return endDate === todayFormatted;
+  });
+});
 
 onMounted(async () => {
   isLoading.value = true;
@@ -257,6 +277,10 @@ onMounted(async () => {
   ]);
   rawChartData.value = statistic.statisticChart?.data || [];
   isLoading.value = false;
+
+  await booking.getBookings();
+  console.log("Đến", JSON.stringify(bookingsStartDate.value, null, 2));
+  console.log("Đi", JSON.stringify(bookingsEndDate.value, null, 2));
 });
 
 const chartData = computed(() => {
@@ -293,8 +317,8 @@ const statCards = computed(() => [
 ]);
 
 const tabs = computed(() => [
-    { name: 'Khách đến', count: arrivals.value.length },
-    { name: 'Khách đi', count: departures.value.length },
+    { name: 'Khách đến', count: bookingsStartDate.value.length },
+    { name: 'Khách đi', count: bookingsEndDate.value.length },
     { name: 'Hoạt động', count: recentActivities.value.length },
 ]);
 
@@ -313,4 +337,4 @@ const activityIconClass = (type: string) => {
 ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
 ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: #aaa; }
-</style> -->
+</style>
