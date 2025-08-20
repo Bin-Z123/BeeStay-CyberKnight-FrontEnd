@@ -285,6 +285,20 @@ export const Bookings = defineStore("booking", () => {
     }
   }
 
+  const statusCheckout = async (bookingId: number) => {
+    try {
+      const response = await axios.put(`${baseUrl}/status-checkout/${bookingId}`, {}, { withCredentials: true });
+      return response.data;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error("Lỗi khi checkout booking");
+        throw error;
+      }
+      throw error;
+    }
+  }
+
+
   const updatePriceBookingStay = async (bookingId: number) => {
     try {
       const response = await axios.put(`${baseUrl}/update-booking/${bookingId}`, {}, { withCredentials: true });
@@ -305,6 +319,7 @@ export const Bookings = defineStore("booking", () => {
     booking,
     numberOfPeople,
     checkoutBooking,
+    statusCheckout,
     getBookings,
     getAvailableRooms,
     createBooking,

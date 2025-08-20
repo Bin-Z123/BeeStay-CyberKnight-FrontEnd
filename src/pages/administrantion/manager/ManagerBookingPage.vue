@@ -90,6 +90,8 @@
                         <td class="py-2" :class="booking.bookingStatus == 'CONFIRMED' ? 'text-green-500'
                             : booking.bookingStatus === 'STAY'
                                 ? 'text-blue-500'
+                                : booking.bookingStatus === 'CHECKOUT'
+                                ? 'text-muesli-700'
                                 : booking.bookingStatus === 'LATE' ? 'text-yellow-500'
                                     : 'text-red-500'">
                             {{

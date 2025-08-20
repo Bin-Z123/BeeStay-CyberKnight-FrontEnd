@@ -59,6 +59,9 @@
                                         class="text-blue-400 hover:text-blue-700">
                                         <SquarePen class="w-5.5 h-5.5"/>
                                     </button>
+                                    <button @click="openUpdatePassword  (user)" class="text-red-500">
+                                        <KeyRound class="w-5.5 h-5.5" />
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
@@ -81,25 +84,21 @@
                         <thead class="bg-gradient-to-r from-muesli-200 to-muesli-400 text-white">
                             <tr>
                                 <th class="px-4 py-2 border">Khách Hàng</th>
-                                <th class="px-4 py-2 border">Giới Tính</th>
-                                <th class="px-4 py-2 border">Ngày Sinh</th>
+                                <th class="px-4 py-2 border">SĐT</th>
                                 <th class="px-4 py-2 border">Email</th>
-                                <th class="px-4 py-2 border">Trạng Thái</th>
-                                <th class="px-4 py-2 border">Xếp Hạng</th>
-                                <th class="px-4 py-2 border">Tích Điểm</th>
+                                <th class="px-4 py-2 border">CCCD</th>
+                                <th class="px-4 py-2 border">Ngày Đặt Đầu Tiên</th>
                                 <th class="px-4 py-2 border">Tùy Chọn</th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-700">
-                            <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="i in 10"
-                                :key="i">
-                                <td class="py-2">Thịnh</td>
-                                <td class="py-2">Nam</td>
-                                <td class="py-2">01-01-2001</td>
-                                <td class="py-2">Thinh@gmail.com</td>
-                                <td class="py-2">...</td>
-                                <td class="py-2">Bạc</td>
-                                <td class="py-2">{{ i }}</td>
+                            <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100" v-for="guest in Guests.guest"
+                                :key="guest.id">
+                                <td class="py-2">{{ guest.fullname }}</td>
+                                <td class="py-2">{{ guest.phone }}</td>
+                                <td class="py-2">{{ guest.email }}</td>
+                                <td class="py-2">{{ guest.cccd }}</td>
+                                <td class="py-2">{{ guest.createAt }}</td>
                                 <td class="py-2 flex justify-center items-center gap-5 h-full">
                                     <button
                                         class="bg-white text-muesli-400 border border-muesli-400 hover:bg-muesli-400 hover:text-white py-[9px] px-3 rounded-lg">
@@ -178,6 +177,7 @@
         </Tabs>
     </section>
     <UpdateCustomerDialog v-model:open="openUpdateUserDialog" :user="selectedUser"></UpdateCustomerDialog>
+    <UpdatePasswordUser v-model:open="openUpdatePasswordDialog" :user="selectedUser"></UpdatePasswordUser>
 </template>
 <script setup lang="ts">
 import {
@@ -193,13 +193,19 @@ import {
     LockKeyhole,
     ChevronLeft,
     ChevronRight,
+    KeyRound 
 } from "lucide-vue-next";
 import UpdateCustomerDialog from "@/components/administration/UserDialog/UpdateCustomerDialog.vue";
+import UpdatePasswordUser from '@/components/administration/UserDialog/UpdatePasswordUser.vue';
 import { Button } from "@/components/ui/button";
 import { ref, onMounted, computed } from "vue";
 import { User } from "@/api/user";
+import { Guest } from '@/api/guest';
+
 const Users = User();
+const Guests = Guest();
 const openUpdateUserDialog = ref(false);
+const openUpdatePasswordDialog = ref(false);
 
 const filteredUsers = computed(() =>
     Users.users.filter(user => user.role?.id === 1 && user.eblacklist !== 2)
@@ -227,6 +233,11 @@ const openUpdateUser = (user: any) => {
     selectedUser.value = { ...user };
     openUpdateUserDialog.value = true;
 };
+
+const openUpdatePassword = (user: any) => {
+    selectedUser.value = { ...user };
+    openUpdatePasswordDialog.value = true;
+}
 
 const handleUpdateEblacklist = async (user: any) => {
     const payLoad = {
@@ -274,5 +285,7 @@ const handleUpdateEblacklistAgain = async (blacklist: any) => {
 
 onMounted(async () => {
     await Users.getAllUser();
+    await Guests.fetchGuest();
+    console.log('Guests:', JSON.stringify(Guests.guest, null, 2));
 });
 </script>
