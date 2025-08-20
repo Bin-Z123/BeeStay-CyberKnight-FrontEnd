@@ -25,6 +25,8 @@
                                         ? 'text-green-900 bg-green-100'
                                         : BookingStore.bookingTicket?.bookingStatus === 'LATE'
                                             ? 'text-yellow-900 bg-yellow-100'
+                                            : BookingStore.bookingTicket?.bookingStatus === 'CHECKOUT'
+                                            ? 'text-white bg-muesli-400'
                                             : 'Chờ Thanh Toán'"
                             class="inline-block px-3 py-1 text-sm font-semibold text-green-800 bg-green-100 rounded-full">{{
                                 BookingStore.bookingTicket?.bookingStatus === 'CONFIRMED'
@@ -37,6 +39,8 @@
                                                 ? 'Đã Trả Phòng'
                                                 : BookingStore.bookingTicket?.bookingStatus === 'LATE'
                                                     ? 'Giữ phòng'
+                                                     : BookingStore.bookingTicket?.bookingStatus === 'CHECKOUT'
+                                                    ? 'Đã trả phòng'
                                                     : 'Chờ Thanh Toán' }}</span>
                     </div>
                 </div>
@@ -58,7 +62,7 @@
                             formatDateWithTimeToHour(BookingStore.bookingTicket?.checkOutDate ?? new Date()) }}</p>
                     </div>
                     <div>
-                        <h3 class="text-sm font-semibold text-gray-500 uppercase">Tổng thời gian</h3>
+                        <h3 class="text-sm font-semibold text-gray-500 uppercase">Tổng thời gian dự kiến</h3>
                         <p class="text-lg font-semibold text-gray-800">{{ numberOfNights }} đêm, {{ quantityGuest == 0 ?
                             'Chưa xếp phòng' :
                             quantityGuest + ' khách' }}</p>
@@ -151,15 +155,15 @@
 
                 <!-- Guest & Room Assignment -->
                 <div class="py-6 border-b">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">Thông Tin Khách Lưu Trú</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Thông Tin Khách Lưu Trú Thực Tế</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="bg-gray-50 p-4 rounded-lg" v-for="(stay, index) in staysWithNightDetails"
                             :key="index">
                             <h4 class="font-semibold text-gray-700">{{
                                 getRoomByIdForStay(stay.roomId) }} - {{ stay.numberOfNights }} Đêm</h4>
-                            <p class="text-sm text-gray-600">Ngày nhận phòng: <span>{{ formatDateWithTimeToTicket(new
+                            <p class="text-sm text-gray-600">Ngày nhận phòng: <span>{{ formatDateWithTimeToHour(new Date(stay?.actualCheckIn) ?? new Date()) }} </span> <span>{{ formatDateWithTimeToTicket(new
                                 Date(stay?.actualCheckIn)) }}</span></p>
-                            <p class="text-sm text-gray-600">Ngày trả phòng: <span>{{ formatDateWithTimeToTicket(new
+                            <p class="text-sm text-gray-600">Ngày trả phòng: <span>{{ formatDateWithTimeToHour(new Date(stay?.actualCheckOut) ?? new Date()) }} </span> <span>{{ formatDateWithTimeToTicket(new
                                 Date(stay?.actualCheckOut)) }}</span></p>
                             <ul class="mt-2 text-sm text-gray-600 list-disc list-inside"
                                 v-for="guest in stay.infoGuests" :key="guest.id">
@@ -228,7 +232,7 @@
                             <div class="flex justify-between  text-lg font-bold bg-yellow-100 p-3 rounded-lg  ">
                                 <span class="text-yellow-800 my-auto w-48">Cần thanh toán: </span>
                                 <span class="text-yellow-800 my-auto"> {{
-                                    formatVND(paymentOsdata.amount ?? 0) }}</span>
+                                    formatVND(paymentOsdata?.amount ?? 0) }}</span>
                             </div>
                             <!-- STAFF ONLY SECTION -->
 
@@ -264,7 +268,7 @@
                                         placeholder="Nhập số tiền...">
 
                                     <p class="text-xs text-red-500">* Lưu ý: Nhập tối đa {{
-                                        formatVND(paymentOsdata.amount) }}</p>
+                                        formatVND(paymentOsdata?.amount ?? 0) }}</p>
                                     <button id="confirm-cash-payment" @click="handleConfirmCashPayment"
                                         :disabled="paymentStore.isLoading"
                                         class="mt-4 w-full bg-blue-600 flex justify-center disabled:opacity-70 space-x-1 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition">
@@ -400,7 +404,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, shallowReactive, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, shallowReactive, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import { Bookings } from '@/api/booking';
 import { BookingTicketResponse, Booking, Room } from '@/interface/booking.interface';
@@ -410,9 +414,9 @@ import { RoomResponse } from '@/types';
 import { PaymentAPI } from '@/api/payment';
 import { CreatePaymentLinkRequest, PaymentCashRequest } from '@/types/payment-dto';
 import QrcodeVue from 'qrcode.vue';
-import { nextTick } from 'process';
+// import { nextTick } from 'process';
 import { Loader } from 'lucide-vue-next';
-import { differenceInDays, parseISO } from 'date-fns';
+import { differenceInCalendarDays, differenceInDays, parseISO } from 'date-fns';
 
 
 const paymentStore = PaymentAPI();
@@ -451,7 +455,7 @@ onMounted(async () => {
             toast.error('Booking ID is required!');
             return;
         }
-
+        await nextTick();
         // 2. Lấy thông tin booking một lần duy nhất
         await BookingStore.getBookingbyId(props.id);
         const booking = BookingStore.bookingTicket;
@@ -472,12 +476,22 @@ onMounted(async () => {
         await paymentStore.getPaymentPaidByBookingId(props.id);
         await BookingStore.updatePriceForBooking(props.id);
         await BookingStore.updatePriceBookingStay(props.id);
+        
+        
 
         // 5. Chỉ tạo hóa đơn cho các trạng thái cho phép
         const allowedStatuses = ['CONFIRMED', 'STAY', 'PENDING'];
         if (allowedStatuses.includes(booking.bookingStatus)) {
+            console.log("Tạo link thanh toán");
             await paymentStore.createPaymentPayOsLink(paymentPayOs.value);
             paymentOsdata.value = paymentStore.paymentOsData.data;
+            // console.log(paymentOsdata.value);
+            if(paymentOsdata.value == null){
+                console.log("Thanh Checkout")
+                // await paymentStore.getPaymentPaidByBookingId(props.id);
+                // await BookingStore.updatePriceForBooking(props.id);
+                await BookingStore.statusCheckout(props.id);
+            }
             toast.success('Tạo link thanh toán thành công!');
         }
         paymentPaid.value = paymentStore.paymentPaid
@@ -657,11 +671,11 @@ const handleConfirmCashPayment = async () => {
     if (paymentCash.value.amount > paymentStore.paymentOsData.data.amount) {
         toast.error('Số tiền nhập vào không hợp lệ')
         return;
-    } else if (paymentCash.value.amount < 100) {
-        toast.error('Số tiền phải nhất lớn hơn 100 đồng')
-        return;
-    }
-
+    } 
+// else if (paymentCash.value.amount < 100) {
+//         toast.error('Số tiền phải nhất lớn hơn 100 đồng')
+//         return;
+//     }
     // console.log("Payment Cash: ", paymentCash.value)
     paymentStore.createPaymentByCash(paymentCash.value)
 
@@ -700,11 +714,11 @@ const staysWithNightDetails = computed(() => {
         const checkOutDate = parseISO(stay.actualCheckOut);
 
         // Tính số ngày chênh lệch (ra 2 vào 3 = 1 đêm)
-        const nights = differenceInDays(checkOutDate, checkInDate);
+        const nights = differenceInCalendarDays(checkOutDate, checkInDate);
 
         return {
             ...stay, // Giữ lại toàn bộ dữ liệu gốc của stay
-            numberOfNights: nights + 1, // Thêm thuộc tính mới là số đêm
+            numberOfNights: nights, // Thêm thuộc tính mới là số đêm
         };
     });
 });
