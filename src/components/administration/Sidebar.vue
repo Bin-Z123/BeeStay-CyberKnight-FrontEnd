@@ -62,11 +62,11 @@
                 <FileChartColumn class="inline-block h-4 w-4" /> Thống Kê
               </RouterLink>
 
-              <RouterLink to="/administration/promotions"
+              <!-- <RouterLink to="/administration/promotions"
                 class="block text-sm px-3 py-1 rounded hover:bg-muesli-50 hover:text-muesli-800"
                 exact-active-class="text-muesli-800 font-semibold bg-muesli-100">
                 <TicketPercent class="inline-block h-4 w-4" /> Khuyến Mãi
-              </RouterLink>
+              </RouterLink> -->
 
             </div>
           </div>
