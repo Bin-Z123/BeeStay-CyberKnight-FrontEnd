@@ -30,7 +30,7 @@
                             <p v-if="errorsUser.birthday" class="text-red-500 text-sm mt-1">{{ errorsUser.birthday }}
                             </p>
                         </div>
-                        <div>
+                        <!-- <div>
                             <label class="text-muesli-400">Mật Khẩu</label><br />
                             <input type="password" v-model="localReceptionist.password" :class="[
                                 'w-full h-10 rounded-lg focus:outline-none px-5 text-center shadow-sm',
@@ -40,7 +40,7 @@
                             ]" placeholder="Nhập mật khẩu" />
                             <p v-if="errorsUser.password" class="text-red-500 text-sm mt-1">{{ errorsUser.password }}
                             </p>
-                        </div>
+                        </div> -->
                         <div>
                             <label class="text-muesli-400 block mb-2">Giới Tính</label>
                             <div class="flex gap-5">

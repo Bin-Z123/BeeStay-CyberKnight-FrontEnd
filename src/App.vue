@@ -19,7 +19,7 @@ const toggleDarkMode = () => {
 <template>
   <Toaster richColors position="top-right"></Toaster>
   <RouterView />
-  <!-- <VueQueryDevtools /> -->
+  <VueQueryDevtools />
 </template>
 
 <style></style>
