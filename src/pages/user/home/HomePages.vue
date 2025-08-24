@@ -158,93 +158,120 @@
         </div>
     </section>
 
-    <!-- <section>
-        <div class="bg-white px-4 pb-15">
-            <div class="container mx-auto">
-                <div data-aos="fade-right">
-                    <h1 class="text-2xl text-muesli-400">Minh Chứng</h1>
-                    <h1 class="text-4xl font-bold">Những Đánh Giá Tốt Của Khách Hàng</h1>
-                </div>
-                <div ref="reviews" class="keen-slider" data-aos="fade-up">
-                    <div class="keen-slider__slide flex flex-col md:flex-row items-center justify-center">
-                        <div class="md:w-1/5 py-10 w-70">
-                            <img src="@/assets/images/bin.png" alt="" class="rounded-full border-6 border-gray-400/15">
-                        </div>
-                        <div class="md:w-4/5 md:p-10 flex flex-col gap-3">
-                            <div class="flex flex-row">
-                                <Star class="text-muesli-400" />
-                                <Star class="text-muesli-400" />
-                                <Star class="text-muesli-400" />
-                                <Star class="text-muesli-400" />
-                                <Star class="text-muesli-400" />
-                            </div>
-                            <div>
-                                <h1 class="text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem
-                                    ipsum dolor sit amet
-                                    consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing
-                                    elit.Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem ipsum dolor sit
-                                    amet consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing
-                                    elit.Lorem ipsum dolor sit amet consectetur adipisicing elit.</h1>
-                            </div>
-                            <div>
-                                <h1 class="font-bold">Võ Thanh Bin1</h1>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="keen-slider__slide flex flex-col md:flex-row items-center justify-center">
-                        <div class="md:w-1/5 py-10 w-70">
-                            <img src="@/assets/images/bin.png" alt="" class="rounded-full border-6 border-gray-400/15">
-                        </div>
-                        <div class="md:w-4/5 md:p-10 flex flex-col gap-3">
-                            <div class="flex flex-row">
-                                <Star class="text-muesli-400" />
-                                <Star class="text-muesli-400" />
-                                <Star class="text-muesli-400" />
-                                <Star class="text-muesli-400" />
-                                <Star class="text-muesli-400" />
-                            </div>
-                            <div>
-                                <h1 class="text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem
-                                    ipsum dolor sit amet
-                                    consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing
-                                    elit.Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem ipsum dolor sit
-                                    amet consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing
-                                    elit.Lorem ipsum dolor sit amet consectetur adipisicing elit.</h1>
-                            </div>
-                            <div>
-                                <h1 class="font-bold">Võ Thanh Bin2</h1>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="keen-slider__slide flex flex-col md:flex-row items-center justify-center">
-                        <div class="md:w-1/5 py-10 w-70">
-                            <img src="@/assets/images/bin.png" alt="" class="rounded-full border-6 border-gray-400/15">
-                        </div>
-                        <div class="md:w-4/5 md:p-10 flex flex-col gap-3">
-                            <div class="flex flex-row">
-                                <Star class="text-muesli-400" />
-                                <Star class="text-muesli-400" />
-                                <Star class="text-muesli-400" />
-                                <Star class="text-muesli-400" />
-                                <Star class="text-muesli-400" />
-                            </div>
-                            <div>
-                                <h1 class="text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem
-                                    ipsum dolor sit amet
-                                    consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing
-                                    elit.Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem ipsum dolor sit
-                                    amet consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing
-                                    elit.Lorem ipsum dolor sit amet consectetur adipisicing elit.</h1>
-                            </div>
-                            <div>
-                                <h1 class="font-bold">Võ Thanh Bin3</h1>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <section>
+    <div class="bg-white px-4 pb-15">
+      <div class="container mx-auto">
+        <div data-aos="fade-right">
+          <h1 class="text-2xl text-muesli-400">Minh Chứng</h1>
+          <h1 class="text-4xl font-bold">Những Đánh Giá Tốt Của Khách Hàng</h1>
         </div>
-    </section> -->
+        <div ref="reviews" class="keen-slider" data-aos="fade-up">
+          <div
+            class="keen-slider__slide flex flex-col md:flex-row items-center justify-center"
+          >
+            <div class="md:w-1/5 py-10 w-70">
+              <img
+                src="@/assets/people/dang-thu-ha.jpg"
+                alt=""
+                class="rounded-full border-6 border-gray-400/15"
+              />
+            </div>
+            <div class="md:w-4/5 md:p-10 flex flex-col gap-3">
+              <div>
+                <h1 class="text-xl font-bold">Đặng Thu Hà</h1>
+              </div>
+
+              <div>
+                <h1 class="text-gray-500">
+                  Các dịch vụ tại khách sạn được tổ chức rất chuyên nghiệp và
+                  tiện lợi. Từ đặt phòng, ăn uống cho đến hỗ trợ đưa đón đều
+                  được thực hiện nhanh chóng và đúng hẹn. Hệ thống tiện ích như
+                  hồ bơi, spa và wifi đều hoạt động ổn định, tạo cảm giác thoải
+                  mái cho khách trong suốt thời gian lưu trú. Tôi đặc biệt ấn
+                  tượng với sự linh hoạt trong việc hỗ trợ nhu cầu cá nhân, mang
+                  lại trải nghiệm trọn vẹn và đáng nhớ.
+                </h1>
+              </div>
+              <div class="flex flex-row">
+                <Star class="text-muesli-400 fill-muesli-400" />
+                <Star class="text-muesli-400 fill-muesli-400" />
+                <Star class="text-muesli-400 fill-muesli-400" />
+                <Star class="text-muesli-400 fill-muesli-400" />
+                <Star class="text-muesli-400" />
+              </div>
+            </div>
+          </div>
+          <div
+            class="keen-slider__slide flex flex-col md:flex-row items-center justify-center"
+          >
+            <div class="md:w-1/5 py-10 w-70">
+              <img
+                src="@/assets/people/o-ba-ma.jpg"
+                alt=""
+                class="rounded-full border-6 border-gray-400/15"
+              />
+            </div>
+            <div class="md:w-4/5 md:p-10 flex flex-col gap-3">
+              <div>
+                <h1 class="text-xl font-bold">Ô Ba Ma</h1>
+              </div>
+              <div>
+                <h1 class="text-gray-500">
+                  Phòng ốc được thiết kế hiện đại, không gian thoáng đãng và
+                  cách âm tốt nên rất yên tĩnh. Nội thất được bố trí hợp lý,
+                  giường nệm êm ái, điều hòa hoạt động ổn định. Mọi vật dụng cầnthiết đều được chuẩn bị đầy đủ, từ tủ quần áo, bàn làm việc
+                  cho đến minibar. Đặc biệt, phòng luôn sạch sẽ và có mùi hương
+                  dễ chịu, mang lại cảm giác thoải mái như ở nhà.
+                </h1>
+              </div>
+              <div class="flex flex-row">
+                <Star class="text-muesli-400 fill-muesli-400" />
+                <Star class="text-muesli-400 fill-muesli-400" />
+                <Star class="text-muesli-400 fill-muesli-400" />
+                <Star class="text-muesli-400 fill-muesli-400" />
+                <Star class="text-muesli-400" />
+              </div>
+            </div>
+          </div>
+          <div
+            class="keen-slider__slide flex flex-col md:flex-row items-center justify-center"
+          >
+            <div class="md:w-1/5 py-10 w-70">
+              <img
+                src="@/assets/people/doan-chan-phong.jpg"
+                alt=""
+                class="rounded-full border-6 border-gray-400/15"
+              />
+            </div>
+            <div class="md:w-4/5 md:p-10 flex flex-col gap-3">
+              <div>
+                <h1 class="text-xl font-bold">Đoàn Chấn Phong</h1>
+              </div>
+
+              <div>
+                <h1 class="text-gray-500">
+                  “Đội ngũ nhân viên tại khách sạn cực kỳ thân thiện và chuyên
+                  nghiệp. Từ khâu check-in cho đến lúc trả phòng, mọi thủ tục
+                  đều được hướng dẫn rõ ràng và xử lý nhanh chóng. Nhân viên
+                  luôn nở nụ cười, chủ động hỏi thăm và sẵn sàng hỗ trợ khi
+                  khách cần, tạo cảm giác được chào đón và trân trọng. Sự tận
+                  tâm và thái độ nhiệt tình của họ là điểm cộng lớn khiến tôi
+                  cảm thấy rất hài lòng.
+                </h1>
+              </div>
+              <div class="flex flex-row">
+                <Star class="text-muesli-400 fill-muesli-400" />
+                <Star class="text-muesli-400 fill-muesli-400" />
+                <Star class="text-muesli-400 fill-muesli-400" />
+                <Star class="text-muesli-400 fill-muesli-400" />
+                <Star class="text-muesli-400 fill-muesli-400" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
     <section>
         <div class="bg-[url('@/assets/images/body.png')] bg-fixed bg-cover bg-center h-150 relative">

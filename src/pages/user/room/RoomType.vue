@@ -150,15 +150,19 @@
                   class="flex justify-between items-center text-sm">
                   <div>
                     <label :for="'facility-' + facility.id">{{ facility.facilityName }}</label>
-                    <p class="text-xs text-gray-500">{{ formatCurrency(facility.price) }} / dịch vụ</p>
+                    <p class="text-xs text-gray-500">{{ facility.price === 0 ? 'Miễn Phí' : formatCurrency(facility.price)+ " / dịch vụ" }}</p>
                   </div>
 
-                  <div class="flex items-center gap-2 border border-gray-300 rounded-lg px-2 py-1">
+                  <div v-if="facility.price !== 0" class="flex items-center gap-2 border border-gray-300 rounded-lg px-2 py-1">
                     <button @click.prevent="decrementFacility(facility)"
                       class="px-2 font-bold text-lg disabled:text-gray-300 disabled:cursor-not-allowed">-</button>
                     <input type="text" :value="selectedFacilityQuantities[facility.id] || 0"
                       class="w-10 text-center bg-transparent" readonly />
                     <button @click.prevent="incrementFacility(facility)" class="px-2 font-bold text-lg">+</button>
+                  </div>
+                  <div v-if="facility.price === 0" class="flex items-center">
+                    <input type="checkbox" :id="'facility-' + facility.id" v-model="selectedFacilityQuantities[facility.id]"
+                      true-value="1" false-value="0" class="w-5 h-5" />
                   </div>
                 </div>
               </div>
