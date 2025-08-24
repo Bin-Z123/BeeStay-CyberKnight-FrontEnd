@@ -489,8 +489,6 @@ const formatCurrency = (value) => {
     return "0 VNĐ";
   } else if (numberValue === 0) {
     return "Tôi quan tâm đến dịch vụ này";
-  } else if (numberValue === 1) {
-    return "Miễn Phí";
   }
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
