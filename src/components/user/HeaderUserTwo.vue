@@ -100,7 +100,7 @@
 
         <div class="relative group lg:block hidden" v-if="authStore.user">
           <div
-            class="min-w-[165px] flex items-center justify-center gap-1 text-base font-semibold cursor-pointer group-hover:text-muesli-500 border-2 border-gray-500 hover:border-muesli-400 py-2 px-4 rounded-lg">
+            class="min-w-[180px] flex items-center justify-center gap-1 text-base font-semibold cursor-pointer group-hover:text-muesli-500 border-2 border-gray-500 hover:border-muesli-400 py-2 px-4 rounded-lg">
             <!-- <RouterLink to="">{{ authStore.user.fullname }} | {{ authStore.user.point }} Điểm
               <ChevronDown class="w-4 h-4 inline-block" />
             </RouterLink> -->

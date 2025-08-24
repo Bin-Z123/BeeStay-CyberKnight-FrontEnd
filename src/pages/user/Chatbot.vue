@@ -139,7 +139,7 @@ onMounted(() => {
     client.activate()
     // console.log('Token:', token)
 })
-const currentRecipientId = ref(1001)
+const currentRecipientId = ref(1004)
 const sendPrivateMessage = () => {
     if (message.value.trim() && stompClient && client.active && currentRecipientId.value) {
         const payload = {

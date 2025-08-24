@@ -279,10 +279,6 @@
     v-model:open="openUpdatePasswordDialog"
     :user="selectedUser"
   ></UpdatePasswordUser>
-  <UpdatePasswordUser
-    v-model:open="openUpdatePasswordDialog"
-    :user="selectedUser"
-  ></UpdatePasswordUser>
 </template>
 <script setup lang="ts">
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -297,16 +293,13 @@ import {
 } from "lucide-vue-next";
 import UpdateCustomerDialog from "@/components/administration/UserDialog/UpdateCustomerDialog.vue";
 import UpdatePasswordUser from "@/components/administration/UserDialog/UpdatePasswordUser.vue";
-import UpdatePasswordUser from "@/components/administration/UserDialog/UpdatePasswordUser.vue";
 import { Button } from "@/components/ui/button";
 import { ref, onMounted, computed } from "vue";
 import { User } from "@/api/user";
 import { Guest } from "@/api/guest";
 
-import { Guest } from "@/api/guest";
 
 const Users = User();
-const Guests = Guest();
 const Guests = Guest();
 const openUpdateUserDialog = ref(false);
 const openUpdatePasswordDialog = ref(false);
@@ -361,11 +354,6 @@ const selectedUser = ref(null);
 const openUpdateUser = (user: any) => {
   selectedUser.value = { ...user };
   openUpdateUserDialog.value = true;
-};
-
-const openUpdatePassword = (user: any) => {
-  selectedUser.value = { ...user };
-  openUpdatePasswordDialog.value = true;
 };
 
 const openUpdatePassword = (user: any) => {
