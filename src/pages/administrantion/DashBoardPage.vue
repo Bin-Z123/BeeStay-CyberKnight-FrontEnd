@@ -125,7 +125,7 @@
   <section class="bg-gray-100/50 p-4 sm:p-6 lg:p-8 font-sans">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">Trang tổng quan</h1>
+        <h1 class="text-3xl font-bold text-gray-900">Bảng điều khiển</h1>
         <p class="text-gray-500 mt-1">Chào mừng trở lại! Đây là những gì đang diễn ra hôm nay.</p>
       </div>
       <div class="text-gray-600 mt-3 sm:mt-0 flex items-center bg-white px-4 py-2 rounded-lg shadow-sm border">
@@ -208,13 +208,13 @@
                   <div class="text-sm text-green-700 font-semibold flex items-center gap-1.5"><LogIn class="w-4 h-4" /><span>{{ formatDateWithTime(guest.checkInDate) }}</span></div>
                 </li>
                 <li v-if="!bookingsStartDate" class="text-center text-gray-500 py-4">Không có khách đến.</li>
-              </ul>
-              <ul v-if="activeTab === 'Khách đi'" class="space-y-3 max-h-64 overflow-y-auto pr-2">
-                 <li v-for="guest in departures" :key="guest.id" class="flex items-center justify-between p-3 transition-colors duration-200 hover:bg-gray-50 rounded-lg">
-                  <div><p class="font-medium text-gray-700">{{ guest.name }}</p><p class="text-sm text-gray-500">Phòng {{ guest.room }}</p></div>
-                  <div class="text-sm text-red-700 font-semibold flex items-center gap-1.5"><LogOut class="w-4 h-4" /><span>{{ guest.time }}</span></div>
+              </ul> 
+              <ul v-if="bookingsEndDate" class="space-y-3 max-h-64 overflow-y-auto pr-2">
+                 <li v-for="guest in bookingsEndDate" :key="guest.id" class="flex items-center justify-between p-3 transition-colors duration-200 hover:bg-gray-50 rounded-lg">
+                  <div><p class="font-medium text-gray-700">{{ guest.user.fullname }}</p><p class="text-sm text-gray-500">Phòng {{ guest.bookingDetails[0].roomType.name }}</p></div>
+                  <div class="text-sm text-red-700 font-semibold flex items-center gap-1.5"><LogOut class="w-4 h-4" /><span>{{ formatDateWithTime(guest.checkOutDate) }}</span></div>
                 </li>
-                <li v-if="!departures.length" class="text-center text-gray-500 py-4">Không có khách đi.</li>
+                <li v-if="!bookingsEndDate" class="text-center text-gray-500 py-4">Không có khách đi.</li>
               </ul>
               <ul v-if="activeTab === 'Hoạt động'" class="space-y-4 max-h-64 overflow-y-auto pr-2">
                 <li v-for="activity in recentActivities" :key="activity.id" class="flex items-start gap-4">
