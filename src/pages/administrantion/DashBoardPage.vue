@@ -125,7 +125,7 @@
   <section class="bg-gray-100/50 p-4 sm:p-6 lg:p-8 font-sans">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">Bảng điều khiển</h1>
+        <h1 class="text-3xl font-bold text-gray-900">Trung tâm điều khiển</h1>
         <p class="text-gray-500 mt-1">Chào mừng trở lại! Đây là những gì đang diễn ra hôm nay.</p>
       </div>
       <div class="text-gray-600 mt-3 sm:mt-0 flex items-center bg-white px-4 py-2 rounded-lg shadow-sm border">
@@ -202,26 +202,28 @@
             </nav>
           </div>
           <div class="mt-6">
-              <ul v-if="bookingsStartDate" class="space-y-3 max-h-64 overflow-y-auto pr-2">
+              <ul v-if="bookingsStartDate && tabs[0].name === activeTab" class="space-y-3 max-h-64 overflow-y-auto pr-2">
                 <li v-for="guest in bookingsStartDate" :key="guest.id" class="flex items-center justify-between p-3 transition-colors duration-200 hover:bg-gray-50 rounded-lg">
-                  <div><p class="font-medium text-gray-700">{{ guest.user.fullname }}</p><p class="text-sm text-gray-500">Phòng {{ guest.bookingDetails[0].roomType.name }}</p></div>
+                  <span class="bg-green-100 text-green-600 p-2.5 rounded-full"><LogOut class="w-4 h-4" /></span>
+                  <div class="flex-1 ml-3 items-center"><p class="font-medium text-gray-700">{{ guest.user.fullname }}</p><p class="text-sm text-gray-500">Phòng <span class="font-bold text-blue-500" v-for="(room, index) in guest.bookingDetails" :key="room.id">{{ room.roomType.name.length - 1 === index ? room.roomType.name : room.roomType.name + ', ' }}</span></p></div>
                   <div class="text-sm text-green-700 font-semibold flex items-center gap-1.5"><LogIn class="w-4 h-4" /><span>{{ formatDateWithTime(guest.checkInDate) }}</span></div>
                 </li>
                 <li v-if="!bookingsStartDate" class="text-center text-gray-500 py-4">Không có khách đến.</li>
               </ul> 
-              <ul v-if="bookingsEndDate" class="space-y-3 max-h-64 overflow-y-auto pr-2">
+              <ul v-if="bookingsEndDate && tabs[1].name === activeTab" class="space-y-3 max-h-64 overflow-y-auto pr-2">
                  <li v-for="guest in bookingsEndDate" :key="guest.id" class="flex items-center justify-between p-3 transition-colors duration-200 hover:bg-gray-50 rounded-lg">
-                  <div><p class="font-medium text-gray-700">{{ guest.user.fullname }}</p><p class="text-sm text-gray-500">Phòng {{ guest.bookingDetails[0].roomType.name }}</p></div>
+                  <span class="bg-red-100 text-red-600 p-2.5 rounded-full"><LogOut class="w-4 h-4" /></span>
+                  <div class="flex-1 ml-3 items-center"><p class="font-medium text-gray-700">{{ guest.user.fullname }}</p><p class="text-sm text-gray-500">Phòng {{ guest.bookingDetails[0].roomType.name }}</p></div>
                   <div class="text-sm text-red-700 font-semibold flex items-center gap-1.5"><LogOut class="w-4 h-4" /><span>{{ formatDateWithTime(guest.checkOutDate) }}</span></div>
                 </li>
                 <li v-if="!bookingsEndDate" class="text-center text-gray-500 py-4">Không có khách đi.</li>
               </ul>
-              <ul v-if="activeTab === 'Hoạt động'" class="space-y-4 max-h-64 overflow-y-auto pr-2">
-                <li v-for="activity in recentActivities" :key="activity.id" class="flex items-start gap-4">
-                  <div :class="activityIconClass(activity.type)" class="p-2.5 rounded-full flex-shrink-0"><component :is="activity.icon" class="w-5 h-5" /></div>
-                  <div><p class="text-sm text-gray-800" v-html="activity.description"></p><p class="text-xs text-gray-400 mt-0.5">{{ activity.time }}</p></div>
+              <ul v-if="logs.logs && tabs[2].name === activeTab" class="space-y-4 max-h-64 overflow-y-auto pr-2">
+                <li v-for="activity in logs.logs" :key="activity.id" class="flex items-start gap-4">
+                  <div :class="activityIconClass(activity.actionType)" class="p-2.5 rounded-full flex-shrink-0"><component :is="activity.actionType.toLocaleLowerCase() === 'login' ? LogIn : LogOut" class="w-5 h-5" /></div>
+                  <div>Người dùng <span class="font-bold" :class="activity.actionType.toLocaleLowerCase() === 'login' ? 'text-green-500' : 'text-red-500'">{{ activity.user.fullname }} ({{ activity.ip }})</span> đã <span class="font-bold" :class="activity.actionType.toLocaleLowerCase() === 'login' ? 'text-green-500' : 'text-red-500'">{{ activity.actionType }}</span> vào lúc: {{ formatDateWithTimeToSQL(activity.logAt) }}</div>
                 </li>
-                <li v-if="!recentActivities.length" class="text-center text-gray-500 py-4">Chưa có hoạt động nào.</li>
+                <li v-if="!logs.logs.length" class="text-center text-gray-500 py-4">Chưa có hoạt động nào.</li>
               </ul>
           </div>
         </div>
@@ -240,9 +242,11 @@ import {
 import { statistics } from "@/api/statistic";
 import { Bookings } from "@/api/booking";
 import { formatVND, formatDateWithTime, formatDateWithTimeToSQL } from "@/utils";
+import { useLogs } from "@/api/logs";
 
 const booking = Bookings();
 const statistic = statistics();
+const logs = useLogs();
 const rawChartData = ref<any[][]>([]);
 const isLoading = ref(true);
 const activeTab = ref('Khách đến');
@@ -281,6 +285,9 @@ onMounted(async () => {
   await booking.getBookings();
   console.log("Đến", JSON.stringify(bookingsStartDate.value, null, 2));
   console.log("Đi", JSON.stringify(bookingsEndDate.value, null, 2));
+
+  await logs.fetchLogs();
+  console.log("Logs", JSON.stringify(logs.logs, null, 2));
 });
 
 const chartData = computed(() => {
@@ -294,26 +301,19 @@ const chartData = computed(() => {
   return filtered.map(item => ({ name: `Tháng ${item[1]}`, total: item[2] || 0 }));
 });
 
-const arrivals = ref([
-  { id: 1, name: "Nguyễn Văn A", room: "P.101", time: "14:00" },
-  { id: 2, name: "Trần Thị B", room: "P.203", time: "15:30" },
-]);
-const departures = ref([
-  { id: 1, name: "Lê Văn C", room: "P.102", time: "12:00" },
-]);
 const recentActivities = ref([
-    { id: 1, type: 'checkin', icon: shallowRef(KeyRound), description: "<b>Nguyễn Văn A</b> đã nhận phòng <b>P.101</b>.", time: "5 phút trước" },
-    { id: 2, type: 'booking', icon: shallowRef(BedDouble), description: "Có một đặt phòng mới từ <b>Agoda</b> cho phòng <b>P.305</b>.", time: "1 giờ trước" },
-    { id: 3, type: 'checkout', icon: shallowRef(LogOut), description: "<b>Phạm Thị D</b> đã trả phòng <b>P.202</b>.", time: "3 giờ trước" },
+    { id: 1, type: 'checkin', icon: shallowRef(KeyRound)},
+    { id: 2, type: 'booking', icon: shallowRef(BedDouble)},
+    { id: 3, type: 'checkout', icon: shallowRef(LogOut)},
 ]);
 
 const statCards = computed(() => [
-    { title: "Đến Trong Ngày", value: statistic.statisticCheckin?.data || 0, icon: shallowRef(UserRoundCheck), iconBg: 'bg-blue-100', iconColor: 'text-blue-600' },
-    { title: "Đi Trong Ngày", value: statistic.statisticCheckout?.data || 0, icon: shallowRef(UserRoundX), iconBg: 'bg-purple-100', iconColor: 'text-purple-600' },
-    { title: "Phòng Có Khách", value: statistic.statisticRoomActive?.data || 0, icon: shallowRef(Users), iconBg: 'bg-red-100', iconColor: 'text-red-600' },
-    { title: "Phòng Trống", value: statistic.statisticRoomInactive?.data || 0, icon: shallowRef(DoorOpen), iconBg: 'bg-green-100', iconColor: 'text-green-600' },
-    { title: "Tỉ Lệ Đầy Phòng", value: `${statistic.statisticActive?.data || 0}%`, icon: shallowRef(Percent), iconBg: 'bg-orange-100', iconColor: 'text-orange-600' },
-    { title: "Tỉ Lệ Hủy", value: `${statistic.statisticCancel?.data || 0}%`, icon: shallowRef(Ban), iconBg: 'bg-yellow-100', iconColor: 'text-yellow-600' },
+    { title: "Đến Trong Ngày", value: statistic.statisticCheckin?.data || 0, icon: UserRoundCheck, iconBg: 'bg-blue-100', iconColor: 'text-blue-600' },
+    { title: "Đi Trong Ngày", value: statistic.statisticCheckout?.data || 0, icon: UserRoundX, iconBg: 'bg-purple-100', iconColor: 'text-purple-600' },
+    { title: "Phòng Có Khách", value: statistic.statisticRoomActive?.data || 0, icon: Users, iconBg: 'bg-red-100', iconColor: 'text-red-600' },
+    { title: "Phòng Trống", value: statistic.statisticRoomInactive?.data || 0, icon: DoorOpen, iconBg: 'bg-green-100', iconColor: 'text-green-600' },
+    { title: "Tỉ Lệ Đầy Phòng", value: `${statistic.statisticActive?.data || 0}%`, icon: Percent, iconBg: 'bg-orange-100', iconColor: 'text-orange-600' },
+    { title: "Tỉ Lệ Hủy", value: `${statistic.statisticCancel?.data || 0}%`, icon: Ban, iconBg: 'bg-yellow-100', iconColor: 'text-yellow-600' },
 ]);
 
 const tabs = computed(() => [
@@ -324,17 +324,10 @@ const tabs = computed(() => [
 
 const activityIconClass = (type: string) => {
     switch (type) {
-        case 'checkin': return 'bg-green-100 text-green-600';
-        case 'checkout': return 'bg-red-100 text-red-600';
-        case 'booking': return 'bg-blue-100 text-blue-600';
+        case 'LOGIN': return 'bg-green-100 text-green-600';
+        case 'LOGOUT': return 'bg-red-100 text-red-600';
+        case 'BOOKING': return 'bg-blue-100 text-blue-600';
         default: return 'bg-gray-100 text-gray-600';
     }
 };
 </script>
-
-<style scoped>
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: #aaa; }
-</style>

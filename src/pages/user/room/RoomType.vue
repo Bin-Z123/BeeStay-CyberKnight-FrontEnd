@@ -160,7 +160,7 @@
                       class="w-10 text-center bg-transparent" readonly />
                     <button @click.prevent="incrementFacility(facility)" class="px-2 font-bold text-lg">+</button>
                   </div>
-                  <div v-if="facility.price === 0" class="flex items-center">
+                  <div v-if="facility.price === 0" class="flex items-center justify-center w-1/3">
                     <input type="checkbox" :id="'facility-' + facility.id" v-model="selectedFacilityQuantities[facility.id]"
                       true-value="1" false-value="0" class="w-5 h-5" />
                   </div>
