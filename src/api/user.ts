@@ -166,5 +166,18 @@ export const User = defineStore('user', () => {
         }
     };
 
-    return { users, user, getAllUser, createReceptionist, updataReceptionist, isLoading, updateProfile };
+    const updatePassword = async (id: number, password: string): Promise<void> => {
+        try {
+            const response = await axios.put(`${baseUrl}/admin/updatePassword/${id}`, { password }, {
+                withCredentials: true
+            });
+            toast.success("Cập nhật người dùng thành công!");
+            return response.data;
+        } catch (error) {
+            toast.error("Lỗi khi cập nhật người dùng");
+            throw error;
+        }
+    };
+
+    return { users, user, getAllUser, createReceptionist, updataReceptionist, isLoading, updateProfile, updatePassword };
 });

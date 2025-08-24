@@ -64,47 +64,14 @@
                     </div>
                 </div>
             </div>
-
-            <div class="flex flex-col container mx-auto py-25 gap-5 items-center justify-center px-4 lg:px-0">
-                <p class="text-2xl text-muesli-400">Nhóm Chúng Tôi</p>
-                <h1 class="text-4xl font-bold">Thông Tin Về Nhóm</h1>
-                <div ref="users" class="keen-slider">
-                    <div class="keen-slider__slide flex flex-col justify-center items-center gap-2">
-                        <img src="@/assets/images/bin.png" alt="" class="rounded-2xl">
-                        <h1 class="font-bold text-2xl">Võ Thanh Bin</h1>
-                        <p class="text-sm">Full Stack Developer</p>
-                    </div>
-                    <div class="keen-slider__slide flex flex-col justify-center items-center gap-2">
-                        <img src="@/assets/images/bin.png" alt="" class="rounded-2xl">
-                        <h1 class="font-bold text-2xl">Võ Thanh Bin</h1>
-                        <p class="text-sm">Full Stack Developer</p>
-                    </div>
-                    <div class="keen-slider__slide flex flex-col justify-center items-center gap-2">
-                        <img src="@/assets/images/bin.png" alt="" class="rounded-2xl">
-                        <h1 class="font-bold text-2xl">Võ Thanh Bin</h1>
-                        <p class="text-sm">Full Stack Developer</p>
-                    </div>
-                    <div class="keen-slider__slide flex flex-col justify-center items-center gap-2">
-                        <img src="@/assets/images/bin.png" alt="" class="rounded-2xl">
-                        <h1 class="font-bold text-2xl">Võ Thanh Bin</h1>
-                        <p class="text-sm">Full Stack Developer</p>
-                    </div>
-                    <div class="keen-slider__slide flex flex-col justify-center items-center gap-2">
-                        <img src="@/assets/images/bin.png" alt="" class="rounded-2xl">
-                        <h1 class="font-bold text-2xl">Võ Thanh Bin</h1>
-                        <p class="text-sm">Full Stack Developer</p>
-                    </div>
-                    <div class="keen-slider__slide flex flex-col justify-center items-center gap-2">
-                        <img src="@/assets/images/bin.png" alt="" class="rounded-2xl">
-                        <h1 class="font-bold text-2xl">Võ Thanh Bin</h1>
-                        <p class="text-sm">Full Stack Developer</p>
-                    </div>
-                </div>
+            <div>
+                <CoreTeam />
             </div>
+            
         </div>
     </section>
 
-    <section>
+    <!-- <section>
         <div class="bg-white px-4 pb-15">
             <div class="container mx-auto">
                 <div>
@@ -190,11 +157,12 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 </template>
 <script setup lang="ts">
 import { MoveRight, MoveLeft, BedDouble, ShieldCheck, WavesLadder, Monitor, Star, Users } from "lucide-vue-next";
 import { useKeenSlider } from 'keen-slider/vue'
+import CoreTeam from "../../../pages/user/home/CoreTeam.vue";
 
 // Slider reviews
 const [reviews] = useKeenSlider({
