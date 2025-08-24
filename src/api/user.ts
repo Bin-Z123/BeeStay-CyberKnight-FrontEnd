@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ref } from "vue";
-import { toast } from 'vue-sonner'
+import { toast } from "vue-sonner";
 import { defineStore } from "pinia";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -54,130 +54,156 @@ export interface CreateUserRequest {
 }
 
 interface UpdateUserRequest {
-    id: number;
-    phone: string;
-    email: string;
-    password: string;
-    gender: boolean;
-    birthday: string;
-    updateDate: string;
-    fullname: string;
-    cccd: string;
-    point: number;
-    eblacklist: number;
-    roleId: number;
-    rankId: number;
+  id: number;
+  phone: string;
+  email: string;
+  password: string;
+  gender: boolean;
+  birthday: string;
+  updateDate: string;
+  fullname: string;
+  cccd: string;
+  point: number;
+  eblacklist: number;
+  roleId: number;
+  rankId: number;
 }
 
 interface UserProfile {
-    fullname: string;
-    gender: boolean;
-    birthday: string;
-    phone: string;
-    email: string;
-    cccd: string;
+  fullname: string;
+  gender: boolean;
+  birthday: string;
+  phone: string;
+  email: string;
+  cccd: string;
 }
 
 const isLoading = ref(false);
 
-export const User = defineStore('user', () => {
-    const users = ref<User[]>([]);
-    const user = ref<User>({
-        id: 0,
-        phone: "",
-        email: "",
-        password: "",
-        gender: true,
-        birthday: "",
-        joinDate: "",
-        fullname: "",
-        cccd: "",
-        point: 0,
-        role: {
-            id: 1,
-            roleName: "ADMIN",
+export const User = defineStore("user", () => {
+  const users = ref<User[]>([]);
+  const user = ref<User>({
+    id: 0,
+    phone: "",
+    email: "",
+    password: "",
+    gender: true,
+    birthday: "",
+    joinDate: "",
+    fullname: "",
+    cccd: "",
+    point: 0,
+    role: {
+      id: 1,
+      roleName: "ADMIN",
+    },
+    rank: {
+      id: 0,
+      nameRank: "",
+      minPointRequired: 0,
+      discount_percent: 0,
+    },
+    eblacklist: 0,
+  });
+
+  const getAllUser = async (): Promise<User[]> => {
+    try {
+      const response = await axios.get(`${baseUrl}/office/users`, {
+        withCredentials: true,
+      });
+      if (Array.isArray(response.data)) {
+        users.value = response.data;
+      } else if (Array.isArray(response.data.data)) {
+        users.value = response.data.data;
+      } else {
+        users.value = [];
+        console.warn("Unexpected API format", response.data);
+      }
+      return users.value;
+    } catch (error) {
+      toast.error("Lỗi khi tải danh sách người dùng");
+      throw error;
+    }
+  };
+
+  const createReceptionist = async (user: CreateUserRequest): Promise<User> => {
+    try {
+      const response = await axios.post(`${baseUrl}/admin/users`, user, {
+        headers: {
+          "Content-Type": "application/json",
         },
-        rank: {
-            id: 0,
-            nameRank: "",
-            minPointRequired: 0,
-            discount_percent: 0,
-        },
-        eblacklist: 0,
-    });
+        withCredentials: true,
+      });
+      toast.success("Tạo người dùng thành công!");
+      return response.data;
+    } catch (error) {
+      toast.error("Lỗi khi tạo người dùng");
+      throw error;
+    }
+  };
 
-    const getAllUser = async (): Promise<User[]> => {
-        try {
-            const response = await axios.get(`${baseUrl}/admin/users`, { withCredentials: true });
-            if (Array.isArray(response.data)) {
-            users.value = response.data;
-            } else if (Array.isArray(response.data.data)) {
-            users.value = response.data.data;
-            } else {
-            users.value = [];
-            console.warn("Unexpected API format", response.data);
-            }
-            return users.value;
-        } catch (error) {
-            toast.error("Lỗi khi tải danh sách người dùng");
-            throw error;
+  const updataReceptionist = async (user: UpdateUserRequest): Promise<User> => {
+    try {
+      const response = await axios.put(
+        `${baseUrl}/admin/updateUser/${user.id}`,
+        user,
+        {
+          withCredentials: true,
         }
-    };
+      );
+      toast.success("Cập nhật người dùng thành công!");
+      return response.data;
+    } catch (error) {
+      toast.error("Lỗi khi cập nhật người dùng");
+      throw error;
+    }
+  };
 
-    const createReceptionist = async (user: CreateUserRequest): Promise<User> => {
-        try {
-            const response = await axios.post(`${baseUrl}/admin/users`, user, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                withCredentials: true
-            });
-            toast.success("Tạo người dùng thành công!");
-            return response.data;
-        } catch (error) {
-            toast.error("Lỗi khi tạo người dùng");
-            throw error;
+  const updateProfile = async (profile: UserProfile): Promise<User> => {
+    try {
+      const response = await axios.put(
+        `${baseUrl}/user/update-profile`,
+        profile,
+        {
+          withCredentials: true,
         }
-    };
+      );
+      toast.success("Cập nhật người dùng thành công!");
+      return response.data;
+    } catch (error) {
+      toast.error("Lỗi khi cập nhật người dùng");
+      throw error;
+    }
+  };
 
-    const updataReceptionist = async (user: UpdateUserRequest): Promise<User> => {
-        try {
-            const response = await axios.put(`${baseUrl}/admin/updateUser/${user.id}`, user, {
-                withCredentials: true
-            });
-            toast.success("Cập nhật người dùng thành công!");
-            return response.data;
-        } catch (error) {
-            toast.error("Lỗi khi cập nhật người dùng");
-            throw error;
+  const updatePassword = async (
+    id: number,
+    password: string
+  ): Promise<void> => {
+    try {
+      const response = await axios.put(
+        `${baseUrl}/admin/updatePassword/${id}`,
+        { password },
+        {
+          withCredentials: true,
         }
-    };
+      );
+      toast.success("Cập nhật người dùng thành công!");
+      return response.data;
+    } catch (error) {
+      toast.error("Lỗi khi cập nhật người dùng");
+      throw error;
+    }
+  };
 
-    const updateProfile = async (profile: UserProfile): Promise<User> => {
-        try {
-            const response = await axios.put(`${baseUrl}/user/update-profile`, profile, {
-                withCredentials: true
-            });
-            toast.success("Cập nhật người dùng thành công!");
-            return response.data;
-        } catch (error) {
-            toast.error("Lỗi khi cập nhật người dùng");
-            throw error;
-        }
-    };
-
-    const updatePassword = async (id: number, password: string): Promise<void> => {
-        try {
-            const response = await axios.put(`${baseUrl}/admin/updatePassword/${id}`, { password }, {
-                withCredentials: true
-            });
-            toast.success("Cập nhật người dùng thành công!");
-            return response.data;
-        } catch (error) {
-            toast.error("Lỗi khi cập nhật người dùng");
-            throw error;
-        }
-    };
-
-    return { users, user, getAllUser, createReceptionist, updataReceptionist, isLoading, updateProfile, updatePassword };
+  return {
+    users,
+    user,
+    getAllUser,
+    createReceptionist,
+    updataReceptionist,
+    isLoading,
+    updateProfile,
+    updatePassword,
+  };
 });

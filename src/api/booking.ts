@@ -2,15 +2,19 @@ import axios from "axios";
 import { defineStore } from "pinia";
 import { toast } from "vue-sonner";
 import { ref, onMounted } from "vue";
-import { formatDateWitCheckInCheckOutAvailable, } from "@/utils";
+import { formatDateWitCheckInCheckOutAvailable } from "@/utils";
 import {
   Booking,
   BookingResponse,
   BookingStatus,
   BlacklistStatus,
-  BookingTicketResponse
+  BookingTicketResponse,
 } from "@/interface/booking.interface";
-import { CreateBookingRequest, RoomAvailabilityResponse, GuestBookingRequest } from "@/types";
+import {
+  CreateBookingRequest,
+  RoomAvailabilityResponse,
+  GuestBookingRequest,
+} from "@/types";
 import { format } from "date-fns";
 import { ro } from "date-fns/locale";
 import { useAuthStore } from "@/stores/auth/login";
@@ -75,7 +79,10 @@ export const Bookings = defineStore("booking", () => {
 
   const getBookings = async () => {
     try {
-      const response = await axios.get<BookingResponse>(`${baseUrl}/admin/booking/list`, { withCredentials: true });
+      const response = await axios.get<BookingResponse>(
+        `${baseUrl}/office/booking/list`,
+        { withCredentials: true }
+      );
       bookings.value = response.data.data;
       return response.data;
     } catch (error: any) {
@@ -86,23 +93,27 @@ export const Bookings = defineStore("booking", () => {
 
   const createBooking = async (booking: CreateBookingRequest) => {
     try {
-      isloading.value = true
-      const response = await axios.post(`${baseUrl}/admin/booking/order`, booking, { withCredentials: true });
+      isloading.value = true;
+      const response = await axios.post(
+        `${baseUrl}/rep/booking/order`,
+        booking,
+        { withCredentials: true }
+      );
       toast.success("Tạo booking thành công!");
-      return response.data
+      return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         toast.error("Lỗi khi tạo booking");
       }
     } finally {
-      isloading.value = false
+      isloading.value = false;
     }
-  }
+  };
 
   interface AvalableResponse {
-    code: number
-    message: string
-    data: RoomAvailabilityResponse[]
+    code: number;
+    message: string;
+    data: RoomAvailabilityResponse[];
   }
   const listRoomsAvailable = ref<RoomAvailabilityResponse[]>([]);
   const roomTypeId = ref<number>(0);
@@ -113,52 +124,88 @@ export const Bookings = defineStore("booking", () => {
   const finalNumberOfNights = ref(0);
   const selectedFacilities = ref<any[]>([]);
 
-  const getAvailableRooms = async (checkinDateF: Date, checkoutDateF: Date, numberofpeople: number): Promise<AvalableResponse> => {
+  const getAvailableRooms = async (
+    checkinDateF: Date,
+    checkoutDateF: Date,
+    numberofpeople: number
+  ): Promise<AvalableResponse> => {
     try {
-      const checkinDate = formatDateWitCheckInCheckOutAvailable(checkinDateF, 14, 0, 0)
-      const checkoutDate = formatDateWitCheckInCheckOutAvailable(checkoutDateF, 12, 0, 0)
+      const checkinDate = formatDateWitCheckInCheckOutAvailable(
+        checkinDateF,
+        14,
+        0,
+        0
+      );
+      const checkoutDate = formatDateWitCheckInCheckOutAvailable(
+        checkoutDateF,
+        12,
+        0,
+        0
+      );
       checkin.value = checkinDateF;
       checkout.value = checkoutDateF;
       numberOfPeople.value = numberofpeople;
       // console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate);
-      const response = await axios.get<AvalableResponse>(`${baseUrl}/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`, {
-        withCredentials: true
-      });
+      const response = await axios.get<AvalableResponse>(
+        `${baseUrl}/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`,
+        {
+          withCredentials: true,
+        }
+      );
       listRoomsAvailable.value = response.data.data;
-      return response.data
+      return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        toast.error("Lỗi khi tải danh sách phòng trống")
-        throw error
+        toast.error("Lỗi khi tải danh sách phòng trống");
+        throw error;
       }
-      throw error
+      throw error;
     }
-  }
+  };
 
-  const getAvailableRoomsByDate = async (checkinDateF: Date, checkoutDateF: Date): Promise<AvalableResponse> => {
+  const getAvailableRoomsByDate = async (
+    checkinDateF: Date,
+    checkoutDateF: Date
+  ): Promise<AvalableResponse> => {
     try {
-      const checkinDate = formatDateWitCheckInCheckOutAvailable(checkinDateF, 14, 0, 0)
-      const checkoutDate = formatDateWitCheckInCheckOutAvailable(checkoutDateF, 12, 0, 0)
+      const checkinDate = formatDateWitCheckInCheckOutAvailable(
+        checkinDateF,
+        14,
+        0,
+        0
+      );
+      const checkoutDate = formatDateWitCheckInCheckOutAvailable(
+        checkoutDateF,
+        12,
+        0,
+        0
+      );
       // console.log("checkinDateF: ", checkinDate, "checkoutDateF: ", checkoutDate, "roomtypeid: ");
-      const response = await axios.get<AvalableResponse>(`${baseUrl}/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`, {
-        withCredentials: true
-      });
+      const response = await axios.get<AvalableResponse>(
+        `${baseUrl}/availableRoomsTypeAndDateV2?fromDate=${checkinDate}&toDate=${checkoutDate}`,
+        {
+          withCredentials: true,
+        }
+      );
       listRoomsAvailable.value = response.data.data;
-      return response.data
+      return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        toast.error("Lỗi khi tải danh sách phòng trống")
-        throw error
+        toast.error("Lỗi khi tải danh sách phòng trống");
+        throw error;
       }
-      throw error
+      throw error;
     }
-  }
+  };
 
-  const bookingTicket = ref<Booking>()
+  const bookingTicket = ref<Booking>();
   const getBookingbyId = async (id: number): Promise<BookingTicketResponse> => {
     isloading.value = true;
     try {
-      const response = await axios.get<BookingTicketResponse>(`${baseUrl}/booking/${id}`, { withCredentials: true });
+      const response = await axios.get<BookingTicketResponse>(
+        `${baseUrl}/booking/${id}`,
+        { withCredentials: true }
+      );
       bookingTicket.value = response.data.data;
       return response.data;
     } catch (error: unknown) {
@@ -170,12 +217,16 @@ export const Bookings = defineStore("booking", () => {
     } finally {
       isloading.value = false;
     }
-  }
+  };
 
   const updatePriceForBooking = async (bookingId: number) => {
     isloading.value = true;
     try {
-      const response = await axios.put(`${baseUrl}/afterUBD/${bookingId}`, {}, { withCredentials: true });
+      const response = await axios.put(
+        `${baseUrl}/afterUBD/${bookingId}`,
+        {},
+        { withCredentials: true }
+      );
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -186,11 +237,15 @@ export const Bookings = defineStore("booking", () => {
     } finally {
       isloading.value = false;
     }
-  }
+  };
   const updatePriceForBookingFirstNight = async (bookingId: number) => {
     isloading.value = true;
     try {
-      const response = await axios.put(`${baseUrl}/afterUBD2/${bookingId}`, {}, { withCredentials: true });
+      const response = await axios.put(
+        `${baseUrl}/afterUBD2/${bookingId}`,
+        {},
+        { withCredentials: true }
+      );
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -201,7 +256,7 @@ export const Bookings = defineStore("booking", () => {
     } finally {
       isloading.value = false;
     }
-  }
+  };
 
   const processAndConfirmBooking = async (guestInfo: GuestBookingRequest) => {
     const checkinDate = ref(checkin.value);
@@ -222,10 +277,12 @@ export const Bookings = defineStore("booking", () => {
       guestDataForBooking = guestInfo;
     }
 
-    const bookingDetailRequest = Object.values(selectedRoomsData).map((entry: any) => ({
-      roomTypeId: entry.roomData.roomTypeId,
-      quantity: entry.quantity,
-    }));
+    const bookingDetailRequest = Object.values(selectedRoomsData).map(
+      (entry: any) => ({
+        roomTypeId: entry.roomData.roomTypeId,
+        quantity: entry.quantity,
+      })
+    );
 
     const bookingFacilityRequest = selectedFacilitiesData.map((facility) => ({
       facilityId: facility.id,
@@ -251,9 +308,7 @@ export const Bookings = defineStore("booking", () => {
     // console.log("Dữ liệu gửi về BE để tạo booking:", JSON.stringify(bookingPayload, null, 2));
     const result = await createBooking(bookingPayload);
     if (result) {
-
       toast.success("Booking đã được xác nhận thành công!");
-
     } else {
       toast.error("Xác nhận booking thất bại, vui lòng thử lại sau.");
     }
@@ -263,18 +318,25 @@ export const Bookings = defineStore("booking", () => {
   const bookinghistory = ref<Booking[]>([]);
   const bookingHistory = async () => {
     try {
-      const response = await axios.get<BookingResponse>(`${baseUrl}/user/booking-history`, { withCredentials: true });
+      const response = await axios.get<BookingResponse>(
+        `${baseUrl}/user/booking-history`,
+        { withCredentials: true }
+      );
       bookinghistory.value = response.data.data;
       return response.data;
     } catch (error: any) {
       toast.error("Lỗi khi tải lịch sử booking");
       throw error;
     }
-  }
+  };
 
   const checkoutBooking = async (bookingId: number) => {
     try {
-      const response = await axios.put(`${baseUrl}/checkout/${bookingId}`, {}, { withCredentials: true });
+      const response = await axios.put(
+        `${baseUrl}/checkout/${bookingId}`,
+        {},
+        { withCredentials: true }
+      );
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -283,11 +345,15 @@ export const Bookings = defineStore("booking", () => {
       }
       throw error;
     }
-  }
+  };
 
   const statusCheckout = async (bookingId: number) => {
     try {
-      const response = await axios.put(`${baseUrl}/status-checkout/${bookingId}`, {}, { withCredentials: true });
+      const response = await axios.put(
+        `${baseUrl}/status-checkout/${bookingId}`,
+        {},
+        { withCredentials: true }
+      );
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -296,12 +362,15 @@ export const Bookings = defineStore("booking", () => {
       }
       throw error;
     }
-  }
-
+  };
 
   const updatePriceBookingStay = async (bookingId: number) => {
     try {
-      const response = await axios.put(`${baseUrl}/update-booking/${bookingId}`, {}, { withCredentials: true });
+      const response = await axios.put(
+        `${baseUrl}/update-booking/${bookingId}`,
+        {},
+        { withCredentials: true }
+      );
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -310,7 +379,7 @@ export const Bookings = defineStore("booking", () => {
       }
       throw error;
     }
-  }
+  };
 
   return {
     checkin,
@@ -341,12 +410,11 @@ export const Bookings = defineStore("booking", () => {
 });
 //  NEW API
 const getBookingsList = async () => {
-  return myAxios.get('/admin/booking/list')
-}
+  return myAxios.get("/office/booking/list");
+};
 
 const putCancelBooking = async (bookingId: number) => {
-  return myAxios.put(`/cancel/${bookingId}`)
-}
+  return myAxios.put(`/cancel/${bookingId}`);
+};
 
-
-export { putCancelBooking, getBookingsList }
+export { putCancelBooking, getBookingsList };

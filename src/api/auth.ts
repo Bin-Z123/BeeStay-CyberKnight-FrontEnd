@@ -60,13 +60,18 @@ export const Auth = () => {
 
   const getUserInfoByToken = async (): Promise<User> => {
     try {
-       const response = await axios.get<{ data: User }>(`${baseUrl}/me`, {
+      const response = await axios.get<{ data: User }>(`${baseUrl}/me`, {
         withCredentials: true,
       });
-      console.log("Thông tin người dùng", JSON.stringify(response.data.data, null, 2));
+      console.log(
+        "Thông tin người dùng",
+        JSON.stringify(response.data.data, null, 2)
+      );
 
       if (response.data.data.eblacklist == 2) {
-        toast.error("Tài khoản của bạn đã bị khoá, vui lòng liên hệ với quản trị viên.");
+        toast.error(
+          "Tài khoản của bạn đã bị khoá, vui lòng liên hệ với quản trị viên."
+        );
         authStore.logout();
       }
       return response.data.data;
@@ -76,21 +81,30 @@ export const Auth = () => {
     }
   };
 
-  const login = async (username: string, password: string): Promise<LoginResponse> => {
+  const login = async (
+    username: string,
+    password: string
+  ): Promise<LoginResponse> => {
     isLoading.value = true;
 
     try {
-      const response = await axios.post<LoginResponse>(`${baseUrl}/login`, {
-        username,
-        password,
-      }, {
-        withCredentials: true
-      });
+      const response = await axios.post<LoginResponse>(
+        `${baseUrl}/login`,
+        {
+          username,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
       const user = await getUserInfoByToken();
 
       if (user.eblacklist === 2) {
-        toast.error("Tài khoản của bạn đã bị khoá, vui lòng liên hệ với quản trị viên.");
+        toast.error(
+          "Tài khoản của bạn đã bị khoá, vui lòng liên hệ với quản trị viên."
+        );
         await authStore.logout();
         throw new Error("User is banned");
       } else {
@@ -109,16 +123,15 @@ export const Auth = () => {
         }
       }
       return response.data;
-
     } catch (error: any) {
       if (error.message !== "User is banned") {
         toast.error("Thông báo", {
-          description: "Lỗi: " + (error?.response?.data?.message || error.message),
+          description:
+            "Lỗi: " + (error?.response?.data?.message || error.message),
         });
       }
 
       throw error;
-
     } finally {
       setTimeout(() => {
         isLoading.value = false;
@@ -146,11 +159,17 @@ export const Auth = () => {
     }
   };
 
-  const verifyOTP = async (email: string, otp: string): Promise<RegisterResponse> => {
+  const verifyOTP = async (
+    email: string,
+    otp: string
+  ): Promise<RegisterResponse> => {
     isLoading.value = true;
 
     try {
-      const response = await axios.post(`${baseUrl}/register/verify-otp`, { email, otp });
+      const response = await axios.post(`${baseUrl}/register/verify-otp`, {
+        email,
+        otp,
+      });
       return response.data;
     } catch (error) {
       throw error;
@@ -163,6 +182,6 @@ export const Auth = () => {
     login,
     isLoading,
     register,
-    verifyOTP
+    verifyOTP,
   };
 };
