@@ -33,9 +33,9 @@
                             <ChevronDown class="w-5 h-5 text-gray-400" />
                         </div>
                     </div>
-                    <input type="search" v-model="searchInput"
+                    <!-- <input type="search" v-model="searchInput"
                         class="w-2/8 h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center"
-                        placeholder="Tìm kiếm">
+                        placeholder="Tìm kiếm"> -->
 
                 </div>
             </div>
@@ -295,8 +295,6 @@ watch(() => !isFetchingBookings.value, () => {
 })
 onMounted(async () => {
     // await bookings.getBookings();
-
-
 });
 
 //Search booking

@@ -180,8 +180,23 @@
   </section>
 
   <section>
-    <div class="bg-white px-4 pb-15">
+    <div class="px-4">
       <div class="container mx-auto">
+        <div class="flex flex-col justify-center items-center px-4 py-25 gap-3 w-full">
+            <h2 class="text-2xl text-muesli-400" data-aos="fade-up">Dịch Vụ</h2>
+            <p class="text-4xl font-bold mb-10" data-aos="fade-up">Dịch Vụ Của Khách Sạn</p>
+            <div class="lg:container lg:mx-auto" data-aos="fade-up" data-aos-delay="100">
+                <div ref="facilitys" class="keen-slider rounded-2xl">
+                    <div class="keen-slider__slide sm:w-auto bg-white flex flex-col justify-center items-center rounded-2xl h-70 p-10 gap-3"
+                        v-for="facility in facilities.facilities" :key="facility.id">
+                        <img :src="getImageUrl(facility.publicId)" class="w-14 h-14" alt="">
+                        <h1 class="font-bold text-xl">{{ facility.facilityName }}</h1>
+                        <h1 class="text-sm text-gray-400">{{ facility.description }}</h1>
+                    </div>
+
+                </div>
+            </div>
+        </div>
       </div>
     </div>
     <BookingUserDialog v-model:open="isBookingUserDialogOpen"></BookingUserDialog>
@@ -194,11 +209,12 @@ import {
   User,
   Star,
 } from 'lucide-vue-next';
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch, nextTick } from "vue";
 import { vi } from "date-fns/locale";
 import { addDays, format, parseISO, differenceInDays } from "date-fns";
 import 'keen-slider/keen-slider.min.css';
 import { useKeenSlider } from 'keen-slider/vue';
+import KeenSlider from 'keen-slider';
 import { Bookings } from '@/api/booking';
 import { useRoute, useRouter } from "vue-router";
 import BookingUserDialog from '@/components/user/BookingUserDialog/BookingUserDialog.vue';
@@ -278,6 +294,22 @@ const checkOutDate = computed(() => {
     ? addDays(checkin.value, numberOfNights.value)
     : null;
 });
+
+// Slider facilities
+const facilitiesInstance = ref(null);
+const facilitys = ref(null);
+watch(() => bookings.listRoomsAvailable, (newValue) => {
+    nextTick(() => {
+        if (facilitiesInstance.value) facilitiesInstance.value.destroy();
+        if (newValue && newValue.length > 0 && facilitys.value) {
+            facilitiesInstance.value = new KeenSlider(facilitys.value, {
+                loop: true,
+                slides: { perView: 4, spacing: 15 },
+                breakpoints: { '(max-width: 768px)': { slides: { perView: 1, spacing: 10 } } },
+            });
+        }
+    });
+}, { deep: true });
 
 const [reviews] = useKeenSlider({
   loop: true,

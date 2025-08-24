@@ -158,7 +158,7 @@
         </div>
     </section>
 
-    <section>
+    <!-- <section>
         <div class="bg-white px-4 pb-15">
             <div class="container mx-auto">
                 <div data-aos="fade-right">
@@ -244,7 +244,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <section>
         <div class="bg-[url('@/assets/images/body.png')] bg-fixed bg-cover bg-center h-150 relative">
