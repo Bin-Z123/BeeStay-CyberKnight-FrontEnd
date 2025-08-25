@@ -89,13 +89,14 @@ export const PaymentAPI = defineStore("payment", () => {
     }
   };
   const paymentPaid = ref(0);
+
   const getPaymentPaidByBookingId = async (
     bookingId: number
   ): Promise<Number> => {
     isLoading.value = true;
     try {
       const response = await axios.get(
-        `${baseUrl}/admin/payment/calculatePaymentofBooking/${bookingId}`,
+        `${baseUrl}/payment/calculatePaymentofBooking/${bookingId}`,
         {
           withCredentials: true,
         }
