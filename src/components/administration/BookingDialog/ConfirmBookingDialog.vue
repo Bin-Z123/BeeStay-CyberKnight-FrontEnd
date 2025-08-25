@@ -567,7 +567,7 @@ const validateStayBeforeSubmit = (): boolean => {
 }
 
 const handleConfirm = async (bookingID: number) => {
-    if (!validateStayBeforeSubmit()) return
+    if (!validateStayBeforeSubmit()) return;
     const routerData = router.resolve({
         name: 'booking-detail-manager',
         params: { id: bookingID }

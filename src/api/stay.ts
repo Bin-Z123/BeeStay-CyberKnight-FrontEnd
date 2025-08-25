@@ -14,7 +14,9 @@ export const Stay = defineStore("stay", () => {
     isLoading.value = true;
     // console.log("Stay Data: ", JSON.stringify(stay));
     try {
-      const response = await axios.post(`${baseUrl}/rep/stay/create`, stay);
+      const response = await axios.post(`${baseUrl}/rep/stay/create`, stay, {
+        withCredentials: true,
+      });
       stays.value.push(response.data);
       toast.success("Xếp phòng thành công thành công!");
     } catch (error) {

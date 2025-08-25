@@ -805,8 +805,11 @@ onMounted(async () => {
     if (booking.bookingStatus === "CANCEL") {
       toast.info("Không thể tạo hóa đơn cho booking đã bị hủy.");
       return; // Dừng hàm tại đây
-    }
-
+    } 
+     if (booking.bookingStatus === "STAY") {
+      await BookingStore.updatePriceForBooking(props.id);
+      console.log("BK AMOUNT: ", booking.totalAmount);
+    }                                     
     // 4. Nếu booking không bị hủy, thực hiện các bước cập nhật cần thiết
     await paymentStore.getPaymentPaidByBookingId(props.id);
     await BookingStore.updatePriceForBooking(props.id);

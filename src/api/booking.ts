@@ -110,24 +110,21 @@ export const Bookings = defineStore("booking", () => {
     }
   };
 
+
   const createBookingUser = async (booking: CreateBookingRequest) => {
     try {
-      isloading.value = true;
-      const response = await axios.post(
-        `${baseUrl}/user/booking`,
-        booking,
-        { withCredentials: true }
-      );
+      isloading.value = true
+      const response = await axios.post(`${baseUrl}/user/booking`, booking, { withCredentials: true });
       toast.success("Tạo booking thành công!");
-      return response.data;
+      return response.data
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         toast.error("Lỗi khi tạo booking");
       }
     } finally {
-      isloading.value = false;
+      isloading.value = false
     }
-  };
+  }
 
   interface AvalableResponse {
     code: number;
@@ -425,6 +422,7 @@ export const Bookings = defineStore("booking", () => {
     selectedFacilities,
     bookinghistory,
     bookingHistory,
+    createBookingUser,
   };
 });
 //  NEW API

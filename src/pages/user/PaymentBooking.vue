@@ -195,9 +195,11 @@
                             <div class="border-t my-2"></div>
                             <div class="flex justify-between text-xl font-bold">
                                 <span class="text-gray-900">Tổng Cộng ({{ numberOfNights }} Đêm)</span>
-                                <span class="text-blue-600">{{ formatVND(BookingStore.bookingTicket?.totalAmount *
+                                <!-- <span class="text-blue-600">{{ formatVND(BookingStore.bookingTicket?.totalAmount *
                                     numberOfNights)
-                                    }}</span>
+                                    }}</span> -->
+                                     <span class="text-blue-600">{{ formatVND((BookingStore?.bookingTicket?.totalAmount - totalPriceFacility) * numberOfNights + totalPriceFacility)
+                                    }}</span> 
                             </div>
                             <!-- <div class="flex justify-between">
                                 <span class="text-gray-600">Đã thanh toán </span>
