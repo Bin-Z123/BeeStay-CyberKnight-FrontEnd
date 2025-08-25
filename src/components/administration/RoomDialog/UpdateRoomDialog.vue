@@ -13,7 +13,6 @@
             <hr class="text-muesli-400 bg-muesli-400 h-[2px]" />
           </DialogHeader>
 
-
           <div>
             <div>
               <label class="text-muesli-400">Số Phòng</label><br />
@@ -30,7 +29,7 @@
             <div>
               <label class="text-muesli-400">Loại Phòng</label><br />
               <div class="relative">
-                <select v-model="roomData.roomType.id" name="" id=""
+                <select v-model="roomData.roomType.id" @change="selectRoomType" name="" id=""
                   class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 text-center">
                   <option v-for="roomType in roomTypesData" :key="roomType.id" :value="roomType.id">
                     {{ roomType.name }}
@@ -46,9 +45,10 @@
               <div class="relative">
                 <select v-model="roomData.roomStatus" name="" id=""
                   class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 text-center">
-                  <option value="INACTIVE" selected>Đang sử dụng</option>
-                  <option value="FIX">Đang bảo trì</option>
-
+                  <option value="CLEANUP" selected>Đang dọn dẹp</option>
+                  <option value="INACTIVE">Trống</option>
+                  <option value="FIX">Đang sửa chữa</option>
+                  <option value="ACTIVE">Đang sử dụng</option>
                 </select>
                 <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                   <ChevronDown class="w-5 h-5 text-gray-400" />
@@ -57,15 +57,14 @@
             </div>
           </div>
           <DialogFooter>
-            <Button :disabled="isLoading" @click.prevent="onSubmitUpdateRoom" type="submit"
+            <Button :disabled="roomTypesStore.isLoading" @click.prevent="onSubmitUpdateRoom" type="submit"
               class="bg-muesli-400 flex items-center justify-center hover:bg-muesli-600 text-white px-3 py-2 rounded-sm disabled:opacity-100 disabled:cursor-not-allowed disabled:hover:bg-muesli-400">
-              <span v-if="isLoading" class="items-center justify-center flex">
+              <span v-if="roomTypesStore.isLoading" class="items-center justify-center flex">
                 <LoaderCircle class="animate-spin" /><span>Đang lưu</span>
               </span>
               <span v-else>Lưu</span>
             </Button>
             <!-- <img :src="imageUrl + '/home-1.1_x5mdyb.jpg'" alt="ảnh 1" /> -->
-
           </DialogFooter>
         </form>
         <div
@@ -139,8 +138,8 @@ import { RoomAPI } from "@/api/room";
 import { identity } from "@vueuse/core";
 import { useGetRoomProfile } from "@/hook/useRoom";
 
-
-const { updateRoom, isLoading } = RoomAPI();
+// const { updateRoom, isLoading } = RoomAPI();
+const roomTypesStore = RoomAPI();
 const emit = defineEmits<{
   (e: "update:open", value: boolean): void;
 }>();
@@ -151,6 +150,7 @@ const props = defineProps<{
     roomNumber: string;
     roomStatus: string;
     floor: number;
+    roomTypeId: number;
     roomType: {
       id: number;
       name: string;
@@ -177,11 +177,14 @@ const props = defineProps<{
 const imageUrl = import.meta.env.VITE_CLOUDINARY_IMG_URL;
 
 const roomID = computed(() => {
-  return props.room.id
-})
+  return props.room.id;
+});
 const isOpen = toRef(props, "open");
-const { data: roomProfile, isFetching: isFetchingRoom, isPending: isPendingRoom } = useGetRoomProfile(roomID, isOpen)
-
+const {
+  data: roomProfile,
+  isFetching: isFetchingRoom,
+  isPending: isPendingRoom,
+} = useGetRoomProfile(roomID, isOpen);
 
 const roomData = ref({ ...props.room });
 watch(
@@ -262,7 +265,9 @@ const onDeleteImage2 = (index: number) => {
   }
 };
 // Xử lý update phòng
-
+const selectRoomType = () => {
+  console.log("Selected room type ID:", roomData.value.roomType.id);
+};
 const onSubmitUpdateRoom = async () => {
   roomData.value.deletedRoomImageIds = listDeletedRoomImageIds.value;
   const keptOldImages = roomData.value.roomImages.filter((img) => {
@@ -275,12 +280,15 @@ const onSubmitUpdateRoom = async () => {
     isThum: img.isThum,
   }));
   roomData.value.roomImages = [...keptOldImages, ...newImages];
+  roomData.value.roomTypeId = roomData.value.roomType.id;
   try {
-    await updateRoom(roomData.value, selectFiles.value);
+    console.log("Room data: ", roomData.value);
+    await roomTypesStore.updateRoom(roomData.value, selectFiles.value);
+    await roomTypesStore.getAllRooms();
     imagePreview.value = [];
   } catch (error) {
     throw error;
   }
-
+  emit("update:open", false);
 };
 </script>

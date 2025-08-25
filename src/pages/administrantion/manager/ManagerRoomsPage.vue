@@ -51,8 +51,7 @@
               <td class="py-2">{{ room.roomNumber }} ({{ room.roomImages.length ?? 0 }})</td>
               <td class="py-2">{{ room.roomType.name }}</td>
               <td class="py-2">{{ room.floor }}</td>
-              <td class="py-2" :class="room.roomStatus == 'INACTIVE' ? 'text-green-500' : 'text-red-500'">{{
-                room.roomStatus == 'INACTIVE' ? 'Đang sử dụng' : room.roomStatus == 'FIX' ? 'Đang sửa chữa' : 'Lỗi' }}
+              <td class="py-2" :class="getStatus(room.roomStatus)">{{ getNameStatus(room.roomStatus) }}
               </td>
               <td class="py-2 flex justify-center items-center gap-5 h-full">
                 <button
@@ -153,6 +152,32 @@ const paginatedRooms = computed(() => {
   const endIndex = startIndex + pageSize.value;
   return filteredRooms.value.slice(startIndex, endIndex);
 });
+
+const getStatus = (status: String) => {
+  switch (status) {
+    case 'ACTIVE':
+      return "text-red-500";
+    case 'INACTIVE':
+      return "text-green-400";
+    case 'FIX':
+      return "text-yellow-500";
+    default:
+      return "";
+  }
+};
+
+const getNameStatus = (status: String) => {
+  switch (status) {
+    case 'ACTIVE':
+      return "Đang sử dụng";
+    case 'INACTIVE':
+      return "Trống";
+    case 'FIX':
+      return "Đang sửa chữa";
+    default:
+      return "";
+  }
+};
 
 // Lấy danh sách phòng
 onMounted(async () => {

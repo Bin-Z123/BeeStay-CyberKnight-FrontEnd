@@ -14,7 +14,7 @@
                         class="text-start hover:bg-muesli-100/80 hover:underline rounded-b-sm px-2 py-1 gap-1 flex items-center">
                         <Globe class="inline-block" /><span>Xem Web</span>
                     </button>
-                    <button
+                    <button @click="handleLogOut()"
                         class="text-start hover:bg-muesli-100/80 hover:underline rounded-t-sm px-2 py-1 gap-1 flex items-center">
                         <LogOut class="inline-block" /> <span>
                             Đăng Xuất
@@ -46,4 +46,9 @@ const viewWeb = () => {
     window.open(routerData.href, '_blank');
 }
 const authStore = useAuthStore();
+
+const handleLogOut = () => {
+    authStore.logout();
+    router.push({ name: "login" });
+}
 </script>

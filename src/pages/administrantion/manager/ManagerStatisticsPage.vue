@@ -30,14 +30,14 @@
             <div class="w-1/2">
                 <div class="bg-white shadow-sm h-full me-4 rounded-2xl">
                     <div class="px-4">
-                        <h1 class="font-bold pt-6">10 Khách Hàng Nhiều Điểm Nhất</h1>
+                        <h1 class="font-bold pt-6">Khách hàng của năm {{ selectYear }}</h1>
                         <table class="w-full border border-gray-300 text-sm text-center bg-white my-3">
                             <tbody class="text-gray-700">
                                 <tr class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
-                                    v-for="(user, index) in sortedUsers" :key="user.id">
+                                    v-for="(user, index) in filterSumPriceBookingByYear" :key="user.email">
                                     <td class="py-3.5">{{ index + 1 }}</td>
-                                    <td class="py-3.5">{{ user.fullname }}</td>
-                                    <td class="py-3.5">{{ user.point }}</td>
+                                    <td class="py-3.5">{{ user.email }}</td>
+                                    <td class="py-3.5">{{ user.total }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -52,7 +52,7 @@ import {
     ChevronDown,
     ChartNoAxesCombined,
 } from "lucide-vue-next";
-import { ref, computed, onMounted, watchEffect } from "vue";
+import { ref, computed, onMounted, watchEffect, watch } from "vue";
 import BarChart from "@/components/ui/barChart/BarChart.vue";
 import { statistics } from "@/api/statistic";
 import { Bookings } from "@/api/booking";
@@ -93,11 +93,40 @@ onMounted(async () => {
     // await booking.getBookings();
     // rawChartData.value = statistic.statisticChart?.data || [];
     await user.getAllUser();
+    await booking.getBookings();
+    console.log("Thông tin", filterSumPriceBookingByYear.value);
+})
+
+watch(selectYear, async (newYear) => {
+    if (!newYear) return;
+    await statistic.getChartData(newYear);
+    await booking.getBookings();
+    rawChartData.value = statistic.statisticChart?.data || [];
+})
+
+// Lọc và tính tổng tiền theo email trong năm được chọn
+const filterSumPriceBookingByYear = computed(() => {
+    const filtered = booking.bookings.filter(booking => {
+        const bookingYear = new Date(booking.bookingDate).getFullYear().toString();
+        return bookingYear === selectYear.value;
+    });
+
+    const sumBuEmail: { [key: string]: number } = {};
+    filtered.forEach(booking => {
+        const email = booking.guestBooking?.email || booking.user?.email || 'Unknown';
+        if (!sumBuEmail[email]) {
+            sumBuEmail[email] = 0;
+        }
+        sumBuEmail[email] += booking.totalAmount;
+    });
+
+    return Object.entries(sumBuEmail).map(([email, total]) => ({ email, total }));
 })
 
 watchEffect(async () => {
     if (!selectYear.value) return;
     await statistic.getChartData(selectYear.value);
+    await booking.getBookings();
     rawChartData.value = statistic.statisticChart?.data || [];
 });
 

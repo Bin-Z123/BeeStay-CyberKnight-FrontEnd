@@ -39,7 +39,9 @@
               <select v-model="roomRequest.roomStatus" name="" id=""
                 class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 shadow-sm shadow-muesli-300 text-center">
                 <option value="CLEANUP" selected>Đang dọn dẹp</option>
-                <option value="INACTIVE">Đang sử dụng</option>
+                <option value="INACTIVE">Trống</option>
+                <option value="FIX">Đang sửa chữa</option>
+                <option value="ACTIVE">Đang sử dụng</option>
               </select>
               <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                 <ChevronDown class="w-5 h-5 text-gray-400" />
@@ -47,9 +49,9 @@
             </div>
           </div>
           <DialogFooter>
-            <Button :disabled="isLoading" @click.prevent="onSubmitCreateRoom" type="submit"
+            <Button :disabled="roomTypesStore.isLoading" @click.prevent="onSubmitCreateRoom" type="submit"
               class="bg-muesli-400 flex items-center justify-center hover:bg-muesli-600 text-white px-3 py-2 rounded-sm disabled:opacity-100 disabled:cursor-not-allowed disabled:hover:bg-muesli-400">
-              <span v-if="isLoading" class="items-center justify-center flex">
+              <span v-if="roomTypesStore.isLoading" class="items-center justify-center flex">
                 <LoaderCircle class="animate-spin" /><span>Đang tạo phòng</span>
               </span>
               <span v-else>Tạo phòng</span>
@@ -110,7 +112,8 @@ import { toast } from "vue-sonner";
 import { ref, watch } from "vue";
 import { RoomAPI } from "@/api/room";
 
-const { createRoom, isLoading } = RoomAPI();
+// const { createRoom, isLoading } = RoomAPI();
+const roomTypesStore = RoomAPI();
 
 const emit = defineEmits<{
   (e: "update:open", value: boolean): void;
@@ -202,7 +205,8 @@ const onSubmitCreateRoom = async () => {
     altext: img.altText || "bin",
     isThum: img.isThum,
   }));
-  await createRoom(roomRequest.value, selectFiles.value);
+  await roomTypesStore.createRoom(roomRequest.value, selectFiles.value);
+  await roomTypesStore.getAllRooms();
 };
 // Xử lý xóa ảnh
 const onDeleteImage = (index: number) => {
