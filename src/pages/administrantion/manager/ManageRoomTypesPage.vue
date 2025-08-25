@@ -15,11 +15,11 @@
             <!-- <input type="text"
               class="w-2/6 h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 ms-4 text-center"
               placeholder="Tìm kiếm" /> -->
-            <div class="relative w-2/6 mx-4" v-if="roomTypes?.data?.data">
+            <div class="relative w-2/6 mx-4" v-if="roomTypesStore.roomtypes">
               <select v-model="searchQuery"
                 class="appearance-none w-full h-10 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-muesli-200 mb-3 shadow-sm shadow-muesli-300 my-3 text-center">
                 <option value="">Tất cả</option>
-                <option :value="roomtype.name" v-for="(roomtype, index) in roomTypes.data.data" :key="index">{{
+                <option :value="roomtype.name" v-for="(roomtype, index) in roomTypesStore.roomtypes" :key="index">{{
                   roomtype.name }}</option>
               </select>
               <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
@@ -54,7 +54,7 @@
             </tr>
           </thead>
           <tbody class="text-gray-700">
-            <tr v-if="roomTypes?.data?.data" class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
+            <tr v-if="roomTypesStore.roomtypes" class="hover:bg-muesli-100 transition odd:bg-white even:bg-gray-100"
               v-for="(roomtype, index) in paginatedRoomTypes" :key="index">
               <td class="py-2">{{ roomtype?.name }}</td>
               <td class="py-2">{{ roomtype?.description == null ? "Không Có Mô Tả Nào" : roomtype?.description }}</td>
@@ -113,7 +113,7 @@ import {
 const isOpen = ref(false);
 const isOpenUpdate = ref(false);
 const roomTypesStore = RoomType();
-const { data: roomTypes, isFetching: isFetchingRoomTypes, isPending: isPendingRoomTypes } = useGetRoomTypeList();
+const { isFetching: isFetchingRoomTypes, isPending: isPendingRoomTypes } = useGetRoomTypeList();
 
 const AsyncDialogUpdateRoomType = defineAsyncComponent(() => import("@/components/administration/roomTypeDialog/UpdateRoomTypeDialog.vue"));
 
@@ -124,9 +124,9 @@ const filteredRoomTypes = computed(() => {
   if (!searchQuery.value) {
     // console.log('LOG: ')
     // console.log(roomTypes.value?.data?.data)
-    return roomTypes.value?.data.data;
+    return roomTypesStore.roomtypes;
   }
-  return roomTypes.value?.data?.data.filter((roomtype: any) =>
+  return roomTypesStore.roomtypes.filter((roomtype: any) =>
     roomtype.name.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
@@ -173,7 +173,8 @@ const handleDeleteRoomType = async (roomtype: any) => {
 }
 
 onMounted(async () => {
-  console.log(roomTypes)
+  await roomTypesStore.getAllRoomType();
+  console.log(roomTypesStore.roomtypes)
   console.log('Computed:', paginatedRoomTypes.value)
 });
 watchEffect(() => {
