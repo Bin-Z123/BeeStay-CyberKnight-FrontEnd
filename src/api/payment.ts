@@ -67,7 +67,8 @@ export const PaymentAPI = defineStore("payment", () => {
   const createPaymentByCash = async (request: PaymentCashRequest) => {
     isLoading.value = true;
     try {
-      const response = await axios.post(`${baseUrl}/rep/payment/pay`, request);
+      const response = await axios.post(`${baseUrl}/office/payment/pay`, request, {
+        withCredentials: true,});
 
       toast.success("Tạo thanh toán thành công", {
         action: {
@@ -86,6 +87,9 @@ export const PaymentAPI = defineStore("payment", () => {
           }
         );
       }
+    }
+    finally {
+      isLoading.value = false;
     }
   };
   const paymentPaid = ref(0);

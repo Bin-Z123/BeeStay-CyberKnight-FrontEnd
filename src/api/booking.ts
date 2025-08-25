@@ -95,7 +95,26 @@ export const Bookings = defineStore("booking", () => {
     try {
       isloading.value = true;
       const response = await axios.post(
-        `${baseUrl}/rep/booking/order`,
+        `${baseUrl}/booking/order`,
+        booking,
+        { withCredentials: true }
+      );
+      toast.success("Tạo booking thành công!");
+      return response.data;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error("Lỗi khi tạo booking");
+      }
+    } finally {
+      isloading.value = false;
+    }
+  };
+
+  const createBookingUser = async (booking: CreateBookingRequest) => {
+    try {
+      isloading.value = true;
+      const response = await axios.post(
+        `${baseUrl}/user/booking`,
         booking,
         { withCredentials: true }
       );
