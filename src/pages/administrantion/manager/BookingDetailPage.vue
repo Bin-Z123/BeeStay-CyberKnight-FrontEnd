@@ -401,7 +401,7 @@
               <div class="flex justify-between text-xl font-bold">
                 <span class="text-gray-900">Tổng Cộng</span>
                 <span class="text-blue-600">{{
-                  formatVND(BookingStore.bookingTicket?.totalAmount ?? 0)
+                  formatVND((paymentPaid + paymentOsdata?.amount)) ?? 0
                 }}</span>
               </div>
               <div class="flex justify-between">
@@ -805,11 +805,12 @@ onMounted(async () => {
     if (booking.bookingStatus === "CANCEL") {
       toast.info("Không thể tạo hóa đơn cho booking đã bị hủy.");
       return; // Dừng hàm tại đây
-    } 
-     if (booking.bookingStatus === "STAY") {
+    }
+
+    if (booking.bookingStatus === "STAY") {
       await BookingStore.updatePriceForBooking(props.id);
       console.log("BK AMOUNT: ", booking.totalAmount);
-    }                                     
+    }   
     // 4. Nếu booking không bị hủy, thực hiện các bước cập nhật cần thiết
     await paymentStore.getPaymentPaidByBookingId(props.id);
     await BookingStore.updatePriceForBooking(props.id);
@@ -1022,6 +1023,8 @@ const handleConfirmCashPayment = async () => {
   paymentOsdata.value = await paymentStore.paymentOsData.data;
   paymentPaid.value = paymentStore.paymentPaid;
   paymentCash.value.amount = 0;
+
+  paymentStore.isLoading = false;
 };
 
 // Mở VietQR

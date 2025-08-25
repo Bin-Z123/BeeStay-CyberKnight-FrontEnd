@@ -119,6 +119,8 @@ export const PaymentAPI = defineStore("payment", () => {
         );
       }
       throw error;
+    }finally{
+      isLoading.value = false;
     }
   };
   return {
