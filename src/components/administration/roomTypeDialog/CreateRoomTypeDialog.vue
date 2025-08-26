@@ -33,7 +33,7 @@
             errors.size
               ? 'border-red-500 ring-2 ring-red-300 shadow-red-200 text-red-600'
               : 'border-gray-300 focus:ring-2 focus:ring-muesli-200 shadow-muesli-300'
-          ]" placeholder="Nhập loại phòng" />
+          ]"/>
           <p v-if="errors.size" class="text-red-500 text-sm mt-1">{{ errors.size }}</p>
         </div>
         <div>
@@ -43,7 +43,7 @@
             errors.price
               ? 'border-red-500 ring-2 ring-red-300 shadow-red-200 text-red-600'
               : 'border-gray-300 focus:ring-2 focus:ring-muesli-200 shadow-muesli-300'
-          ]" placeholder="Nhập loại phòng" />
+          ]" />
           <p v-if="errors.price" class="text-red-500 text-sm mt-1">{{ errors.price }}</p>
         </div>
         <div>
@@ -53,7 +53,7 @@
             errors.peopleAbout
               ? 'border-red-500 ring-2 ring-red-300 shadow-red-200 text-red-600'
               : 'border-gray-300 focus:ring-2 focus:ring-muesli-200 shadow-muesli-300'
-          ]" placeholder="Nhập loại phòng" />
+          ]" />
           <p v-if="errors.peopleAbout" class="text-red-500 text-sm mt-1">{{ errors.peopleAbout }}</p>
         </div>
         <DialogFooter>
